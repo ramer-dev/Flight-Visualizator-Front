@@ -1,7 +1,8 @@
 import styled from "@emotion/styled";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useReducer } from 'react';
 import NavItem from "./NavItem";
 import { ReactComponent as ICFlightCheck } from 'atom/icon/icon_flightcheck.svg';
+import { ReactComponent as ICMarking } from 'atom/icon/icon_marking.svg';
 
 const Container = styled.div`
     height:100vh;
@@ -25,20 +26,35 @@ const ContentView = styled.div`
     width:350px;
 `
 
+type Action = 'FLIGHT_RESULT'
+            | 'SEARCH'
+            | "MARKING"
+            | "NOTICE"
+            | "SETTING"
+
 const NavBar = () => {
-    const [page, setPage] = useState(0)
-
+    const [page, setPage] = useState<Action>("FLIGHT_RESULT")
     useEffect(() => {
-        // if
-
+       
+        console.log(page);
     }, [page])
+
+    const onButtonClick = (str: Action) => {
+        setPage(str);
+    }
+
 
 
     return (
         <Container>
             <MainNavBar>
                 <>
-                <NavItem icon={ICFlightCheck} page={page}/>
+                    <NavItem icon={ICFlightCheck} title={"비행검사"}
+                    onclick={() => { onButtonClick("FLIGHT_RESULT") }} 
+                    isClicked={page==="FLIGHT_RESULT"} />
+                    <NavItem icon={ICMarking} title={"마킹"}
+                    onclick={() => { onButtonClick("MARKING") }} 
+                    isClicked={page==="MARKING"} />
                 </>
             </MainNavBar>
             {page ? <ContentView>
