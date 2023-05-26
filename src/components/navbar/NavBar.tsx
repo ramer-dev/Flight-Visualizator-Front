@@ -1,47 +1,66 @@
 import styled from "@emotion/styled";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useReducer } from 'react';
+import NavItem from "./NavItem";
+import { ReactComponent as ICFlightCheck } from 'atom/icon/icon_flightcheck.svg';
+import { ReactComponent as ICMarking } from 'atom/icon/icon_marking.svg';
 
 const Container = styled.div`
-    position:fixed;
-    left:0;
-    top:0;
     height:100vh;
-    width:50px;
     display: flex;
-    flex-direction: column;
     justify-content: space-around;
-    z-index:100;
     border-right: 1px solid #D9D9D9;
     background-color:#ffffff;   
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    
 `
-const Wrapper = styled.div`
+const MainNavBar = styled.div`
+    width:63px;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
 `
 
-const Item = styled.li(props => ({
-    listStyle: 'none'
-}))
+// const Item = styled.li(props => ({
+//     listStyle: 'none'
+// }))
+
+const ContentView = styled.div`
+    width:350px;
+`
+
+type Action = 'FLIGHT_RESULT'
+            | 'SEARCH'
+            | "MARKING"
+            | "NOTICE"
+            | "SETTING"
 
 const NavBar = () => {
-    const [page, setPage] = useState('')
-
+    const [page, setPage] = useState<Action>("FLIGHT_RESULT")
     useEffect(() => {
+       
         console.log(page);
-
     }, [page])
+
+    const onButtonClick = (str: Action) => {
+        setPage(str);
+    }
+
 
 
     return (
         <Container>
-            <Wrapper>
-                <Item onClick={() => { setPage("1") }}>alpha</Item>
-                <Item onClick={() => { setPage("2") }}>beta</Item>
-
-            </Wrapper>
+            <MainNavBar>
+                <>
+                    <NavItem icon={ICFlightCheck} title={"비행검사"}
+                    onclick={() => { onButtonClick("FLIGHT_RESULT") }} 
+                    isClicked={page==="FLIGHT_RESULT"} />
+                    <NavItem icon={ICMarking} title={"마킹"}
+                    onclick={() => { onButtonClick("MARKING") }} 
+                    isClicked={page==="MARKING"} />
+                </>
+            </MainNavBar>
+            {page ? <ContentView>
+                zz
+            </ContentView> : null}
         </Container>
     )
 }
