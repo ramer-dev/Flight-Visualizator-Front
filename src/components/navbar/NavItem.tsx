@@ -14,6 +14,7 @@ const Wrapper = styled.div`
     gap:5px;
     transition: 0.2s all ease;
     padding:${(props : WrapperStyleType) => (props.isChecked ? '10px 0' : 0)};
+    cursor:pointer;
 
     /* box-sizing: border-box; */
     width:100%;

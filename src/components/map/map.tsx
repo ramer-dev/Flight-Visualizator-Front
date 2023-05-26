@@ -2,13 +2,12 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css';
 import 'leaflet/dist/images/marker-shadow.png';
 import styled from '@emotion/styled';
-import '../../lib/leaflet/leaflet.css'
-
-
+import 'lib/leaflet/leaflet.css'
 
 const StyledMapContainer = styled(MapContainer)`
     width:100%;
     height:100vh;
+    z-index:0;
 `
 
 // 1. 픽스점 레이어 그룹 생성
