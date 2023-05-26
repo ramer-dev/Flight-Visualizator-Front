@@ -12,6 +12,7 @@ const Container = styled.div`
     justify-content: space-around;
     z-index:100;
     border-right: 1px solid #D9D9D9;
+    background-color:#ffffff;   
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     
 `

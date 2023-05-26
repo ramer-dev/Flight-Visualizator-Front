@@ -2,14 +2,17 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import NavBar from './components/navbar/NavBar';
-import Map from './components/map/map';
+import Map from 'components/map/Map';
+import styled from '@emotion/styled';
+
+
 
 function App() {
   return (
-    <div>
+    <React.Fragment>
       <NavBar></NavBar>
       <Map/>
-    </div>
+    </React.Fragment>
   );
 }
 
