@@ -32,3 +32,11 @@ export const h4 = css`
         font-size:12px;
     }
 `
+
+export const h5 = css`
+    h5{
+        margin:0;
+        line-height:10px;
+        font-size:10px
+    }
+`
