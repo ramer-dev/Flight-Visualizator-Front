@@ -14,7 +14,7 @@ const Title = styled.h3`
 `
 
 const ContentWrapper = styled.div`
-    margin-top:5px;
+    margin-top:8px;
     gap:5px;
     display:flex;
 `
@@ -33,11 +33,6 @@ const ButtonContainer = styled.div`
     margin-top:10px;
     height:26px;
     display:flex;
-`
-
-const ButtonWrapper = styled.div`
-    /* border-radius:10px; */
-    /* border:#d9d9d9 solid 1px; */
 `
 
 const ModifyButton = styled.a`
@@ -59,7 +54,6 @@ const DeleteButton = styled.a`
     text-decoration:none;
     transition:0.2s ease;
     font-size:12px;
-   
     border-width: 1px 1px 1px 0px;
     border-style: solid;
     border-color: #D9D9D9;
@@ -94,18 +88,17 @@ const PinButton = styled.div`
 export default function FlightItem() {
     return (
         <Container>
+
             <Title>2022 동광 제주 남부지역 감사원 비행검사</Title>
             <ContentWrapper>
                 <FlightType>특별검사</FlightType>
                 <FlightDate>2022-10-24</FlightDate>
             </ContentWrapper>
             <ButtonContainer>
-                <ButtonWrapper>
-                    <ModifyButton>수정</ModifyButton>
-                    <DeleteButton>삭제</DeleteButton>
-                </ButtonWrapper>
+                <ModifyButton>수정</ModifyButton>
+                <DeleteButton>삭제</DeleteButton>
                 <PinButton>
-                    <ICMarking/>
+                    <ICMarking />
                 </PinButton>
             </ButtonContainer>
         </Container>
