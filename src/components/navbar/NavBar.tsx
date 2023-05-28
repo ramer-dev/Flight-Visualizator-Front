@@ -6,6 +6,7 @@ import { ReactComponent as ICMarking } from 'atom/icon/icon_marking.svg';
 import { ReactComponent as ICSearch } from 'atom/icon/icon_search.svg';
 import { ReactComponent as ICNotice } from 'atom/icon/icon_notice.svg';
 import { ReactComponent as ICSetting } from 'atom/icon/icon_setting.svg';
+import FlightContent from "./flight/FlightContent";
 
 const Container = styled.div`
     height:100vh;
@@ -61,7 +62,7 @@ const NavBar = () => {
                 </>
             </MainNavBar>
             {page ? <ContentView>
-                <h1>zz</h1>zz
+                <FlightContent/>
             </ContentView> : null}
         </Container>
     )

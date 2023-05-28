@@ -2,8 +2,8 @@ import { css } from "@emotion/react";
 
 export const h1 = css`
     h1{
-        font-size:24px;
-        line-height:24px;
+        font-size:18px;
+        line-height:18px;
         margin:0;
     }
 `
@@ -11,8 +11,8 @@ export const h1 = css`
 export const h2 = css`
     h2{
         margin:0;
-        font-size:18px;
-        line-height:18px;
+        font-size:16px;
+        line-height:16px;
 
     }
 `
