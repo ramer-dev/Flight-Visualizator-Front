@@ -36,7 +36,7 @@ const ContentView = styled.div`
 `
 
 const NavBar = () => {
-    const [selected_page, setPage] = useRecoilState(page)
+    const [selected_page, setPage] = useRecoilState<NavBarType>(page)
     useEffect(() => {
 
     }, [selected_page])
