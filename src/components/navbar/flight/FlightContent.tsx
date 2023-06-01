@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { NavBarType } from "common/type/NavBarType";
 import HorizontalLine from "components/common/HorizontalLine";
 import InputText from "components/common/InputText";
 import FlightItem from "./FlightItem";
@@ -25,10 +26,10 @@ const Title = styled.h2`
 `
 
 type propType = {
-    setPage: () => void;
+    setPage: (a : NavBarType) => void;
 }
 
-const FlightContent = (props: any) => {
+const FlightContent = (props: propType) => {
 
     return (
         <FlightContainer>
