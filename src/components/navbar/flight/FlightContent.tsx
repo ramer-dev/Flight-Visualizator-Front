@@ -22,7 +22,7 @@ const CloseButton = styled.div`
 `
 
 const Title = styled.h2`
-    
+    margin:20px 0;
 `
 
 type propType = {
