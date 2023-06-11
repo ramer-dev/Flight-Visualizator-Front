@@ -6,34 +6,31 @@ type WrapperStyleType = {
 }
 
 const Wrapper = styled.div`
-    display:flex;
-    flex-direction:column;
-    justify-content: center;
-    align-items: center;
-    min-height: 58px;
-    gap:5px;
-    transition: 0.2s all ease;
-    padding:${(props : WrapperStyleType) => (props.isChecked ? '10px 0' : 0)};
-    cursor:pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 58px;
+  gap: 5px;
+  transition: 0.2s all ease;
+  padding: ${(props: WrapperStyleType) => (props.isChecked ? '10px 0' : 0)};
+  cursor: pointer;
 
-    /* box-sizing: border-box; */
-    width:100%;
-    /* width:${(props: WrapperStyleType) => (props.isChecked ? 'calc(100% - 3px)' : '100%')}; */
-    /* border-left : ${(props: WrapperStyleType) => (props.isChecked ? '3px solid #5096ff' : 0)}; */
-    background: ${(props: WrapperStyleType) =>
+  width: 100%;
+  background: ${(props: WrapperStyleType) =>
     (props.isChecked
         ? 'linear-gradient(90deg, rgb(43, 111, 214) 0%, rgb(43, 111, 214) 4.9%,rgba(43, 111, 214, 0.28) 5%, rgba(255, 255, 255, 0) 50%)'
         : null)};
 `
 
 const SubTitle = styled.p`
-    font-size: 12px;
-    margin:0;
+  font-size: 12px;
+  margin: 0;
 `
 type NavItemType = {
     icon: React.FunctionComponent<React.SVGProps<SVGSVGElement>>
     isClicked: boolean;
-    title : string;
+    title: string;
     onclick?: () => void;
 }
 // prop : 전달된 id, set ID함수

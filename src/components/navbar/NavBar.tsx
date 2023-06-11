@@ -10,6 +10,7 @@ import FlightContent from "./flight/FlightContent";
 import { NavBarType } from "common/type/NavBarType";
 import { page } from 'common/store/atom'
 import { useRecoilState } from 'recoil';
+import NavSideBar from "./NavSideBar";
 
 const Container = styled.div`
     height:100vh;
@@ -36,10 +37,10 @@ const ContentView = styled.div`
 `
 
 const NavBar = () => {
-    const [selected_page, setPage] = useRecoilState<NavBarType>(page)
+    const [selectedPage, setPage] = useRecoilState<NavBarType>(page)
     useEffect(() => {
 
-    }, [selected_page])
+    }, [selectedPage])
 
     const onButtonClick = (str: NavBarType) => {
         setPage(str);
@@ -49,16 +50,16 @@ const NavBar = () => {
         <Container>
             <MainNavBar>
                 <>
-                    <NavItem icon={ICFlightCheck} title={"비행검사"} onclick={() => { onButtonClick("FLIGHT_RESULT") }} isClicked={selected_page === "FLIGHT_RESULT"} />
-                    <NavItem icon={ICSearch} title={"검색"} onclick={() => { onButtonClick("SEARCH") }} isClicked={selected_page === "SEARCH"} />
-                    <NavItem icon={ICMarking} title={"마킹"} onclick={() => { onButtonClick("MARKING") }} isClicked={selected_page === "MARKING"} />
-                    <NavItem icon={ICNotice} title={"공지사항"} onclick={() => { onButtonClick("NOTICE") }} isClicked={selected_page === "NOTICE"} />
-                    <NavItem icon={ICSetting} title={"설정"} onclick={() => { onButtonClick("SETTING") }} isClicked={selected_page === "SETTING"} />
+                    <NavItem icon={ICFlightCheck} title={"비행검사"} onclick={() => { onButtonClick("FLIGHT_RESULT") }} isClicked={selectedPage === "FLIGHT_RESULT"} />
+                    <NavItem icon={ICSearch} title={"검색"} onclick={() => { onButtonClick("SEARCH") }} isClicked={selectedPage === "SEARCH"} />
+                    <NavItem icon={ICMarking} title={"마킹"} onclick={() => { onButtonClick("MARKING") }} isClicked={selectedPage === "MARKING"} />
+                    <NavItem icon={ICNotice} title={"공지사항"} onclick={() => { onButtonClick("NOTICE") }} isClicked={selectedPage === "NOTICE"} />
+                    <NavItem icon={ICSetting} title={"설정"} onclick={() => { onButtonClick("SETTING") }} isClicked={selectedPage === "SETTING"} />
 
                 </>
             </MainNavBar>
-            {selected_page ? <ContentView>
-                <FlightContent setPage={setPage}/>
+            {selectedPage ? <ContentView>
+                <NavSideBar selectedPage={selectedPage} setPage={setPage} />
             </ContentView> : null}
         </Container>
     )
