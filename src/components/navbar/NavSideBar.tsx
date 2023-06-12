@@ -67,6 +67,26 @@ const NavSideBar = (prop: propType) => {
                 <Title>비행검사</Title>
                 <InputText />
               </>
+            case "SEARCH":
+              return <>
+                <Title>검색</Title>
+                <InputText />
+              </>
+            case "MARKING":
+              return <>
+                <Title>마킹</Title>
+                <InputText />
+              </>
+            case "NOTICE":
+              return <>
+                <Title>공지사항</Title>
+                <InputText />
+              </>
+
+            case "SETTING":
+              return <>
+                <Title>환경설정</Title>
+              </>
             default:
               return <Title>Null</Title>
           }
