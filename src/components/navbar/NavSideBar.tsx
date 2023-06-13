@@ -98,6 +98,13 @@ const NavSideBar = (prop: propType) => {
           switch (prop.selectedPage) {
             case "FLIGHT_RESULT":
               return <FlightContent />
+            case "MARKING":
+              return <FlightContent />
+            case "SEARCH":
+              return <FlightContent />
+            case "FLIGHT_RESULT":
+              return <FlightContent />
+
             default:
               return null;
           }
