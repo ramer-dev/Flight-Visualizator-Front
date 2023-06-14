@@ -64,11 +64,11 @@ const NavBar = () => {
             <Wrapper>
                 <LogoImg>LOGO</LogoImg>
                 <MainNavBar>
-                    <NavItem icon={ICFlightCheck} title={"비행검사"} onclick={() => { onButtonClick("FLIGHT_RESULT") }} isClicked={selectedPage === "FLIGHT_RESULT"} />
-                    <NavItem icon={ICSearch} title={"검색"} onclick={() => { onButtonClick("SEARCH") }} isClicked={selectedPage === "SEARCH"} />
-                    <NavItem icon={ICMarking} title={"마킹"} onclick={() => { onButtonClick("MARKING") }} isClicked={selectedPage === "MARKING"} />
-                    <NavItem icon={ICNotice} title={"공지사항"} onclick={() => { onButtonClick("NOTICE") }} isClicked={selectedPage === "NOTICE"} />
-                    <NavItem icon={ICSetting} title={"설정"} onclick={() => { onButtonClick("SETTING") }} isClicked={selectedPage === "SETTING"} />
+                    <NavItem icon={ICFlightCheck} title={"FLIGHT_RESULT"} onclick={() => { onButtonClick("FLIGHT_RESULT") }} />
+                    <NavItem icon={ICSearch} title={"SEARCH"} onclick={() => { onButtonClick("SEARCH") }}  />
+                    <NavItem icon={ICMarking} title={"MARKING"} onclick={() => { onButtonClick("MARKING") }}  />
+                    <NavItem icon={ICNotice} title={"NOTICE"} onclick={() => { onButtonClick("NOTICE") }}  />
+                    <NavItem icon={ICSetting} title={"SETTING"} onclick={() => { onButtonClick("SETTING") }}  />
                 </MainNavBar>
                 <SubNavBar>
                     <NavEtcItem icon={ICQuestion} title={"도움말"} onclick={() => { }} isClicked={false} />
