@@ -1,4 +1,6 @@
+import React from 'react';
 import styled from '@emotion/styled';
+import {motion} from 'framer-motion'
 import { useState } from 'react';
 
 type WrapperStyleType = {
@@ -13,7 +15,6 @@ const Wrapper = styled.div`
   min-height: 58px;
   gap: 5px;
   transition: 0.2s all ease;
-  padding: ${(props: WrapperStyleType) => (props.isChecked ? '10px 0' : 0)};
   cursor: pointer;
 
   width: 100%;
@@ -21,6 +22,10 @@ const Wrapper = styled.div`
     (props.isChecked
         ? 'linear-gradient(90deg, rgb(43, 111, 214) 0%, rgb(43, 111, 214) 4.9%,rgba(43, 111, 214, 0.28) 5%, rgba(255, 255, 255, 0) 50%)'
         : null)};
+
+    svg path {
+        fill : ${(props: WrapperStyleType) => (props.isChecked ? 'black' : '#9b9b9b')
+    };
 `
 
 const SubTitle = styled.p`
@@ -47,4 +52,4 @@ const NavItem = (props: NavItemType) => {
     )
 }
 
-export default NavItem;
+export default React.memo(NavItem);
