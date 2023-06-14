@@ -36,10 +36,6 @@ const CloseArrow = styled.div`
   margin: 17px 7px;
 `
 
-const Title = styled.h2`
-  margin: 20px 0;
-`
-
 type propType = {
   setPage: (a: NavBarType) => void;
   selectedPage: NavBarType | null;
@@ -60,38 +56,6 @@ const NavSideBar = (prop: propType) => {
         </CloseButton>
 
         {/* 더미 텍스트 */}
-        {(() => {
-          switch (prop.selectedPage) {
-            case "FLIGHT_RESULT":
-              return <>
-                <Title>비행검사</Title>
-                <InputText />
-              </>
-            case "SEARCH":
-              return <>
-                <Title>검색</Title>
-                <InputText />
-              </>
-            case "MARKING":
-              return <>
-                <Title>마킹</Title>
-                <InputText />
-              </>
-            case "NOTICE":
-              return <>
-                <Title>공지사항</Title>
-                <InputText />
-              </>
-
-            case "SETTING":
-              return <>
-                <Title>환경설정</Title>
-              </>
-            default:
-              return <Title>Null</Title>
-          }
-        })()}
-
 
         {/* 더미 텍스트 */}
         {(() => {
@@ -104,7 +68,6 @@ const NavSideBar = (prop: propType) => {
               return <FlightContent />
             case "FLIGHT_RESULT":
               return <FlightContent />
-
             default:
               return null;
           }
