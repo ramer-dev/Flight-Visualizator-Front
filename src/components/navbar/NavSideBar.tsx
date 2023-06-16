@@ -66,7 +66,7 @@ const NavSideBar = (prop: propType) => {
               return <FlightContent />
             case "SEARCH":
               return <FlightContent />
-            case "FLIGHT_RESULT":
+            case "SETTING":
               return <FlightContent />
             default:
               return null;
