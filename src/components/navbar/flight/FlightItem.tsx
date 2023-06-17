@@ -4,7 +4,7 @@ import { ReactComponent as ICMarking } from 'atom/icon/icon_marking.svg';
 import styled from '@emotion/styled'
 
 const Container = styled.div`
-    padding:20px;
+    padding:20px 10px;
     &:hover{
         background-color:#f0f0f0;
     }

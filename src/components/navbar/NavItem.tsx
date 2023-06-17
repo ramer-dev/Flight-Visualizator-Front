@@ -4,8 +4,8 @@ import {motion} from 'framer-motion';
 import {page} from 'common/store/atom';
 import {useRecoilValue} from 'recoil';
 import {NavBarType} from 'common/type/NavBarType';
-import Box from '@mui/material/Box';
-import ButtonBase from '@mui/material/ButtonBase';
+// import Box from '@mui/material/Box';
+// import ButtonBase from '@mui/material/ButtonBase';
 
 type WrapperStyleType = {
     isChecked: boolean;

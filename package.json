@@ -6,6 +6,7 @@
     "@emotion/is-prop-valid": "^1.2.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.5",
     "@tanstack/react-query": "^4.29.2",
     "@tanstack/react-query-devtools": "^4.29.2",
@@ -30,7 +31,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "serve": "live-server --ignore=public/map-layers,node_modules public/index.html"
   },
   "eslintConfig": {
     "extends": [

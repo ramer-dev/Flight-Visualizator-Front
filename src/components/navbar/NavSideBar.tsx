@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavBarType } from "../../common/type/NavBarType";
 import styled from "@emotion/styled";
-import InputText from "../common/InputText";
+import {StyledInputBox} from "../common/InputText";
 import { ReactComponent as ICArrowLeft } from 'atom/icon/icon_arrow_left.svg';
 import FlightContent from './flight/FlightContent';
 
