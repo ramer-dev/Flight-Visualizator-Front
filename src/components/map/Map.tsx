@@ -14,14 +14,15 @@ const StyledMapContainer = styled(MapContainer)`
 // 2. 
 const Map = () => {
     return (
-        <StyledMapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
+        <StyledMapContainer center={[36.0, 128.09]} zoom={7} minZoom={4} maxZoom={14}>
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                url="http://localhost:3000/v1/api/map/{z}/{x}/{y}"
             />
-            <Marker position={[51.505, -0.09]}>
+            <Marker position={[37.5519, 126.9918]}>
                 <Popup>
                     A pretty CSS3 popup. <br /> Easily customizable.
+                    <hr/>
                 </Popup>
             </Marker>
         </StyledMapContainer>
