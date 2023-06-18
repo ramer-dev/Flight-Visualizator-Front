@@ -14,7 +14,7 @@ const Wrapper = styled.div`
   align-items: center;
   min-height: 58px;
   gap: 5px;
-  padding: ${(props: WrapperStyleType) => (props.isChecked ? '10px 0' : 0)};
+  /* padding: ${(props: WrapperStyleType) => (props.isChecked ? '10px 0' : 0)}; */
   cursor: pointer;
   width: 100%;
   color:#9b9b9b;

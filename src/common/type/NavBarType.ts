@@ -4,3 +4,5 @@ export type NavBarType = 'FLIGHT_RESULT'
 | "NOTICE"
 | "SETTING"
 | null
+
+export type SubPageType = 'ADD' | 'VIEW' 

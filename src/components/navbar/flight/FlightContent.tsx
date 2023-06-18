@@ -1,16 +1,14 @@
-import { NavBarType } from "common/type/NavBarType";
 import HorizontalLine from "components/common/HorizontalLine";
 import { StyledInputBox } from "components/common/InputText";
 import FlightItem from "./FlightItem";
-import NavSideBar from "../NavSideBar";
 import React from "react";
 import Title from "components/common/Title";
-import { Box, Fab } from '@mui/material';
+import { Fab } from '@mui/material';
 import styled from "@emotion/styled";
 import AddIcon from '@mui/icons-material/Add'
 
 const Container = styled.div`
-
+    position:relative;
 `
 
 const Wrapper = styled.div`
@@ -22,13 +20,21 @@ const Content = styled.div`
     overflow-y:scroll;
 `
 
+
+const AddButton = styled(Fab)`
+    position:absolute;
+    right:10px;
+    bottom:0;
+`
+
+
 const FlightContent = () => {
 
     return (
         <Container>
-            {/* <Fab color="info" aria-label="add">
+            <AddButton color="info" aria-label="add">
                 <AddIcon color="primary"/>
-            </Fab> */}
+            </AddButton>
             <Wrapper>
                 <Title>비행검사</Title>
                 <StyledInputBox label="비행검사 이름" fullWidth variant="outlined" size='small' color="primary"></StyledInputBox>
