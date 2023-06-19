@@ -4,3 +4,9 @@ export type NavBarType = 'FLIGHT_RESULT'
 | "NOTICE"
 | "SETTING"
 | null
+
+export type ContentType = null
+| 'ADD'
+| 'VIEW'
+| 'EDIT'
+

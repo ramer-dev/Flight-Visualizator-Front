@@ -1,9 +1,11 @@
 import React from 'react';
-import { NavBarType } from "../../common/type/NavBarType";
+import { ContentType, NavBarType } from "../../common/type/NavBarType";
 import styled from "@emotion/styled";
-import {StyledInputBox} from "../common/InputText";
+import { StyledInputBox } from "../common/InputText";
 import { ReactComponent as ICArrowLeft } from 'atom/icon/icon_arrow_left.svg';
 import FlightContent from './flight/FlightContent';
+import { useRecoilState } from 'recoil';
+import { contentFormat } from 'common/store/atom';
 
 
 const FlightContainer = styled.div`
@@ -12,6 +14,8 @@ const FlightContainer = styled.div`
   user-select: none;
   position: relative;
 `
+
+
 
 const CloseButton = styled.div`
   border-radius: 0 5px 5px 0;
@@ -39,25 +43,19 @@ const CloseArrow = styled.div`
 type propType = {
   setPage: (a: NavBarType) => void;
   selectedPage: NavBarType | null;
+  content?: ContentType;
+  setContent?: (a: ContentType) => void;
 }
 
 
 const NavSideBar = (prop: propType) => {
+  const [content, setContent] = useRecoilState<ContentType>(contentFormat); 
 
   return (
     <FlightContainer>
-      <>
-        <CloseButton onClick={() => {
-          prop.setPage(null)
-        }}>
-          <CloseArrow>
-            <ICArrowLeft />
-          </CloseArrow>
-        </CloseButton>
 
-        {/* 더미 텍스트 */}
-
-        {/* 더미 텍스트 */}
+      {/* 더미 텍스트 */}
+      <Wrapper>
         {(() => {
           switch (prop.selectedPage) {
             case "FLIGHT_RESULT":
@@ -72,8 +70,15 @@ const NavSideBar = (prop: propType) => {
               return null;
           }
         })()}
-      </>
 
+        <CloseButton onClick={() => {
+          prop.setPage(null)
+        }}>
+          <CloseArrow>
+            <ICArrowLeft />
+          </CloseArrow>
+        </CloseButton>
+      </Wrapper>
     </FlightContainer>
   );
 };
