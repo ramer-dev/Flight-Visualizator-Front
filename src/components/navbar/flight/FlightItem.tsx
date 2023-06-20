@@ -1,7 +1,10 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { ReactComponent as ICMarking } from 'atom/icon/icon_marking.svg';
 
 import styled from '@emotion/styled'
+import { useRecoilState } from 'recoil';
+import { ContentType } from 'common/type/NavBarType';
+import { contentFormat } from 'common/store/atom';
 
 const Container = styled.div`
     padding:20px 10px;
@@ -86,8 +89,13 @@ const PinButton = styled.div`
 `
 
 export default function FlightItem() {
+    const [content, setContent] = useRecoilState<ContentType>(contentFormat); 
+
+    useEffect(() => {
+        console.log(content);
+    },[content])
     return (
-        <Container>
+        <Container onClick={() => {setContent('VIEW')}}>
 
             <Title>2022 동광 제주 남부지역 감사원 비행검사</Title>
             <ContentWrapper>
@@ -95,7 +103,7 @@ export default function FlightItem() {
                 <FlightDate>2022-10-24</FlightDate>
             </ContentWrapper>
             <ButtonContainer>
-                <ModifyButton>수정</ModifyButton>
+                <ModifyButton onClick={(e:any) => {setContent('EDIT');e.stopPropagation()}}>수정</ModifyButton>
                 <DeleteButton>삭제</DeleteButton>
                 <PinButton>
                     <ICMarking />

@@ -6,13 +6,14 @@ import { ReactComponent as ICArrowLeft } from 'atom/icon/icon_arrow_left.svg';
 import FlightContent from './flight/FlightContent';
 import { useRecoilState } from 'recoil';
 import { contentFormat } from 'common/store/atom';
+import NavScreen from './NavScreen';
 
 
-const FlightContainer = styled.div`
-  width: 100%;
+const Container = styled.div`
   height: 100vh;
   user-select: none;
   position: relative;
+  display:flex;
 `
 
 
@@ -35,7 +36,10 @@ const CloseButton = styled.div`
 
   }
 `
-
+const Wrapper = styled.div`
+    width:350px;
+    margin:10px 25px;
+`
 const CloseArrow = styled.div`
   margin: 17px 7px;
 `
@@ -43,34 +47,35 @@ const CloseArrow = styled.div`
 type propType = {
   setPage: (a: NavBarType) => void;
   selectedPage: NavBarType | null;
-  content?: ContentType;
-  setContent?: (a: ContentType) => void;
+  content: ContentType;
+  setContent: (a: ContentType) => void;
+  contentView: boolean;
+  setContentView: (a: boolean) => void;
 }
 
 
 const NavSideBar = (prop: propType) => {
-  const [content, setContent] = useRecoilState<ContentType>(contentFormat); 
+  const { content, contentView, setContent, setContentView } = prop;
 
   return (
-    <FlightContainer>
+    <Container>
 
       {/* 더미 텍스트 */}
       <Wrapper>
         {(() => {
           switch (prop.selectedPage) {
             case "FLIGHT_RESULT":
-              return <FlightContent />
+              return <FlightContent content={content} setContent={setContent} contentView={contentView} setContentView={setContentView} />
             case "MARKING":
-              return <FlightContent />
+              return <FlightContent content={content} setContent={setContent} contentView={contentView} setContentView={setContentView} />
             case "SEARCH":
-              return <FlightContent />
+              return <FlightContent content={content} setContent={setContent} contentView={contentView} setContentView={setContentView} />
             case "SETTING":
-              return <FlightContent />
+              return <FlightContent content={content} setContent={setContent} contentView={contentView} setContentView={setContentView} />
             default:
               return null;
           }
         })()}
-
         <CloseButton onClick={() => {
           prop.setPage(null)
         }}>
@@ -79,7 +84,9 @@ const NavSideBar = (prop: propType) => {
           </CloseArrow>
         </CloseButton>
       </Wrapper>
-    </FlightContainer>
+      <NavScreen />
+
+    </Container>
   );
 };
 

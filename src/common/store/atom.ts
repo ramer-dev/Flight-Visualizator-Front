@@ -10,3 +10,8 @@ export const contentFormat = atom<ContentType>({
     key: 'content',
     default:null,
 })
+
+export const contentViewFormat = atom<boolean>({
+    key:'contentView',
+    default:false
+})

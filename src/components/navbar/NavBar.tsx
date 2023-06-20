@@ -10,7 +10,7 @@ import { ReactComponent as ICLogin } from 'atom/icon/icon_login.svg';
 import { ReactComponent as ICQuestion } from 'atom/icon/icon_question.svg';
 import FlightContent from "./flight/FlightContent";
 import { ContentType, NavBarType } from "common/type/NavBarType";
-import { contentFormat, page } from 'common/store/atom'
+import { contentFormat, contentViewFormat, page } from 'common/store/atom'
 import { useRecoilState } from 'recoil';
 import NavSideBar from "./NavSideBar";
 import NavEtcItem from "./NavEtcItem";
@@ -44,16 +44,14 @@ const SubNavBar = styled.div`
 `
 
 const ContentView = styled.div`
-    width:350px;
     background-color:#ffffff;   
 
 `
 
 const NavBar = () => {
     const [selectedPage, setPage] = useRecoilState<NavBarType>(page);
-    useEffect(() => {
-
-    }, [selectedPage])
+    const [content, setContent] = useRecoilState<ContentType>(contentFormat); 
+    const [contentView, setContentView] = useRecoilState<boolean>(contentViewFormat);
 
     const onButtonClick = (str: NavBarType) => {
         setPage(str);
@@ -75,10 +73,10 @@ const NavBar = () => {
                     <NavEtcItem icon={ICLogin} title={"로그인"} onclick={() => { }} isClicked={false} />
                 </SubNavBar>
             </Wrapper>
-            {selectedPage ?
+            {selectedPage &&
                 <ContentView>
-                    <NavSideBar selectedPage={selectedPage} setPage={setPage} content={content} setContent={setContent} />
-                </ContentView> : null}
+                    <NavSideBar selectedPage={selectedPage} setPage={setPage} content={content} setContent={setContent} contentView={contentView} setContentView={setContentView}/>
+                </ContentView>}
 
         </Container>
     )
