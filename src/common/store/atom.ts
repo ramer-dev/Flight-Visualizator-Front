@@ -1,4 +1,4 @@
-import { ContentType, NavBarType } from "common/type/NavBarType";
+import { ContentType, ContentViewType, NavBarType } from "common/type/NavBarType";
 import { atom } from "recoil";
 
 export const page = atom<NavBarType>({
@@ -11,7 +11,7 @@ export const contentFormat = atom<ContentType>({
     default:null,
 })
 
-export const contentViewFormat = atom<boolean>({
+export const contentViewFormat = atom<ContentViewType>({
     key:'contentView',
-    default:false
+    default:'NONE'
 })

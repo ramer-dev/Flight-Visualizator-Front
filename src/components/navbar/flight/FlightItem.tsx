@@ -88,14 +88,22 @@ const PinButton = styled.div`
     }
 `
 
-export default function FlightItem() {
+const FlightItem = () => {
     const [content, setContent] = useRecoilState<ContentType>(contentFormat); 
+    const ViewFlightItem = (e:any) => {
+        e.stopPropagation();
+        setContent('VIEW');
+    }
+    
+    const EditFlightItem = (e:any) => {
+        setContent('EDIT');
+    }
 
     useEffect(() => {
-        console.log(content);
-    },[content])
+        console.log(content)
+    }, [content])
     return (
-        <Container onClick={() => {setContent('VIEW')}}>
+        <Container onClick={ViewFlightItem}>
 
             <Title>2022 동광 제주 남부지역 감사원 비행검사</Title>
             <ContentWrapper>
@@ -112,3 +120,5 @@ export default function FlightItem() {
         </Container>
     )
 }
+
+export default FlightItem;

@@ -1,12 +1,13 @@
-import React from 'react';
-import { ContentType, NavBarType } from "../../common/type/NavBarType";
+import React, { useEffect } from 'react';
+import { ContentType, ContentViewType, NavBarType } from "../../common/type/NavBarType";
 import styled from "@emotion/styled";
 import { StyledInputBox } from "../common/InputText";
-import { ReactComponent as ICArrowLeft } from 'atom/icon/icon_arrow_left.svg';
 import FlightContent from './flight/FlightContent';
 import { useRecoilState } from 'recoil';
 import { contentFormat } from 'common/store/atom';
 import NavScreen from './NavScreen';
+import Marking from './marking/Marking';
+import NavCloseButton from './NavCloseButton';
 
 
 const Container = styled.div`
@@ -16,32 +17,11 @@ const Container = styled.div`
   display:flex;
 `
 
-
-
-const CloseButton = styled.div`
-  border-radius: 0 5px 5px 0;
-  background-color: #fff;
-  position: absolute;
-  right: -25px;
-  top: calc(50% - 25px);
-  width: 25px;
-  height: 50px;
-  border-width: 1px 1px 1px 0;
-  border-style: solid;
-  border-color: #DDDDDD;
-  transition: 0.1s ease;
-  cursor: pointer;
-
-  &:hover {
-
-  }
-`
 const Wrapper = styled.div`
     width:350px;
-    margin:10px 25px;
-`
-const CloseArrow = styled.div`
-  margin: 17px 7px;
+    
+    border-right:1px solid #d9d9d9;
+    padding:10px 25px;
 `
 
 type propType = {
@@ -49,8 +29,8 @@ type propType = {
   selectedPage: NavBarType | null;
   content: ContentType;
   setContent: (a: ContentType) => void;
-  contentView: boolean;
-  setContentView: (a: boolean) => void;
+  contentView: ContentViewType;
+  setContentView: (a: ContentViewType) => void;
 }
 
 
@@ -67,7 +47,7 @@ const NavSideBar = (prop: propType) => {
             case "FLIGHT_RESULT":
               return <FlightContent content={content} setContent={setContent} contentView={contentView} setContentView={setContentView} />
             case "MARKING":
-              return <FlightContent content={content} setContent={setContent} contentView={contentView} setContentView={setContentView} />
+              return <Marking content={content} setContent={setContent} contentView={contentView} setContentView={setContentView} />
             case "SEARCH":
               return <FlightContent content={content} setContent={setContent} contentView={contentView} setContentView={setContentView} />
             case "SETTING":
@@ -76,14 +56,8 @@ const NavSideBar = (prop: propType) => {
               return null;
           }
         })()}
-        <CloseButton onClick={() => {
-          prop.setPage(null)
-        }}>
-          <CloseArrow>
-            <ICArrowLeft />
-          </CloseArrow>
-        </CloseButton>
       </Wrapper>
+
       <NavScreen />
 
     </Container>

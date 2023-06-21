@@ -10,3 +10,7 @@ export type ContentType = null
 | 'VIEW'
 | 'EDIT'
 
+export type ContentViewType = 'NONE'
+| 'FULLSCREEN'
+| 'MID'
+| 'MIN'
