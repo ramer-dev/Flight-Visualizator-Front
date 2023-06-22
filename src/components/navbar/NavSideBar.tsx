@@ -13,7 +13,6 @@ type StyleProp = { isHidden: boolean }
 
 const Container = styled.div`
   height: 100vh;
-  user-select: none;
   position: relative;
   display:flex;
 `

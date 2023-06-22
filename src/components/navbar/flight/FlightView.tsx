@@ -1,10 +1,11 @@
+import DataViewer from 'components/common/DataViewer'
 import React from 'react'
 import NavCloseButton from '../NavCloseButton'
 
 function FlightView() {
   return (
     <>
-    <div>FlightView</div>
+    <DataViewer/>
     <NavCloseButton format={['MID','FULLSCREEN']} />
     </>
   )

@@ -14,6 +14,8 @@ const Container = styled.div`
     width:${(props: styleProp) => (props.contentView)};
     transition:all 0.3s ease; 
     overflow:hidden;
+    user-select: auto;
+
 `
 
 const widthMap = {

@@ -16,7 +16,7 @@ const Map = () => {
     return (
         <StyledMapContainer center={[36.0, 128.09]} zoom={7} minZoom={4} maxZoom={14}>
             <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Dev by. Hee Sang Shin'
                 url="http://localhost:3000/v1/api/map/{z}/{x}/{y}"
             />
             <Marker position={[37.5519, 126.9918]}>
