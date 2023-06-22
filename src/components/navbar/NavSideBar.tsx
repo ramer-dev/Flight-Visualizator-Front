@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import {motion} from 'framer-motion'
 import { ContentType, ContentViewType, NavBarType } from "../../common/type/NavBarType";
 import styled from "@emotion/styled";
 import { StyledInputBox } from "../common/InputText";
@@ -20,10 +21,11 @@ const Container = styled.div`
   display:flex;
 `
 
-const Wrapper = styled.div`
-    width:${(props: StyleProp) => props.isHidden ? '0' : '350px'};
+const Wrapper = styled(motion.div)`
+    /* width:${(props: StyleProp) => props.isHidden ? '0' : '350px'}; */
     overflow:hidden;
     border-right:1px solid #d9d9d9;
+    transition: 0.3s ease all;
     padding: ${(props: StyleProp) => props.isHidden ? '0' : '10px 25px'};
 `
 
