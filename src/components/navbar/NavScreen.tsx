@@ -4,7 +4,7 @@ import { useRecoilState } from 'recoil';
 import { contentFormat, contentViewFormat, page } from 'common/store/atom';
 import { ContentType, ContentViewType, NavBarType } from 'common/type/NavBarType';
 import NavCloseButton from './NavCloseButton';
-import { FlightScreen } from './flight/FlightScreen';
+import { FlightScreen } from '../flight/FlightScreen';
 
 type styleProp = {
     contentView: string | null;

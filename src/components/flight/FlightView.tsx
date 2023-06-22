@@ -1,6 +1,6 @@
 import DataViewer from 'components/common/DataViewer'
 import React from 'react'
-import NavCloseButton from '../NavCloseButton'
+import NavCloseButton from '../navbar/NavCloseButton'
 
 function FlightView() {
   return (

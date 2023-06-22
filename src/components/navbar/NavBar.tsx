@@ -8,7 +8,7 @@ import { ReactComponent as ICNotice } from 'atom/icon/icon_notice.svg';
 import { ReactComponent as ICSetting } from 'atom/icon/icon_setting.svg';
 import { ReactComponent as ICLogin } from 'atom/icon/icon_login.svg';
 import { ReactComponent as ICQuestion } from 'atom/icon/icon_question.svg';
-import FlightContent from "./flight/FlightContent";
+import FlightContent from "../flight/FlightContent";
 import { ContentType, ContentViewType, NavBarType } from "common/type/NavBarType";
 import { contentFormat, contentViewFormat, page } from 'common/store/atom'
 import { useRecoilState } from 'recoil';

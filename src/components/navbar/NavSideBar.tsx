@@ -2,12 +2,15 @@ import React, { useEffect } from 'react';
 import { ContentType, ContentViewType, NavBarType } from "../../common/type/NavBarType";
 import styled from "@emotion/styled";
 import { StyledInputBox } from "../common/InputText";
-import FlightContent from './flight/FlightContent';
+import FlightContent from '../flight/FlightContent';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { contentFormat, contentViewFormat } from 'common/store/atom';
 import NavScreen from './NavScreen';
-import Marking from './marking/Marking';
+import Marking from 'components/marking/Marking';
 import NavCloseButton from './NavCloseButton';
+import Search from 'components/search/Search';
+import Setting from 'components/setting/Setting';
+import Notice from 'components/notice/Notice';
 
 type StyleProp = { isHidden: boolean }
 
@@ -49,9 +52,11 @@ const NavSideBar = (prop: propType) => {
             case "MARKING":
               return <Marking />
             case "SEARCH":
-              return <FlightContent />
+              return <Search />
             case "SETTING":
-              return <FlightContent />
+              return <Setting />
+            case "NOTICE":
+              return <Notice />
             default:
               return null;
           }

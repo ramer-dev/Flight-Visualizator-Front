@@ -114,8 +114,8 @@ function DataViewer() {
         <>
 
             <Box sx={{ width: '100%' }}>
-                <TableContainer component={Paper}>
-                    <Table>
+                <TableContainer component={Paper} sx={{minWidth:'730px'}}>
+                    <Table >
                         <TableHead>
                             {table.getHeaderGroups().map(headerGroup => (
                                 <TableRow key={headerGroup.id}>

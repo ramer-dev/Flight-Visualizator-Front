@@ -2,7 +2,7 @@ import { ContentType, ContentViewType, NavBarType } from "common/type/NavBarType
 import HorizontalLine from "components/common/HorizontalLine";
 import { StyledInputBox } from "components/common/InputText";
 import FlightItem from "./FlightItem";
-import NavSideBar from "../NavSideBar";
+import NavSideBar from "../navbar/NavSideBar";
 import React from "react";
 import Title from "components/common/Title";
 import { Box, Fab } from '@mui/material';
@@ -10,7 +10,7 @@ import styled from "@emotion/styled";
 import AddIcon from '@mui/icons-material/Add'
 import { contentFormat } from "common/store/atom";
 import { useRecoilState } from "recoil";
-import NavCloseButton from "../NavCloseButton";
+import NavCloseButton from "../navbar/NavCloseButton";
 
 const Container = styled.div`
   position:relative;

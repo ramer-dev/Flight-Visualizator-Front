@@ -1,5 +1,5 @@
 import React from 'react'
-import NavCloseButton from '../NavCloseButton'
+import NavCloseButton from '../navbar/NavCloseButton'
 
 function FlightEdit() {
     return (
