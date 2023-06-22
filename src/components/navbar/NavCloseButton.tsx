@@ -8,7 +8,7 @@ import { useRecoilState } from 'recoil';
 type CloseButtonType = {
     fullScreen?: ContentViewType;
     format: ContentViewType[];
-    children?:ReactNode;
+    children?: ReactNode;
 }
 
 const CloseButton = styled.div`
@@ -23,7 +23,7 @@ const CloseButton = styled.div`
   border-style: solid;
   border-color: #DDDDDD;
   cursor: pointer;
-  transform: ${(props: CloseButtonType) => props.format.indexOf(props.fullScreen!) === props.format.length - 1? 'rotateZ(180deg)' : 'rotateZ(0deg)'}; 
+  transform: ${(props: CloseButtonType) => props.format.indexOf(props.fullScreen!) === props.format.length - 1 ? 'rotateZ(180deg)' : 'rotateZ(0deg)'}; 
   &:hover {
 
   }
@@ -39,8 +39,8 @@ const NavCloseButton = (prop: CloseButtonType) => {
     const switchView = () => {
         if (prop.format?.length) {
             const idx = prop.format.indexOf(contentView);
-            if(prop.format.length-1 >= idx + 1){
-                setContentView(prop.format[idx+1])
+            if (prop.format.length - 1 >= idx + 1) {
+                setContentView(prop.format[idx + 1])
             } else {
                 setContentView(prop.format[0])
             }
@@ -48,19 +48,20 @@ const NavCloseButton = (prop: CloseButtonType) => {
     }
 
     useEffect(() => {
-        setContentView(prop.format[0])
+        setContentView(prop.format.length ? prop.format.at(-1)! : 'NONE')
     }, [])
-
-    useEffect(() => {
-        console.log(contentView)
-    }, [contentView])
+    
     return (
-        <CloseButton format={prop.format} onClick={switchView}
-            fullScreen={contentView}>
-            <CloseArrow>
-                <ICArrowLeft />
-            </CloseArrow>
-        </CloseButton>
+        <>
+            {prop.format.length <= 1 ? null :
+                <CloseButton format={prop.format} onClick={switchView}
+                    fullScreen={contentView}>
+                    <CloseArrow>
+                        <ICArrowLeft />
+                    </CloseArrow>
+                </CloseButton>
+            }
+        </>
     )
 }
 

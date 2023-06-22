@@ -36,7 +36,8 @@ const MainNavBar = styled.div`
     `
 
 const LogoImg = styled.div`
-    
+    line-height:64px;
+    text-align:center;
 `
 
 const SubNavBar = styled.div`
@@ -62,11 +63,11 @@ const NavBar = () => {
             <Wrapper>
                 <LogoImg>LOGO</LogoImg>
                 <MainNavBar>
-                    <NavItem icon={ICFlightCheck} title={"FLIGHT_RESULT"} onclick={() => { onButtonClick("FLIGHT_RESULT") }} />
-                    <NavItem icon={ICSearch} title={"SEARCH"} onclick={() => { onButtonClick("SEARCH") }}  />
-                    <NavItem icon={ICMarking} title={"MARKING"} onclick={() => { onButtonClick("MARKING") }}  />
-                    <NavItem icon={ICNotice} title={"NOTICE"} onclick={() => { onButtonClick("NOTICE") }}  />
-                    <NavItem icon={ICSetting} title={"SETTING"} onclick={() => { onButtonClick("SETTING") }}  />
+                    <NavItem icon={ICFlightCheck} title={"FLIGHT_RESULT"} content={"비행검사"} onclick={() => { onButtonClick("FLIGHT_RESULT") }} />
+                    <NavItem icon={ICSearch} title={"SEARCH"} content={"검색"} onclick={() => { onButtonClick("SEARCH") }}  />
+                    <NavItem icon={ICMarking} title={"MARKING"} content={"마킹"} onclick={() => { onButtonClick("MARKING") }}  />
+                    <NavItem icon={ICNotice} title={"NOTICE"} content={"공지사항"} onclick={() => { onButtonClick("NOTICE") }}  />
+                    <NavItem icon={ICSetting} title={"SETTING"} content={"설정"} onclick={() => { onButtonClick("SETTING") }}  />
                 </MainNavBar>
                 <SubNavBar>
                     <NavEtcItem icon={ICQuestion} title={"도움말"} onclick={() => { }} isClicked={false} />

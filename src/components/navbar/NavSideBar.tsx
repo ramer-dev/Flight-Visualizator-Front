@@ -3,12 +3,13 @@ import { ContentType, ContentViewType, NavBarType } from "../../common/type/NavB
 import styled from "@emotion/styled";
 import { StyledInputBox } from "../common/InputText";
 import FlightContent from './flight/FlightContent';
-import { useRecoilState } from 'recoil';
-import { contentFormat } from 'common/store/atom';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { contentFormat, contentViewFormat } from 'common/store/atom';
 import NavScreen from './NavScreen';
 import Marking from './marking/Marking';
 import NavCloseButton from './NavCloseButton';
 
+type StyleProp = { isHidden: boolean }
 
 const Container = styled.div`
   height: 100vh;
@@ -18,10 +19,10 @@ const Container = styled.div`
 `
 
 const Wrapper = styled.div`
-    width:350px;
-    
+    width:${(props: StyleProp) => props.isHidden ? '0' : '350px'};
+    overflow:hidden;
     border-right:1px solid #d9d9d9;
-    padding:10px 25px;
+    padding: ${(props: StyleProp) => props.isHidden ? '0' : '10px 25px'};
 `
 
 type propType = {
@@ -35,23 +36,23 @@ type propType = {
 
 
 const NavSideBar = (prop: propType) => {
-  const { content, contentView, setContent, setContentView } = prop;
-
+  const [content, setContent] = useRecoilState(contentFormat);
+  const [contentView, setContentView] = useRecoilState(contentViewFormat)
   return (
     <Container>
 
       {/* 더미 텍스트 */}
-      <Wrapper>
+      <Wrapper isHidden={contentView === 'MID'}>
         {(() => {
           switch (prop.selectedPage) {
             case "FLIGHT_RESULT":
-              return <FlightContent content={content} setContent={setContent} contentView={contentView} setContentView={setContentView} />
+              return <FlightContent />
             case "MARKING":
-              return <Marking content={content} setContent={setContent} contentView={contentView} setContentView={setContentView} />
+              return <Marking />
             case "SEARCH":
-              return <FlightContent content={content} setContent={setContent} contentView={contentView} setContentView={setContentView} />
+              return <FlightContent />
             case "SETTING":
-              return <FlightContent content={content} setContent={setContent} contentView={contentView} setContentView={setContentView} />
+              return <FlightContent />
             default:
               return null;
           }

@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, { useEffect } from 'react'
 import { ReactComponent as ICMarking } from 'atom/icon/icon_marking.svg';
 
 import styled from '@emotion/styled'
@@ -89,19 +89,22 @@ const PinButton = styled.div`
 `
 
 const FlightItem = () => {
-    const [content, setContent] = useRecoilState<ContentType>(contentFormat); 
-    const ViewFlightItem = (e:any) => {
+    const [content, setContent] = useRecoilState<ContentType>(contentFormat);
+    const ViewFlightItem = (e: any) => {
         e.stopPropagation();
         setContent('VIEW');
     }
-    
-    const EditFlightItem = (e:any) => {
+
+    const EditFlightItem = (e: any) => {
+        e.stopPropagation();
         setContent('EDIT');
     }
 
-    useEffect(() => {
-        console.log(content)
-    }, [content])
+    const DeleteFlightItem = (e: any) => {
+        e.stopPropagation();
+        console.log('delete');
+    }
+
     return (
         <Container onClick={ViewFlightItem}>
 
@@ -111,8 +114,8 @@ const FlightItem = () => {
                 <FlightDate>2022-10-24</FlightDate>
             </ContentWrapper>
             <ButtonContainer>
-                <ModifyButton onClick={(e:any) => {setContent('EDIT');e.stopPropagation()}}>수정</ModifyButton>
-                <DeleteButton>삭제</DeleteButton>
+                <ModifyButton onClick={EditFlightItem}>수정</ModifyButton>
+                <DeleteButton onClick={DeleteFlightItem}>삭제</DeleteButton>
                 <PinButton>
                     <ICMarking />
                 </PinButton>

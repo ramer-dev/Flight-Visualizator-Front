@@ -24,20 +24,13 @@ const Content = styled.div`
     overflow-y:scroll;
 `
 
-type propType = {
-    content: ContentType;
-    setContent: (a: ContentType) => void;
-    contentView: ContentViewType;
-    setContentView: (a: ContentViewType) => void;
-}
-
 const StyledFab = styled(Fab)`
     position:absolute;
     bottom:20px;
     right:10px;
 `
 
-const FlightContent = (prop: propType) => {
+const FlightContent = () => {
     const [content, setContentView] = useRecoilState(contentFormat)
     
     const AddFlightResultEvent = (e:any) => {
@@ -55,8 +48,8 @@ const FlightContent = (prop: propType) => {
                 <Content>
                     {Array(10).fill(0).map((t, i) => {
                         return <>
-                            <HorizontalLine />
-                            <FlightItem key={i} />
+                            <HorizontalLine key={i*2-1}/>
+                            <FlightItem key={i*2} />
                         </>
                     })}
                 </Content>
