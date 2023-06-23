@@ -3,6 +3,7 @@ import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, 
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import React, { useEffect, useState, HTMLProps } from 'react'
+import styled from '@emotion/styled';
 
 type FlightRow = {
     site: string;
@@ -39,6 +40,11 @@ const defaultData: FlightRow[] = [{
     height: 5500,
 }]
 
+const SortTableHeader = styled.div`
+    display: flex;
+    align-items:center;
+    justify-content:center;
+`
 
 function IndeterminateCheckbox({
     indeterminate,
@@ -147,19 +153,20 @@ function DataViewer() {
                                         <TableCell variant={'head'} key={header.id} sx={{ ":hover": { backgroundColor: '#efefef' } }}>
                                             {header.isPlaceholder ? null :
                                                 (
-                                                    <div {...{
+                                                    <SortTableHeader {...{
                                                         className: header.column.getCanSort()
                                                             ? 'cursor-pointer select-none' : '',
                                                         onClick: header.column.getToggleSortingHandler()
+                                                        
                                                     }}
                                                     >
-                                                        {{ asc: <ArrowUpwardIcon fontSize='medium'/>, desc: <ArrowDownwardIcon /> }[header.column.getIsSorted() as string] ?? null}
+                                                        {{ asc: <ArrowUpwardIcon fontSize='small'/>, desc: <ArrowDownwardIcon /> }[header.column.getIsSorted() as string] ?? null}
                                                         {flexRender(
                                                             header.column.columnDef.header,
                                                             header.getContext()
                                                         )}
                                                         
-                                                    </div>
+                                                    </SortTableHeader>
                                                 )
                                             }
                                         </TableCell>
