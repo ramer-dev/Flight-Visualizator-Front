@@ -1,5 +1,7 @@
-import { createColumnHelper, flexRender, getCoreRowModel, RowData, useReactTable } from '@tanstack/react-table'
+import { createColumnHelper, flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable } from '@tanstack/react-table'
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material'
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import React, { useEffect, useState, HTMLProps } from 'react'
 
 type FlightRow = {
@@ -24,6 +26,17 @@ const defaultData: FlightRow[] = [{
     angle: 150,
     distance: 35,
     height: 5500,
+},
+{
+    site: '안양',
+    frequency: 121.4,
+    txMain: '5/4',
+    rxMain: '5/4',
+    txStby: '5/3',
+    rxStby: '5/6',
+    angle: 150,
+    distance: 35,
+    height: 5500,
 }]
 
 
@@ -31,24 +44,24 @@ function IndeterminateCheckbox({
     indeterminate,
     className = '',
     ...rest
-  }: { indeterminate?: boolean } & HTMLProps<HTMLInputElement>) {
+}: { indeterminate?: boolean } & HTMLProps<HTMLInputElement>) {
     const ref = React.useRef<HTMLInputElement>(null!)
-  
+
     React.useEffect(() => {
-      if (typeof indeterminate === 'boolean') {
-        ref.current.indeterminate = !rest.checked && indeterminate
-      }
+        if (typeof indeterminate === 'boolean') {
+            ref.current.indeterminate = !rest.checked && indeterminate
+        }
     }, [ref, indeterminate])
-  
+
     return (
-      <input
-        type="checkbox"
-        ref={ref}
-        className={className + ' cursor-pointer'}
-        {...rest}
-      />
+        <input
+            type="checkbox"
+            ref={ref}
+            className={className + ' cursor-pointer'}
+            {...rest}
+        />
     )
-  }
+}
 
 
 const columnHelper = createColumnHelper<FlightRow>();
@@ -104,8 +117,19 @@ const columns = [
 
 function DataViewer() {
     const [data, setData] = useState(() => [...defaultData])
+    const [sorting, setSorting] = useState<SortingState>([]);
 
-    const table = useReactTable({ data, columns, getCoreRowModel: getCoreRowModel(), debugTable: true });
+    const table = useReactTable({
+        data,
+        columns,
+        debugTable: true,
+        state: {
+            sorting
+        },
+        onSortingChange: setSorting,
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel()
+    });
 
     useEffect(() => {
         console.log(table);
@@ -114,17 +138,30 @@ function DataViewer() {
         <>
 
             <Box sx={{ width: '100%' }}>
-                <TableContainer component={Paper} sx={{minWidth:'730px'}}>
+                <TableContainer component={Paper} sx={{ minWidth: '730px' }}>
                     <Table >
                         <TableHead>
                             {table.getHeaderGroups().map(headerGroup => (
-                                <TableRow key={headerGroup.id}>
+                                <TableRow key={headerGroup.id} sx={{ borderBottom: '#5096ff solid 2px' }}>
                                     {headerGroup.headers.map(header => (
-                                        <TableCell key={header.id}>
-                                            {header.isPlaceholder ? null : flexRender(
-                                                header.column.columnDef.header,
-                                                header.getContext()
-                                            )}
+                                        <TableCell variant={'head'} key={header.id} sx={{ ":hover": { backgroundColor: '#efefef' } }}>
+                                            {header.isPlaceholder ? null :
+                                                (
+                                                    <div {...{
+                                                        className: header.column.getCanSort()
+                                                            ? 'cursor-pointer select-none' : '',
+                                                        onClick: header.column.getToggleSortingHandler()
+                                                    }}
+                                                    >
+                                                        {{ asc: <ArrowUpwardIcon fontSize='medium'/>, desc: <ArrowDownwardIcon /> }[header.column.getIsSorted() as string] ?? null}
+                                                        {flexRender(
+                                                            header.column.columnDef.header,
+                                                            header.getContext()
+                                                        )}
+                                                        
+                                                    </div>
+                                                )
+                                            }
                                         </TableCell>
                                     ))}
                                 </TableRow>
@@ -132,9 +169,9 @@ function DataViewer() {
                         </TableHead>
                         <TableBody>
                             {table.getRowModel().rows.map(row => (
-                                <TableRow key={row.id}>
+                                <TableRow hover key={row.id} sx={{ cursor: 'pointer' }}>
                                     {row.getVisibleCells().map(cell => (
-                                        <TableCell key={cell.id}>
+                                        <TableCell key={cell.id} size={"small"}>
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </TableCell>
                                     ))}
