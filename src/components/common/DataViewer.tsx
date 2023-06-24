@@ -73,6 +73,24 @@ function IndeterminateCheckbox({
 const columnHelper = createColumnHelper<FlightRow>();
 
 const columns = [
+    columnHelper.display({id:'select', header: ({table}) => (
+        <IndeterminateCheckbox
+            {...{
+                checked: table.getIsAllRowsSelected(),
+                indeterminate: table.getIsSomeRowsSelected(),
+                onChange: table.getToggleAllRowsSelectedHandler()
+            }}/>
+    ),
+    cell: ({row}) => (
+            <IndeterminateCheckbox
+                {...{
+                    checked: row.getIsSelected(),
+                    disabled: !row.getCanSelect(),
+                    indeterminate: row.getIsSomeSelected(),
+                    onChange: row.getToggleSelectedHandler(),
+                }}/>
+    )
+}),
     columnHelper.accessor('site', {
         header: () => '표지소',
         cell: info => info.getValue(),
@@ -124,25 +142,30 @@ const columns = [
 function DataViewer() {
     const [data, setData] = useState(() => [...defaultData])
     const [sorting, setSorting] = useState<SortingState>([]);
+    const [rowSelection, setRowSelection] = useState({});
+
+    // useEffect(() => {
+    //     console.info(rowSelection);
+    //     console.log(table.getSelectedRowModel().flatRows.map(t => t.original));
+    // },[rowSelection])
 
     const table = useReactTable({
         data,
         columns,
-        debugTable: true,
+        enableRowSelection: true,
         state: {
+            rowSelection,
             sorting
         },
+        onRowSelectionChange: setRowSelection,
         onSortingChange: setSorting,
         getCoreRowModel: getCoreRowModel(),
-        getSortedRowModel: getSortedRowModel()
+        getSortedRowModel: getSortedRowModel(),
+        debugTable: true,
     });
 
-    useEffect(() => {
-        console.log(table);
-    }, [])
     return (
         <>
-
             <Box sx={{ width: '100%' }}>
                 <TableContainer component={Paper} sx={{ minWidth: '730px' }}>
                     <Table >
