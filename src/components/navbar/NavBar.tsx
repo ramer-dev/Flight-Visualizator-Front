@@ -3,66 +3,83 @@ import { useState, useEffect, useReducer } from 'react';
 import NavItem from "./NavItem";
 import { ReactComponent as ICFlightCheck } from 'atom/icon/icon_flightcheck.svg';
 import { ReactComponent as ICMarking } from 'atom/icon/icon_marking.svg';
+import { ReactComponent as ICSearch } from 'atom/icon/icon_search.svg';
+import { ReactComponent as ICNotice } from 'atom/icon/icon_notice.svg';
+import { ReactComponent as ICSetting } from 'atom/icon/icon_setting.svg';
+import { ReactComponent as ICLogin } from 'atom/icon/icon_login.svg';
+import { ReactComponent as ICQuestion } from 'atom/icon/icon_question.svg';
+import FlightContent from "./flight/FlightContent";
+import { ContentType, ContentViewType, NavBarType } from "common/type/NavBarType";
+import { contentFormat, contentViewFormat, page } from 'common/store/atom'
+import { useRecoilState } from 'recoil';
+import NavSideBar from "./NavSideBar";
+import NavEtcItem from "./NavEtcItem";
 
 const Container = styled.div`
-    height:100vh;
     display: flex;
-    justify-content: space-around;
-    border-right: 1px solid #D9D9D9;
     background-color:#ffffff;   
+    height:100vh;
+    z-index:200;
+    position: fixed;
+`
+const Wrapper = styled.div`
+    display:flex;
+    justify-content: space-between;
+    flex-direction: column;
+    border-right: 1px solid #D9D9D9;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 `
 const MainNavBar = styled.div`
-    width:63px;
+    width:64px;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    `
+
+const LogoImg = styled.div`
+    line-height:64px;
+    text-align:center;
 `
 
-// const Item = styled.li(props => ({
-//     listStyle: 'none'
-// }))
+const SubNavBar = styled.div`
+    
+`
 
 const ContentView = styled.div`
-    width:350px;
+    background-color:#ffffff;   
+
 `
 
-type Action = 'FLIGHT_RESULT'
-            | 'SEARCH'
-            | "MARKING"
-            | "NOTICE"
-            | "SETTING"
-
 const NavBar = () => {
-    const [page, setPage] = useState<Action>("FLIGHT_RESULT")
-    useEffect(() => {
-       
-        console.log(page);
-    }, [page])
+    const [selectedPage, setPage] = useRecoilState<NavBarType>(page);
+    const [content, setContent] = useRecoilState<ContentType>(contentFormat); 
+    const [contentView, setContentView] = useRecoilState<ContentViewType>(contentViewFormat);
 
-    const onButtonClick = (str: Action) => {
+    const onButtonClick = (str: NavBarType) => {
         setPage(str);
     }
 
-
-
     return (
         <Container>
-            <MainNavBar>
-                <>
-                    <NavItem icon={ICFlightCheck} title={"비행검사"}
-                    onclick={() => { onButtonClick("FLIGHT_RESULT") }} 
-                    isClicked={page==="FLIGHT_RESULT"} />
-                    <NavItem icon={ICMarking} title={"마킹"}
-                    onclick={() => { onButtonClick("MARKING") }} 
-                    isClicked={page==="MARKING"} />
-                </>
-            </MainNavBar>
-            {page ? <ContentView>
-                zz
-            </ContentView> : null}
+            <Wrapper>
+                <LogoImg>LOGO</LogoImg>
+                <MainNavBar>
+                    <NavItem icon={ICFlightCheck} title={"FLIGHT_RESULT"} content={"비행검사"} onclick={() => { onButtonClick("FLIGHT_RESULT") }} />
+                    <NavItem icon={ICSearch} title={"SEARCH"} content={"검색"} onclick={() => { onButtonClick("SEARCH") }}  />
+                    <NavItem icon={ICMarking} title={"MARKING"} content={"마킹"} onclick={() => { onButtonClick("MARKING") }}  />
+                    <NavItem icon={ICNotice} title={"NOTICE"} content={"공지사항"} onclick={() => { onButtonClick("NOTICE") }}  />
+                    <NavItem icon={ICSetting} title={"SETTING"} content={"설정"} onclick={() => { onButtonClick("SETTING") }}  />
+                </MainNavBar>
+                <SubNavBar>
+                    <NavEtcItem icon={ICQuestion} title={"도움말"} onclick={() => { }} isClicked={false} />
+                    <NavEtcItem icon={ICLogin} title={"로그인"} onclick={() => { }} isClicked={false} />
+                </SubNavBar>
+            </Wrapper>
+            {selectedPage &&
+                <ContentView>
+                    <NavSideBar selectedPage={selectedPage} setPage={setPage} content={content} setContent={setContent} contentView={contentView} setContentView={setContentView}/>
+                </ContentView>}
+
         </Container>
     )
 }
-
 export default NavBar;

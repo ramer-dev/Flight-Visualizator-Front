@@ -8,7 +8,6 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
-    "baseUrl": "./src",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
@@ -24,5 +23,8 @@
   },
   "include": [
     "src"
+  ],
+  "exclude": [
+    "public"
   ]
 }

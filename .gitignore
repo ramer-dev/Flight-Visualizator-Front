@@ -5,8 +5,14 @@
 /.pnp
 .pnp.js
 
+# etc
+/.idea
+
 # testing
 /coverage
+
+# map
+/public/map-layers
 
 # production
 /build
