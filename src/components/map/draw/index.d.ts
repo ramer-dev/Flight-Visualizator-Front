@@ -35,3 +35,5 @@ export interface EditControlProps {
 
 	position: ControlPosition;
 }
+
+export class EditControl extends React.Component<EditControlProps> {}

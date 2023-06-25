@@ -1,16 +1,16 @@
 import * as React from 'react';
 import * as L from 'leaflet';
 import { FeatureGroup } from 'react-leaflet';
-import EditControl from './EditControl';
+import { EditControl } from './draw'
 import type { FeatureCollection } from 'geojson';
-import Drawer from './EditControl';
+import 'leaflet-draw/dist/leaflet.draw.css'
 
 interface Props {
-  geojson: FeatureCollection;
-  setGeojson: (geojson: FeatureCollection) => void;
-}
+    geojson: FeatureCollection;
+    setGeojson: (geojson: FeatureCollection) => void;
+  }
 
-export default function EditControlFC({ geojson, setGeojson }: Props) {
+export default function EditControlFC({geojson, setGeojson} : Props) {
   const ref = React.useRef<L.FeatureGroup>(null);
 
   React.useEffect(() => {
@@ -43,37 +43,20 @@ export default function EditControlFC({ geojson, setGeojson }: Props) {
 
   return (
     <FeatureGroup ref={ref}>
-      <Drawer
+      <EditControl
         position="topright"
         onEdited={handleChange}
         onCreated={handleChange}
         onDeleted={handleChange}
         draw={{
-          rectangle: false,
+          rectangle: true,
           circle: true,
           polyline: true,
           polygon: true,
-          marker: false,
-          circlemarker: false,
+          marker: true,
+          circlemarker: true,
         }}
       />
     </FeatureGroup>
   );
-}
-
-type DrawProp = {
-    rectangle:boolean,
-    circle:boolean,
-    polyline:boolean,
-    polygon:boolean,
-    marker:boolean,
-    circlemarker:boolean
-}
-
-type Prop = {
-    position: string,
-    onEdited: () => void;
-    onCreated: () => void;
-    onDeleted: () => void;
-    draw: DrawProp;
 }

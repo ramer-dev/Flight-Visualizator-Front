@@ -1,13 +1,12 @@
-import PropTypes from 'prop-types';
+import { PropTypes } from 'prop-types';
 import Draw from 'leaflet-draw'; // eslint-disable-line
 import isEqual from 'fast-deep-equal';
 import React, { useRef } from 'react';
 import { useLeafletContext } from '@react-leaflet/core';
 
 import leaflet, { Map, Control } from 'leaflet';
-import { EditControlProps } from 'react-leaflet-draw';
 
-const eventHandlers: { [key: string]: string } = {
+const eventHandlers = {
   onEdited: 'draw:edited',
   onDrawStart: 'draw:drawstart',
   onDrawStop: 'draw:drawstop',
@@ -22,9 +21,9 @@ const eventHandlers: { [key: string]: string } = {
   onDeleteStop: 'draw:deletestop',
 };
 
-function EditControl(props: EditControlProps) {
+function EditControl(props) {
   const context = useLeafletContext();
-  const drawRef = useRef<Control.Draw>();
+  const drawRef = useRef();
   const propsRef = useRef(props);
 
   const onDrawCreate = (e) => {
@@ -63,7 +62,7 @@ function EditControl(props: EditControlProps) {
         }
       }
 
-      drawRef.current?.remove(map);
+      drawRef.current.remove(map);
     };
   }, []);
 
