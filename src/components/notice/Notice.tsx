@@ -1,8 +1,13 @@
+import Title from 'components/common/Title'
+import NavCloseButton from 'components/navbar/NavCloseButton'
 import React from 'react'
 
 function Notice() {
   return (
-    <div>Notice</div>
+    <>
+    <Title>공지사항</Title>
+    
+    </>
   )
 }
 
