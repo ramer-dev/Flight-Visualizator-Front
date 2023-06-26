@@ -21,17 +21,21 @@ const Wrapper = styled(motion.div)`
   gap: 5px;
   transition: 0.2s all ease;
   cursor: pointer;
+  padding: ${(props: WrapperStyleType) => props.isChecked ? '15px 0' : '0'};
   background: ${(props: WrapperStyleType) => props.isChecked
     ? 'linear-gradient(90deg, rgb(43, 111, 214) 0%, rgb(43, 111, 214) 4.9%,rgba(43, 111, 214, 0.28) 5%, rgba(255, 255, 255, 0) 50%)'
     : null};
 
   &:hover {
-    background: linear-gradient(90deg, rgb(43, 111, 214) 0%, rgb(43, 111, 214) 4.9%, rgba(43, 111, 214, 0.28) 5%, rgba(255, 255, 255, 0) 50%);
-  }
+    background: ${(props: WrapperStyleType) => props.isChecked ? null : 'linear-gradient(90deg, rgba(43, 111, 214, 0.13) 5%, rgba(255, 255, 255, 0) 50%)'};
+    & svg path {
+    fill: ${(props: WrapperStyleType) => (props.isChecked ? 'black' : '#9b9b9b')};
+    } 
+  };
 
   & svg path {
-    fill: ${(props: WrapperStyleType) => (props.isChecked ? 'black' : '#9b9b9b')
-  };
+    fill: ${(props: WrapperStyleType) => (props.isChecked ? 'black' : '#9b9b9b')};
+  }
 `
 
 const SubTitle = styled(motion.div)`
@@ -45,7 +49,7 @@ const IconWrapper = styled(motion.div)`
 type NavItemType = {
   icon: React.FunctionComponent<React.SVGProps<SVGSVGElement>>
   title: string;
-  content:string;
+  content: string;
   onclick?: () => void;
 };
 
@@ -54,7 +58,7 @@ const NavItem = (props: NavItemType) => {
 
   const Icon = props.icon;
 
-  const isClicked = props.title == useRecoilValue<NavBarType>(page)
+  const isClicked = props.title === useRecoilValue<NavBarType>(page)
   // const page = props.page;
   return (
     <Wrapper onClick={props.onclick} isChecked={isClicked}>

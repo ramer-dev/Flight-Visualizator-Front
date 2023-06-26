@@ -1,8 +1,9 @@
+import Title from 'components/common/Title'
 import React from 'react'
 
 function Setting() {
   return (
-    <div>Setting</div>
+    <Title>환경설정</Title>
   )
 }
 

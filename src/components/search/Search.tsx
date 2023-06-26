@@ -1,8 +1,9 @@
+import Title from 'components/common/Title'
 import React from 'react'
 
 function Search() {
   return (
-    <div>Search</div>
+    <Title>검색</Title>
   )
 }
 

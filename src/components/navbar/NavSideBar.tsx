@@ -22,7 +22,7 @@ const Container = styled.div`
 `
 
 const Wrapper = styled(motion.div)`
-    /* width:${(props: StyleProp) => props.isHidden ? '0' : '350px'}; */
+    width:${(props: StyleProp) => props.isHidden ? '0' : '350px'};
     overflow:hidden;
     border-right:1px solid #d9d9d9;
     transition: 0.3s ease all;
