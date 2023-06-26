@@ -22,11 +22,17 @@ const Container = styled.div`
 `
 
 const Wrapper = styled(motion.div)`
-    width:${(props: StyleProp) => props.isHidden ? '0' : '350px'};
+    transform:${(props: StyleProp) => props.isHidden ? 'translateX(-100%)' : ''};
+    opacity:${(props:StyleProp) => props.isHidden ? '0' : '1'};
+    width:350px;
+    /* width:${(props: StyleProp) => props.isHidden ? '0' : '350px'}; */
     overflow:hidden;
     border-right:1px solid #d9d9d9;
     transition: 0.3s ease all;
-    padding: ${(props: StyleProp) => props.isHidden ? '0' : '10px 25px'};
+    padding:10px 25px;
+    position:${(props:StyleProp) => props.isHidden ? 'fixed' : 'relative'};
+    z-index:190;
+    /* padding: ${(props: StyleProp) => props.isHidden ? '0' : '10px 25px'}; */
 `
 
 type propType = {

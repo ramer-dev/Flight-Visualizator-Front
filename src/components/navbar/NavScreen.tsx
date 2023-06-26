@@ -47,13 +47,14 @@ function NavScreen() {
     const [contentView, setContentView] = useRecoilState<ContentViewType>(contentViewFormat);
     const [content, setContent] = useRecoilState<ContentType>(contentFormat)
     return (
-        <>
+        <div>
             {content &&
                 <Container contentView={widthMap[contentView]}>
                     {selector(selectedPage)}
                 </Container>
             }
-        </>
+        </div>
+
     );
 }
 

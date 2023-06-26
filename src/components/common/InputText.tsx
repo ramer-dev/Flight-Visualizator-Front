@@ -1,15 +1,17 @@
 import React from 'react'
 import styled from "@emotion/styled";
-import { TextField } from '@mui/material';
 import { useFormControl } from "@mui/material/FormControl"
+import OutlinedInput from '@mui/material/OutlinedInput';
 
-export const StyledInputBox = styled(TextField)`
+export const StyledInputBox = styled(OutlinedInput)`
   border-radius: 5px;
-  font-size:16px;
   outline:#8e8e8e;
-  margin:10px 0;
   
   &  .Mui-focused .MuiInputBase-input {
     outline:"#5096FF"
+  }
+
+  input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
   }
 `

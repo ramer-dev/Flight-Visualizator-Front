@@ -44,7 +44,7 @@ const FlightContent = () => {
             </StyledFab>
             <Wrapper>
                 <Title>비행검사</Title>
-                <StyledInputBox label="비행검사 이름" fullWidth variant="outlined" size='small' color="primary"></StyledInputBox>
+                <StyledInputBox label="비행검사 이름" fullWidth size='small' color="primary"></StyledInputBox>
                 <Content>
                     {Array(10).fill(0).map((t, i) => {
                         return <>
