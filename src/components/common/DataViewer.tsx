@@ -1,5 +1,5 @@
 import { Table as ReactTable, Column, createColumnHelper, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, OnChangeFn, SortingState, useReactTable } from '@tanstack/react-table'
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material'
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Pagination, Divider } from '@mui/material'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import React, { useEffect, useState, HTMLProps } from 'react'
@@ -7,8 +7,11 @@ import styled from '@emotion/styled';
 import { StyledInputBox } from './InputText';
 import { useRecoilValue } from 'recoil';
 import { contentViewFormat } from 'common/store/atom';
+import { TempData } from './DataCreater';
+import TableFilter from './TableFilter';
+import DataPagination from './DataPagination';
 
-interface FlightRow {
+export interface FlightRow {
     site: string;
     frequency: number;
     txMain?: string;
@@ -25,95 +28,7 @@ interface TableFlightData extends FlightRow {
     number: number;
 }
 
-const defaultData: FlightRow[] = [{
-    site: '부안',
-    frequency: 121.5,
-    txMain: '5/5',
-    rxMain: '5/5',
-    txStby: '5/5',
-    rxStby: '5/5',
-    angle: 150,
-    distance: 35,
-    height: 5500,
-    pk: 1,
-},
-{
-    site: '안양',
-    frequency: 121.4,
-    txMain: '5/4',
-    rxMain: '5/4',
-    txStby: '5/3',
-    rxStby: '5/6',
-    angle: 150,
-    distance: 35,
-    height: 5500,
-},
-{
-    site: '부안',
-    frequency: 121.5,
-    txMain: '5/5',
-    rxMain: '5/5',
-    txStby: '5/5',
-    rxStby: '5/5',
-    angle: 150,
-    distance: 35,
-    height: 5500,
-},
-{
-    site: '안양',
-    frequency: 121.4,
-    txMain: '5/4',
-    rxMain: '5/4',
-    txStby: '5/3',
-    rxStby: '5/6',
-    angle: 150,
-    distance: 35,
-    height: 5500,
-},
-{
-    site: '부안',
-    frequency: 121.5,
-    txMain: '5/5',
-    rxMain: '5/5',
-    txStby: '5/5',
-    rxStby: '5/5',
-    angle: 150,
-    distance: 35,
-    height: 5500,
-},
-{
-    site: '안양',
-    frequency: 121.4,
-    txMain: '5/4',
-    rxMain: '5/4',
-    txStby: '5/3',
-    rxStby: '5/6',
-    angle: 150,
-    distance: 35,
-    height: 5500,
-},
-{
-    site: '부안',
-    frequency: 121.5,
-    txMain: '5/5',
-    rxMain: '5/5',
-    txStby: '5/5',
-    rxStby: '5/5',
-    angle: 150,
-    distance: 35,
-    height: 5500,
-},
-{
-    site: '안양',
-    frequency: 121.4,
-    txMain: '5/4',
-    rxMain: '5/4',
-    txStby: '5/3',
-    rxStby: '5/6',
-    angle: 150,
-    distance: 35,
-    height: 5500,
-}]
+
 
 const SortTableHeader = styled.div`
     display: flex;
@@ -121,6 +36,12 @@ const SortTableHeader = styled.div`
     justify-content:center;
 `
 
+const SortTableFooter = styled.div`
+    display: flex;
+    align-items:center;
+    justify-content:center;
+    margin:25px;
+`
 function IndeterminateCheckbox({
     indeterminate,
     className = '',
@@ -226,15 +147,19 @@ const columns = [
 ]
 
 type Props = {
-    isSearchVisible?: boolean,
+    searchVisible?: boolean,
+    checkboxVisible?: boolean,
+    editable?: boolean,
+    deletable?: boolean,
 }
 
-function DataViewer({ isSearchVisible }: Props) {
-    const [data, setData] = useState(() => defaultData.map((t, i) => { return { ...t, number: i + 1 } }))
+function DataViewer({ searchVisible, checkboxVisible, editable, deletable }: Props) { 
+    const [data, setData] = useState(() => TempData.map((t, i) => { return { ...t, number: i + 1 } }))
     const [sorting, setSorting] = useState<SortingState>([]);
-    const contentView = useRecoilValue(contentViewFormat);
     const [rowSelection, setRowSelection] = useState({});
-    const columnVisibility = { pk: false };
+
+    const contentView = useRecoilValue(contentViewFormat);
+    const columnVisibility = { pk: false, select: !!checkboxVisible };
     const onSortingChange = (e: any) => {
         console.log(e)
     }
@@ -264,14 +189,14 @@ function DataViewer({ isSearchVisible }: Props) {
     return (
         <>
             <Box sx={{ width: '100%' }}>
-                <TableContainer component={Paper} sx={{ minWidth: '730px' }}>
-                    <Table >
-                        <TableHead>
+                <TableContainer component={Paper} sx={{ minWidth: '730px', height: 'calc(100vh - 203px)' }}>
+                    <Table sx={{ borderCollapse: 'separate', borderSpacing: 0 }}>
+                        <TableHead sx={{ position: 'sticky', top: 0, backgroundColor: '#fff', border: '2px #000 solid' }}>
                             {table.getHeaderGroups().map(headerGroup => (
                                 <>
                                     <TableRow key={headerGroup.id}>
                                         {headerGroup.headers.map(header => (
-                                            <TableCell variant={'head'} key={header.id} sx={{ padding: '16px 0', ":hover": { backgroundColor: '#efefef' } }}>
+                                            <TableCell variant={'head'} key={header.id} sx={{ margin: 0, padding: '16px 0', ":hover": { backgroundColor: '#efefef' } }}>
                                                 {header.isPlaceholder ? null :
                                                     (
                                                         <SortTableHeader {...{
@@ -294,166 +219,38 @@ function DataViewer({ isSearchVisible }: Props) {
                                             </TableCell>
                                         ))}
                                     </TableRow>
-                                    {isSearchVisible  && contentView !== 'MID' ?
-                                        <TableRow sx={{ borderBottom: '#5096ff solid 2px' }}>
-                                            {headerGroup.headers.map(header => (
-                                                <TableCell sx={{ padding: '16px 8px' }}>
-                                                    {header.column.id !== 'select' ? <Filter column={header.column} table={table} /> : null}
-                                                </TableCell>
-                                            ))}
-                                        </TableRow> : null}</>
+                                    {
+                                        contentView !== 'MID'
+                                            ? <TableFilter isVisible={searchVisible} table={table} headerGroup={headerGroup} />
+                                            : null
+                                    }
+                                </>
                             ))}
                         </TableHead>
-                        <TableBody>
+                        <TableBody sx={{ overflowY: 'scroll', whiteSpace: 'nowrap' }}>
+
                             {table.getRowModel().rows.map(row => (
-                                <TableRow hover key={row.id} sx={{ cursor: 'pointer' }}>
+                                <TableRow hover key={row.id} sx={{ display: 'table-row', cursor: 'pointer' }}>
                                     {row.getVisibleCells().map(cell => (
-                                        <TableCell key={cell.id} size={"small"}>
+                                        <TableCell key={cell.id} size={"small"} sx={{ textAlign: 'center', fontWeight:'medium' }}>
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </TableCell>
                                     ))}
                                 </TableRow>
+
                             ))}
                         </TableBody>
 
                     </Table>
                 </TableContainer>
+                <SortTableFooter>
+                    <DataPagination />
+
+                </SortTableFooter>
             </Box>
-            {/* <table>
-                <thead>
-                    {table.getHeaderGroups().map(headerGroup => (
-                        <tr key={headerGroup.id}>
-                            {headerGroup.headers.map(header => (
-                                <th key={header.id}>
-                                    {header.isPlaceholder ? null : flexRender(
-                                        header.column.columnDef.header,
-                                        header.getContext()
-                                    )}
-                                </th>
-                            ))}
-                        </tr>
-                    ))}
-                </thead>
-                <tbody>
-                    {table.getRowModel().rows.map(row => (
-                        <tr key={row.id}>
-                            {row.getVisibleCells().map(cell => (
-                                <td key={cell.id}>
-                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                </td>
-                            ))}
-                        </tr>
-                    ))}
-                </tbody>
-            </table> */}
         </>
     )
 }
 
-function Filter({
-    column,
-    table,
-}: {
-    column: Column<any, unknown>
-    table: ReactTable<any>
-}) {
-    const firstValue = table
-        .getPreFilteredRowModel()
-        .flatRows[0]?.getValue(column.id)
-
-    const columnFilterValue = column.getFilterValue()
-
-    const sortedUniqueValues = React.useMemo(
-        () =>
-            typeof firstValue === 'number'
-                ? []
-                : Array.from(column.getFacetedUniqueValues().keys()).sort(),
-        [column.getFacetedUniqueValues()]
-    )
-
-    return typeof firstValue === 'number' ? (
-        <div>
-            <SortTableHeader >
-                <DebouncedInput
-                    type="number"
-                    min={Number(column.getFacetedMinMaxValues()?.[0] ?? '')}
-                    max={Number(column.getFacetedMinMaxValues()?.[1] ?? '')}
-                    value={(columnFilterValue as [number, number])?.[0] ?? ''}
-                    onChange={value =>
-                        column.setFilterValue((old: [number, number]) => [value, old?.[1]])
-                    }
-                    placeholder={`Min ${column.getFacetedMinMaxValues()?.[0]
-                        ? `(${column.getFacetedMinMaxValues()?.[0]})`
-                        : ''
-                        }`}
-                    className="w-24 border shadow rounded"
-                />
-                &nbsp;~&nbsp;
-                <DebouncedInput
-                    type="number"
-                    min={Number(column.getFacetedMinMaxValues()?.[0] ?? '')}
-                    max={Number(column.getFacetedMinMaxValues()?.[1] ?? '')}
-                    value={(columnFilterValue as [number, number])?.[1] ?? ''}
-                    onChange={value =>
-                        column.setFilterValue((old: [number, number]) => [old?.[0], value])
-                    }
-                    placeholder={`Max ${column.getFacetedMinMaxValues()?.[1]
-                        ? `(${column.getFacetedMinMaxValues()?.[1]})`
-                        : ''
-                        }`}
-                    className="w-24 border shadow rounded"
-                />
-            </SortTableHeader>
-            <div className="h-1" />
-        </div>
-    ) : (
-        <>
-            <datalist id={column.id + 'list'}>
-                {sortedUniqueValues.slice(0, 5000).map((value: any) => (
-                    <option value={value} key={value} />
-                ))}
-            </datalist>
-            <DebouncedInput
-                type="text"
-                value={(columnFilterValue ?? '') as string}
-                onChange={value => column.setFilterValue(value)}
-                placeholder={`Search... (${column.getFacetedUniqueValues().size})`}
-                className="w-36 border shadow rounded"
-                list={column.id + 'list'}
-            />
-            <div className="h-1" />
-        </>
-    )
-}
-
-// A debounced input react component
-function DebouncedInput({
-    value: initialValue,
-    onChange,
-    debounce = 100,
-    ...props
-}: {
-    value: string | number
-    onChange: (value: string | number) => void
-    debounce?: number
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) {
-    const [value, setValue] = React.useState(initialValue)
-
-    React.useEffect(() => {
-        setValue(initialValue)
-    }, [initialValue])
-
-    React.useEffect(() => {
-        const timeout = setTimeout(() => {
-            onChange(value)
-        }, debounce)
-
-        return () => clearTimeout(timeout)
-    }, [value])
-
-    return (
-        <StyledInputBox sx={{ fontSize: '12px' }} size={'small'} type={props.type} value={value} onChange={e => setValue(e.target.value)} />
-    )
-}
 
 export default DataViewer
