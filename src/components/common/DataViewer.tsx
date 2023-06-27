@@ -5,6 +5,8 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import React, { useEffect, useState, HTMLProps } from 'react'
 import styled from '@emotion/styled';
 import { StyledInputBox } from './InputText';
+import { useRecoilValue } from 'recoil';
+import { contentViewFormat } from 'common/store/atom';
 
 interface FlightRow {
     site: string;
@@ -223,9 +225,14 @@ const columns = [
 
 ]
 
-function DataViewer() {
+type Props = {
+    isSearchVisible?: boolean,
+}
+
+function DataViewer({ isSearchVisible }: Props) {
     const [data, setData] = useState(() => defaultData.map((t, i) => { return { ...t, number: i + 1 } }))
     const [sorting, setSorting] = useState<SortingState>([]);
+    const contentView = useRecoilValue(contentViewFormat);
     const [rowSelection, setRowSelection] = useState({});
     const columnVisibility = { pk: false };
     const onSortingChange = (e: any) => {
@@ -264,7 +271,7 @@ function DataViewer() {
                                 <>
                                     <TableRow key={headerGroup.id}>
                                         {headerGroup.headers.map(header => (
-                                            <TableCell variant={'head'} key={header.id} sx={{ padding: '16px 0' , ":hover": { backgroundColor: '#efefef'} }}>
+                                            <TableCell variant={'head'} key={header.id} sx={{ padding: '16px 0', ":hover": { backgroundColor: '#efefef' } }}>
                                                 {header.isPlaceholder ? null :
                                                     (
                                                         <SortTableHeader {...{
@@ -287,13 +294,14 @@ function DataViewer() {
                                             </TableCell>
                                         ))}
                                     </TableRow>
-                                    <TableRow sx={{ borderBottom: '#5096ff solid 2px' }}>
-                                        {headerGroup.headers.map(header => (
-                                            <TableCell sx={{ padding: '16px 8px' }}>
-                                                {header.column.id !== 'select' ? <Filter column={header.column} table={table} /> : null}
-                                            </TableCell>
-                                        ))}
-                                    </TableRow></>
+                                    {isSearchVisible  && contentView !== 'MID' ?
+                                        <TableRow sx={{ borderBottom: '#5096ff solid 2px' }}>
+                                            {headerGroup.headers.map(header => (
+                                                <TableCell sx={{ padding: '16px 8px' }}>
+                                                    {header.column.id !== 'select' ? <Filter column={header.column} table={table} /> : null}
+                                                </TableCell>
+                                            ))}
+                                        </TableRow> : null}</>
                             ))}
                         </TableHead>
                         <TableBody>
@@ -430,7 +438,7 @@ function DebouncedInput({
     debounce?: number
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) {
     const [value, setValue] = React.useState(initialValue)
-    
+
     React.useEffect(() => {
         setValue(initialValue)
     }, [initialValue])

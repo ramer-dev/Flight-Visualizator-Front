@@ -7,7 +7,7 @@ function FlightView() {
   return (
     <>
       <ScreenTitle text={"비행검사 조회"} />
-      <DataViewer />
+      <DataViewer isSearchVisible />
       <NavCloseButton format={['MID', 'FULLSCREEN']} />
     </>
   )

@@ -58,7 +58,11 @@ const NavBar = () => {
     const [contentView, setContentView] = useRecoilState<ContentViewType>(contentViewFormat);
 
     const onButtonClick = (str: NavBarType) => {
-        setPage(str);
+
+        if(selectedPage !== str) {
+            setPage(str);
+            setContentView('NONE');
+        }
     }
 
     return (
