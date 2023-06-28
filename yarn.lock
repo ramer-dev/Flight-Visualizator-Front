@@ -6316,7 +6316,14 @@ leaflet-draw@^1.0.4:
   resolved "https://registry.npmjs.org/leaflet-draw/-/leaflet-draw-1.0.4.tgz"
   integrity sha512-rsQ6saQO5ST5Aj6XRFylr5zvarWgzWnrg46zQ1MEOEIHsppdC/8hnN8qMoFvACsPvTioAuysya/TVtog15tyAQ==
 
-leaflet@^1.9.3:
+leaflet-geometryutil@^0.10.2:
+  version "0.10.2"
+  resolved "https://registry.yarnpkg.com/leaflet-geometryutil/-/leaflet-geometryutil-0.10.2.tgz#da418bf90b7b792ba5bd037081c79fd38ce83b94"
+  integrity sha512-NBKO0dW6+Ur0LKa6t5JMBd242lAMjRek23O8awlpvoDmTrb7fqgZC608YLwpZ4TYJZ/RbLu9fclIN8M4pIVwTQ==
+  dependencies:
+    leaflet "^1.6.0"
+
+leaflet@^1.6.0, leaflet@^1.9.3:
   version "1.9.4"
   resolved "https://registry.npmjs.org/leaflet/-/leaflet-1.9.4.tgz"
   integrity sha512-nxS1ynzJOmOlHp+iL3FyWqK89GtNL8U8rvlMOsQdTTssxZwCXh8N2NB3GDQOL+YR3XnWyZAxwQixURb+FA74PA==
