@@ -7,9 +7,9 @@ import type { } from 'leaflet-draw';
 import { useEffect, useRef, useState } from 'react';
 import L, { LatLng, Layer, layerGroup, LayerOptions, Polyline, polyline } from 'leaflet';
 import type { FeatureCollection } from 'geojson';
-import EditControlFC from './DrawHooks';
 import ContextMenu from 'components/contextMenu/ContextMenu';
 import 'leaflet-geometryutil'
+import EditControlFC from './DrawHooks';
 
 const StyledMapContainer = styled(MapContainer)`
     width:100%;
@@ -20,7 +20,11 @@ const StyledMapContainer = styled(MapContainer)`
 // 1. 픽스점 레이어 그룹 생성
 // 2. 
 
-const ContextMenuEvent = () => {
+type Props = {
+    isOpen: boolean,
+    setOpen: (a: boolean) => void,
+}
+const ContextMenuEvent = ({ isOpen, setOpen }: Props) => {
     type MenuType = 'range-bearing' | 'analyze' | null;
 
 
@@ -32,15 +36,14 @@ const ContextMenuEvent = () => {
     }))
     const [position, setPosition] = useState<LatLng>(new LatLng(36.0, 128.09))
     const [selectedMenu, setSelectedMenu] = useState<MenuType>(null);
-    const contextMenuOpened = useRef<boolean>(false);
     const currLine = useRef<Polyline | null>(null);
     const events = useMapEvents({
         contextmenu(e) {
             setPosition(e.latlng)
-            contextMenuOpened.current = true;
+            setOpen(true);
         },
         mousemove(e: any) {
-            if (contextMenuOpened.current && selectedMenu === 'range-bearing') {
+            if (isOpen && selectedMenu === 'range-bearing') {
                 const angle = L.GeometryUtil.angle(map, position, e.latlng)
                 const distance = map.distance(position, e.latlng) / 1000
 
@@ -52,24 +55,27 @@ const ContextMenuEvent = () => {
         },
 
         click(e) {
-            if (contextMenuOpened.current) {
-                contextMenuOpened.current = false;
+            if (isOpen) {
+                setOpen(false);
                 setSelectedMenu(null)
-            } 
+            }
         },
 
 
     })
 
-    return <Popup closeButton={false} keepInView={false} position={position} offset={[0, 0]}>
+    return <>
+        {isOpen ? <Popup closeButton={false} keepInView={false} position={position} offset={[0, 0]}>
 
-        <ContextMenu startPosition={position} setSelectedMenu={setSelectedMenu} popup={popup.current}/>
-    </Popup>
+            <ContextMenu startPosition={position} setSelectedMenu={setSelectedMenu} popup={popup.current} />
+        </Popup> : null}
+    </>
 }
 
 
 const Map = () => {
     const drawLayer = useRef<L.LayerGroup>(null)
+    const [contextMenuOpened, setContextMenuOpened] = useState<boolean>(false);
 
     const [geojson, setGeojson] = useState<FeatureCollection>({
         type: 'FeatureCollection',
@@ -86,7 +92,6 @@ const Map = () => {
         <StyledMapContainer center={[36.0, 128.09]} zoom={7} minZoom={4} maxZoom={14} zoomControl={true}>
             <ZoomControl position={'bottomright'} />
             <TileLayer url="http://localhost:3000/v1/api/map/{z}/{x}/{y}" attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Dev by. Hee Sang Shin' />
-            <EditControlFC geojson={geojson} setGeojson={setGeojson} />
             <LayersControl position="topright">
                 <LayersControl.Overlay name='range-bearing'>
                     <LayerGroup pane='range-bearing'>
@@ -102,7 +107,8 @@ const Map = () => {
                     </LayerGroup>
                 </LayersControl.Overlay>
             </LayersControl>
-            <ContextMenuEvent />
+            <ContextMenuEvent isOpen={contextMenuOpened} setOpen={setContextMenuOpened} />
+            <EditControlFC geojson={geojson} setGeojson={setGeojson} />
 
         </StyledMapContainer>
     )
