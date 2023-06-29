@@ -11,7 +11,7 @@ export const StyledInputBox = styled(OutlinedInput)`
     outline:"#5096FF"
   }
 
-  input[type=number]::-webkit-inner-spin-button {
+  /* input[type=number]::-webkit-inner-spin-button {
     -webkit-appearance: none;
-  }
+  } */
 `

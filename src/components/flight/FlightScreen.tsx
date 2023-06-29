@@ -10,11 +10,13 @@ import FlightView from './FlightView';
 const selector = (content: ContentType) => {
     switch (content) {
         case 'ADD':
-            return <FlightAdd/>;
+            return <FlightAdd />;
         case 'EDIT':
-            return <FlightEdit/>;
+            return <FlightEdit />;
         case 'VIEW':
-            return <FlightView/>;
+            return <FlightView />;
+        default:
+            return null;
     }
 }
 

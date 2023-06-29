@@ -1,13 +1,14 @@
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents, MapContainerProps } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents, MapContainerProps, ZoomControl, LayersControl, LayerGroup, useMap, Pane } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css';
 import 'leaflet/dist/images/marker-shadow.png';
 import styled from '@emotion/styled';
 import 'lib/leaflet/leaflet.css'
-import { MutableRefObject, RefObject, useRef, useState } from 'react';
-import L, { LatLng, Draw, LatLngExpression, } from 'leaflet';
+import type { } from 'leaflet-draw';
+import { useEffect, useRef, useState } from 'react';
+import L, { LatLng, Layer, layerGroup, LayerOptions, Polyline, polyline } from 'leaflet';
 import type { FeatureCollection } from 'geojson';
 import EditControlFC from './DrawHooks';
-import ContextMenu from 'components/context_menu/ContextMenu';
+import ContextMenu from 'components/contextMenu/ContextMenu';
 import 'leaflet-geometryutil'
 
 const StyledMapContainer = styled(MapContainer)`
@@ -19,69 +20,92 @@ const StyledMapContainer = styled(MapContainer)`
 // 1. 픽스점 레이어 그룹 생성
 // 2. 
 
-const MapDraw = {
+const ContextMenuEvent = () => {
 
-}
-type Props = {
-    map : RefObject<L.Map>
-}
-const ContextMenuEvent = ({map}:Props) => {
+    const map = useMap()
+    const popup = useRef(L.popup({
+        closeButton: false,
+        autoClose:false,
+        offset:[0,0]
+    }))
     const [position, setPosition] = useState<LatLng>(new LatLng(36.0, 128.09))
-    // const originCoord = useRef<L.LatLngExpression | null>(null);
     const contextMenuOpened = useRef<boolean>(false);
+    const currLine = useRef<Polyline|null>(null);
     const events = useMapEvents({
         contextmenu(e) {
             setPosition(e.latlng)
             contextMenuOpened.current = true;
-            // originCoord.current = e.latlng;
+            popup.current.setLatLng(e.latlng).addTo(map)
         },
-        mousemove(e) {
-            if(contextMenuOpened.current) {
-                const angle = L.GeometryUtil.angle(map.current!, position, e.latlng)
-                const distance = L.GeometryUtil.distance(map.current!, position, e.latlng)
-                console.log(L.GeometryUtil.destination(e.latlng, angle, distance ))
+        mousemove(e: any) {
+            if (contextMenuOpened.current) {
+                const layer = <LayerGroup></LayerGroup>
 
+                const angle = L.GeometryUtil.angle(map, position, e.latlng)
+                const distance = map.distance(position, e.latlng) / 1000
+                // const distance = L.GeometryUtil.bearing(position, e.latlng)
+                console.log(L.GeometryUtil.destination(e.latlng, angle, distance))
+
+                if(currLine.current) currLine.current.remove();
+                currLine.current = L.polyline([position, e.latlng], { color: 'red', pane: 'range-bearing' }).addTo(map);
+
+                popup.current.setLatLng(e.latlng).setContent(`${angle.toFixed(1)}|${(distance * 0.539957).toFixed(1)}`)
             }
         },
 
         click(e) {
-            if(contextMenuOpened.current) {
+            if (contextMenuOpened.current) {
                 contextMenuOpened.current = false;
 
             }
-        }
+        },
+
+
     })
 
-    return <Popup closeButton={false} keepInView={true} position={position} offset={[0, 0]}>
-        <ContextMenu startPosition={position}>
-            holy
-        </ContextMenu>
+    return <Popup closeButton={false} keepInView={false} position={position} offset={[0, 0]}>
+
+        <ContextMenu startPosition={position} />
     </Popup>
 }
 
 
 const Map = () => {
-    const map = useRef<L.Map>(null);
+    const drawLayer = useRef<L.LayerGroup>(null)
+
     const [geojson, setGeojson] = useState<FeatureCollection>({
         type: 'FeatureCollection',
         features: [
         ],
-      });
+    });
+
+    useEffect(() => {
+        console.log('layergroup Change')
+    }, [drawLayer.current])
+
 
     return (
-        <StyledMapContainer center={[36.0, 128.09]} zoom={7} minZoom={4} maxZoom={14} ref={map}>
-            <ContextMenuEvent map={map}/>
-            <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Dev by. Hee Sang Shin'
-                url="http://localhost:3000/v1/api/map/{z}/{x}/{y}"
-            />
-            <EditControlFC geojson={geojson} setGeojson={setGeojson}/>
-            <Marker position={[37.5519, 126.9918]}>
-                <Popup>
-                    A pretty CSS3 popup. <br /> Easily customizable.
-                    <hr />
-                </Popup>
-            </Marker>
+        <StyledMapContainer center={[36.0, 128.09]} zoom={7} minZoom={4} maxZoom={14} zoomControl={true}>
+            <ZoomControl position={'bottomright'} />
+            <TileLayer url="http://localhost:3000/v1/api/map/{z}/{x}/{y}" attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Dev by. Hee Sang Shin' />
+            <EditControlFC geojson={geojson} setGeojson={setGeojson} />
+            <LayersControl position="topright">
+                <LayersControl.Overlay name='range-bearing'>
+                    <LayerGroup pane='range-bearing'>
+                        <Pane name='range-bearing'>
+
+                        </Pane>
+                    </LayerGroup>
+                </LayersControl.Overlay>
+
+                <LayersControl.Overlay name='draw2'>
+                    <LayerGroup >
+
+                    </LayerGroup>
+                </LayersControl.Overlay>
+            </LayersControl>
+            <ContextMenuEvent />
+
         </StyledMapContainer>
     )
 }

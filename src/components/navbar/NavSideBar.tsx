@@ -12,6 +12,7 @@ import NavCloseButton from './NavCloseButton';
 import Search from 'components/search/Search';
 import Setting from 'components/setting/Setting';
 import Notice from 'components/notice/Notice';
+import { ButtonProps } from '@mui/material';
 
 type StyleProp = { isHidden: boolean }
 

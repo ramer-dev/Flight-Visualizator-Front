@@ -43,7 +43,6 @@ const CoordinateView = styled.div`
 `
 
 type WrapperProps = {
-    children: React.ReactNode;
     startPosition: LatLng;
 }
 

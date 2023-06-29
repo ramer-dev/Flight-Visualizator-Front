@@ -5,6 +5,7 @@ import styled from '@emotion/styled'
 import { useRecoilState } from 'recoil';
 import { ContentType } from 'common/type/NavBarType';
 import { contentFormat } from 'common/store/atom';
+import { FlightList } from 'common/type/FlightType';
 
 const Container = styled.div`
     padding:20px 10px;
@@ -88,7 +89,7 @@ const PinButton = styled.div`
     }
 `
 
-const FlightItem = () => {
+const FlightItem = ({testName, testType, testDate, id}:FlightList) => {
     const [content, setContent] = useRecoilState<ContentType>(contentFormat);
     const ViewFlightItem = (e: any) => {
         e.stopPropagation();
@@ -108,10 +109,10 @@ const FlightItem = () => {
     return (
         <Container onClick={ViewFlightItem}>
 
-            <Title>2022 동광 제주 남부지역 감사원 비행검사</Title>
+            <Title>{testName}</Title>
             <ContentWrapper>
-                <FlightType>특별검사</FlightType>
-                <FlightDate>2022-10-24</FlightDate>
+                <FlightType>{testType}</FlightType>
+                <FlightDate>{testDate.toString()}</FlightDate>
             </ContentWrapper>
             <ButtonContainer>
                 <ModifyButton onClick={EditFlightItem}>수정</ModifyButton>
