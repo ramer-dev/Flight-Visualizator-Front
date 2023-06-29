@@ -21,32 +21,30 @@ const StyledMapContainer = styled(MapContainer)`
 // 2. 
 
 const ContextMenuEvent = () => {
+    type MenuType = 'range-bearing' | 'analyze' | null;
+
 
     const map = useMap()
     const popup = useRef(L.popup({
         closeButton: false,
-        autoClose:false,
-        offset:[0,0]
+        autoClose: false,
+        offset: [0, 0]
     }))
     const [position, setPosition] = useState<LatLng>(new LatLng(36.0, 128.09))
+    const [selectedMenu, setSelectedMenu] = useState<MenuType>(null);
     const contextMenuOpened = useRef<boolean>(false);
-    const currLine = useRef<Polyline|null>(null);
+    const currLine = useRef<Polyline | null>(null);
     const events = useMapEvents({
         contextmenu(e) {
             setPosition(e.latlng)
             contextMenuOpened.current = true;
-            popup.current.setLatLng(e.latlng).addTo(map)
         },
         mousemove(e: any) {
-            if (contextMenuOpened.current) {
-                const layer = <LayerGroup></LayerGroup>
-
+            if (contextMenuOpened.current && selectedMenu === 'range-bearing') {
                 const angle = L.GeometryUtil.angle(map, position, e.latlng)
                 const distance = map.distance(position, e.latlng) / 1000
-                // const distance = L.GeometryUtil.bearing(position, e.latlng)
-                console.log(L.GeometryUtil.destination(e.latlng, angle, distance))
 
-                if(currLine.current) currLine.current.remove();
+                if (currLine.current) currLine.current.remove();
                 currLine.current = L.polyline([position, e.latlng], { color: 'red', pane: 'range-bearing' }).addTo(map);
 
                 popup.current.setLatLng(e.latlng).setContent(`${angle.toFixed(1)}|${(distance * 0.539957).toFixed(1)}`)
@@ -56,8 +54,8 @@ const ContextMenuEvent = () => {
         click(e) {
             if (contextMenuOpened.current) {
                 contextMenuOpened.current = false;
-
-            }
+                setSelectedMenu(null)
+            } 
         },
 
 
@@ -65,7 +63,7 @@ const ContextMenuEvent = () => {
 
     return <Popup closeButton={false} keepInView={false} position={position} offset={[0, 0]}>
 
-        <ContextMenu startPosition={position} />
+        <ContextMenu startPosition={position} setSelectedMenu={setSelectedMenu} popup={popup.current}/>
     </Popup>
 }
 

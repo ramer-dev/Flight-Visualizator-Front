@@ -2,6 +2,7 @@ import React from 'react'
 import styled from '@emotion/styled'
 import { LatLng, LatLngExpression } from 'leaflet'
 import { Divider } from '@mui/material'
+import { useMap } from 'react-leaflet'
 
 const Container = styled.div`
     width:200px;
@@ -41,23 +42,27 @@ const CoordinateView = styled.div`
     margin:10px;
     
 `
+type MenuType = 'range-bearing'| 'analyze' | null;
 
 type WrapperProps = {
     startPosition: LatLng;
+    popup: L.Popup;
+    setSelectedMenu: (menu : MenuType) => void
 }
 
-function ContextMenu(prop: WrapperProps) {
+function ContextMenu({startPosition, setSelectedMenu, popup}: WrapperProps) {
+    const map = useMap();
     return (
         <Container>
             <CoordinateView>
-                {prop.startPosition.lat.toFixed(8)} | {prop.startPosition.lng.toFixed(8)}
+                {startPosition.lat.toFixed(8)} | {startPosition.lng.toFixed(8)}
             </CoordinateView>
             <Divider sx={{ width: '100%' }} />
             <Menu>
-                <MenuItem onClick={() => { console.log(prop.startPosition) }}>
+                <MenuItem onClick={() => {setSelectedMenu('range-bearing'); popup.addTo(map)}}>
                     좌표
                 </MenuItem>
-                <MenuItem>
+                <MenuItem onClick={() => {setSelectedMenu('analyze')}}>
                     분석
                 </MenuItem>
             </Menu>
