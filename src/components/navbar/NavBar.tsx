@@ -16,14 +16,14 @@ import NavSideBar from "./NavSideBar";
 import NavEtcItem from "./NavEtcItem";
 
 const Container = styled.div`
-    display: flex;
+    display: inline-flex;
     height:100vh;
-    position: fixed;
+    width:64px;
     z-index:200;
+    margin:0;
 `
 const Wrapper = styled.div`
     background-color:#ffffff;   
-
     display:flex;
     justify-content: space-between;
     flex-direction: column;
@@ -48,6 +48,8 @@ const SubNavBar = styled.div`
 `
 
 const ContentView = styled.div`
+    position:fixed;
+    margin-left:64px;
     background-color:#ffffff;   
 
 `
