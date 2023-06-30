@@ -15,6 +15,7 @@ import EditControlFC from './DrawHooks';
 import CustomAxios from 'module/axios';
 import { Site } from 'common/type/SiteType';
 import LoadSites from './initialize/LoadSites';
+import MapEvents from './MapEvents';
 
 const StyledMapContainer = styled(MapContainer)`
     width:100%;
@@ -22,75 +23,22 @@ const StyledMapContainer = styled(MapContainer)`
     z-index:0;
 `
 
+L.Marker.prototype.options.icon = L.icon({
+    iconUrl: icon,
+    shadowUrl: iconShadow,
+    iconSize:    [25, 41],
+    iconAnchor:  [12, 41],
+    popupAnchor: [1, -34],
+    tooltipAnchor: [16, -28],
+    shadowSize:  [41, 41]
+})
+
 // 1. 픽스점 레이어 그룹 생성
 // 2. 
 
-type Props = {
-    isOpen: boolean,
-    setOpen: (a: boolean) => void,
-}
-const ContextMenuEvent = ({ isOpen, setOpen }: Props) => {
-    type MenuType = 'range-bearing' | 'analyze' | null;
-    const map = useMap()
-    const popup = useRef(L.popup({
-        closeButton: false,
-        autoClose: false,
-        offset: [0, 0],
-    }))
-    const [position, setPosition] = useState<LatLng>(new LatLng(36.0, 128.09))
-    const [selectedMenu, setSelectedMenu] = useState<MenuType>(null);
-    const currLine = useRef<Polyline | null>(null);
-
-
-    const events = useMapEvents({
-        contextmenu(e) {
-            setPosition(e.latlng)
-            popup.current.setLatLng(e.latlng);
-            setOpen(true);
-        },
-        mousemove(e: any) {
-            if (isOpen && selectedMenu === 'range-bearing') {
-                const angle = L.GeometryUtil.angle(map, position, e.latlng)
-                const distance = map.distance(position, e.latlng) / 1000
-
-                if (currLine.current) currLine.current.remove();
-                console.log(position, e.latlng);
-                currLine.current = L.polyline([position, e.latlng], { color: 'red', pane: 'range-bearing' }).addTo(map);
-
-                popup.current.setLatLng(e.latlng).setContent(`${angle.toFixed(1)}|${(distance * 0.539957).toFixed(1)}`)
-            }
-        },
-
-        click(e) {
-            if (isOpen) {
-                setOpen(false);
-                setSelectedMenu(null)
-            }
-        },
-
-
-    })
-
-    return <>
-        {isOpen ? <Popup closeButton={false} keepInView={false} position={position} offset={[0, 0]}>
-
-            <ContextMenu startPosition={position} setSelectedMenu={setSelectedMenu} popup={popup.current} />
-        </Popup> : null}
-    </>
-}
 
 const Map = () => {
-    const drawLayer = useRef<L.LayerGroup>(null)
 
-    L.Marker.prototype.options.icon = L.icon({
-        iconUrl: icon,
-        shadowUrl: iconShadow,
-        iconSize:    [25, 41],
-		iconAnchor:  [12, 41],
-		popupAnchor: [1, -34],
-		tooltipAnchor: [16, -28],
-		shadowSize:  [41, 41]
-    })
     const [contextMenuOpened, setContextMenuOpened] = useState<boolean>(false);
     const [geojson, setGeojson] = useState<FeatureCollection>({
         type: 'FeatureCollection',
@@ -114,11 +62,9 @@ const Map = () => {
 
 
                 <LayersControl.Overlay name='site' checked>
-                    <LayerGroup pane='site'>
                         <Pane name='site' style={{zIndex:500}}>
                             <LoadSites />
                         </Pane>
-                    </LayerGroup>
                 </LayersControl.Overlay>
                 <LayersControl.Overlay name='draw2' checked>
                     <LayerGroup >
@@ -126,7 +72,7 @@ const Map = () => {
                     </LayerGroup>
                 </LayersControl.Overlay>
             </LayersControl>
-            <ContextMenuEvent isOpen={contextMenuOpened} setOpen={setContextMenuOpened} />
+            <MapEvents isOpen={contextMenuOpened} setOpen={setContextMenuOpened} />
             <EditControlFC geojson={geojson} setGeojson={setGeojson} />
 
         </StyledMapContainer>

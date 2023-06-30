@@ -3,8 +3,9 @@ import styled from '@emotion/styled'
 import { LatLng, LatLngExpression } from 'leaflet'
 import { Divider } from '@mui/material'
 import { useMap } from 'react-leaflet'
+import { motion } from 'framer-motion'
 
-const Container = styled.div`
+const Container = styled(motion.div)`
     width:200px;
     display:flex;
     flex-direction:column;
@@ -42,27 +43,28 @@ const CoordinateView = styled.div`
     margin:10px;
     
 `
-type MenuType = 'range-bearing'| 'analyze' | null;
+type MenuType = 'range-bearing' | 'analyze' | null;
 
 type WrapperProps = {
     startPosition: LatLng;
     popup: L.Popup;
-    setSelectedMenu: (menu : MenuType) => void
+    setSelectedMenu: (menu: MenuType) => void;
+    setOpen: (open: boolean) => void;
 }
 
-function ContextMenu({startPosition, setSelectedMenu, popup}: WrapperProps) {
+function ContextMenu({ startPosition, setSelectedMenu, popup, setOpen }: WrapperProps) {
     const map = useMap();
     return (
-        <Container>
+        <Container >
             <CoordinateView>
                 {startPosition.lat.toFixed(8)} | {startPosition.lng.toFixed(8)}
             </CoordinateView>
             <Divider sx={{ width: '100%' }} />
             <Menu>
-                <MenuItem onClick={() => {setSelectedMenu('range-bearing'); popup.addTo(map)}}>
+                <MenuItem onClick={(e) => { e.stopPropagation(); setSelectedMenu('range-bearing'); setOpen(false); popup.addTo(map); }}>
                     좌표
                 </MenuItem>
-                <MenuItem onClick={() => {setSelectedMenu('analyze')}}>
+                <MenuItem onClick={() => { setSelectedMenu('analyze') }}>
                     분석
                 </MenuItem>
             </Menu>
