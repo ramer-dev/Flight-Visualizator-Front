@@ -37,10 +37,12 @@ const CustomInput = styled(StyledInputBox)`
 
 `
 
+
+
 const FlightContent = () => {
     const [content, setContentView] = useRecoilState(contentFormat)
     const [list, setList] = useState<FlightList[]>();
-
+    const [value, setValue] = useState('');
     const getFlightList = async () => {
         const flightList = await CustomAxios.get<FlightList[]>('flight/list');
 
@@ -49,7 +51,7 @@ const FlightContent = () => {
     useEffect(() => {
         getFlightList()
     }, [])
-
+    
     const AddFlightResultEvent = (e: any) => {
         e.stopPropagation();
         setContentView('ADD');
@@ -61,14 +63,14 @@ const FlightContent = () => {
             </StyledFab>
             <Wrapper>
                 <Title>비행검사</Title>
-                <StyledInputBox label="비행검사 이름" fullWidth size='small' color="primary"></StyledInputBox>
+                <StyledInputBox onChange={(e) => setValue(e.target.value)} label="비행검사 이름" fullWidth size='small' color="primary"></StyledInputBox>
                 <Content>
                     {
-                        list?.map((it,i) => {
-                            return <div key={it.id}>
-                                <HorizontalLine/>
-                                <FlightItem testName={it.testName} testDate={it.testDate} testType={it.testType} id={it.id} userId={it.userId}/>
-                            </div>
+                        list?.map((it, i) => {
+                            return it.testName.includes(value) ? <div key={it.id}>
+                                <HorizontalLine />
+                                <FlightItem testName={it.testName} testDate={it.testDate} testType={it.testType} id={it.id} userId={it.userId} />
+                            </div> : null
                         })
                     }
                     {/* {Array(10).fill(0).map((t, i) => {
