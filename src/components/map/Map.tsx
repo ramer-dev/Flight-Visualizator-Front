@@ -1,8 +1,10 @@
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents, MapContainerProps, ZoomControl, LayersControl, LayerGroup, useMap, Pane } from 'react-leaflet'
-import 'leaflet/dist/leaflet.css';
-import 'leaflet/dist/images/marker-shadow.png';
-import styled from '@emotion/styled';
+// import 'leaflet/dist/leaflet.css';
+
 import 'lib/leaflet/leaflet.css'
+import icon from 'lib/leaflet/images/marker-icon.png'
+import iconShadow from 'lib/leaflet/images/marker-shadow.png';
+import styled from '@emotion/styled';
 import type { } from 'leaflet-draw';
 import { useEffect, useRef, useState } from 'react';
 import L, { LatLng, Layer, layerGroup, LayerOptions, Polyline, polyline } from 'leaflet';
@@ -10,6 +12,9 @@ import type { FeatureCollection } from 'geojson';
 import ContextMenu from 'components/contextMenu/ContextMenu';
 import 'leaflet-geometryutil'
 import EditControlFC from './DrawHooks';
+import CustomAxios from 'module/axios';
+import { Site } from 'common/type/SiteType';
+import LoadSites from './initialize/LoadSites';
 
 const StyledMapContainer = styled(MapContainer)`
     width:100%;
@@ -26,20 +31,21 @@ type Props = {
 }
 const ContextMenuEvent = ({ isOpen, setOpen }: Props) => {
     type MenuType = 'range-bearing' | 'analyze' | null;
-
-
     const map = useMap()
     const popup = useRef(L.popup({
         closeButton: false,
         autoClose: false,
-        offset: [0, 0]
+        offset: [0, 0],
     }))
     const [position, setPosition] = useState<LatLng>(new LatLng(36.0, 128.09))
     const [selectedMenu, setSelectedMenu] = useState<MenuType>(null);
     const currLine = useRef<Polyline | null>(null);
+
+
     const events = useMapEvents({
         contextmenu(e) {
             setPosition(e.latlng)
+            popup.current.setLatLng(e.latlng);
             setOpen(true);
         },
         mousemove(e: any) {
@@ -48,6 +54,7 @@ const ContextMenuEvent = ({ isOpen, setOpen }: Props) => {
                 const distance = map.distance(position, e.latlng) / 1000
 
                 if (currLine.current) currLine.current.remove();
+                console.log(position, e.latlng);
                 currLine.current = L.polyline([position, e.latlng], { color: 'red', pane: 'range-bearing' }).addTo(map);
 
                 popup.current.setLatLng(e.latlng).setContent(`${angle.toFixed(1)}|${(distance * 0.539957).toFixed(1)}`)
@@ -72,20 +79,24 @@ const ContextMenuEvent = ({ isOpen, setOpen }: Props) => {
     </>
 }
 
-
 const Map = () => {
     const drawLayer = useRef<L.LayerGroup>(null)
-    const [contextMenuOpened, setContextMenuOpened] = useState<boolean>(false);
 
+    L.Marker.prototype.options.icon = L.icon({
+        iconUrl: icon,
+        shadowUrl: iconShadow,
+        iconSize:    [25, 41],
+		iconAnchor:  [12, 41],
+		popupAnchor: [1, -34],
+		tooltipAnchor: [16, -28],
+		shadowSize:  [41, 41]
+    })
+    const [contextMenuOpened, setContextMenuOpened] = useState<boolean>(false);
     const [geojson, setGeojson] = useState<FeatureCollection>({
         type: 'FeatureCollection',
         features: [
         ],
     });
-
-    useEffect(() => {
-        console.log('layergroup Change')
-    }, [drawLayer.current])
 
 
     return (
@@ -93,7 +104,7 @@ const Map = () => {
             <ZoomControl position={'bottomright'} />
             <TileLayer url="http://localhost:3000/v1/api/map/{z}/{x}/{y}" attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Dev by. Hee Sang Shin' />
             <LayersControl position="topright">
-                <LayersControl.Overlay name='range-bearing'>
+                <LayersControl.Overlay name='range-bearing' checked>
                     <LayerGroup pane='range-bearing'>
                         <Pane name='range-bearing'>
 
@@ -101,7 +112,15 @@ const Map = () => {
                     </LayerGroup>
                 </LayersControl.Overlay>
 
-                <LayersControl.Overlay name='draw2'>
+
+                <LayersControl.Overlay name='site' checked>
+                    <LayerGroup pane='site'>
+                        <Pane name='site' style={{zIndex:500}}>
+                            <LoadSites />
+                        </Pane>
+                    </LayerGroup>
+                </LayersControl.Overlay>
+                <LayersControl.Overlay name='draw2' checked>
                     <LayerGroup >
 
                     </LayerGroup>
