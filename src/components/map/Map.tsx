@@ -16,6 +16,7 @@ import CustomAxios from 'module/axios';
 import { Site } from 'common/type/SiteType';
 import LoadSites from './initialize/LoadSites';
 import MapEvents from './MapEvents';
+import LoadSector from './initialize/LoadSector';
 
 const StyledMapContainer = styled(MapContainer)`
     width:100%;
@@ -66,6 +67,14 @@ const Map = () => {
                             <LoadSites />
                         </Pane>
                 </LayersControl.Overlay>
+
+                <LayersControl.Overlay name='sector' checked>
+                        <Pane name='sector' style={{zIndex:500}}>
+                            <LoadSector />
+                        </Pane>
+                </LayersControl.Overlay>
+
+
                 <LayersControl.Overlay name='draw2' checked>
                     <LayerGroup >
 
