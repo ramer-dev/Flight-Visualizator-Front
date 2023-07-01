@@ -1,19 +1,15 @@
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents, MapContainerProps, ZoomControl, LayersControl, LayerGroup, useMap, Pane } from 'react-leaflet'
+import { MapContainer, TileLayer, LayersControl, LayerGroup, useMap, Pane } from 'react-leaflet'
 // import 'leaflet/dist/leaflet.css';
 
 import 'lib/leaflet/leaflet.css'
 import icon from 'lib/leaflet/images/marker-icon.png'
 import iconShadow from 'lib/leaflet/images/marker-shadow.png';
 import styled from '@emotion/styled';
-import type { } from 'leaflet-draw';
 import { useEffect, useRef, useState } from 'react';
-import L, { LatLng, Layer, layerGroup, LayerOptions, Polyline, polyline } from 'leaflet';
+import L from 'leaflet';
 import type { FeatureCollection } from 'geojson';
-import ContextMenu from 'components/contextMenu/ContextMenu';
 import 'leaflet-geometryutil'
 import EditControlFC from './DrawHooks';
-import CustomAxios from 'module/axios';
-import { Site } from 'common/type/SiteType';
 import LoadSites from './initialize/LoadSites';
 import MapEvents from './MapEvents';
 import LoadSector from './initialize/LoadSector';
@@ -27,11 +23,11 @@ const StyledMapContainer = styled(MapContainer)`
 L.Marker.prototype.options.icon = L.icon({
     iconUrl: icon,
     shadowUrl: iconShadow,
-    iconSize:    [25, 41],
-    iconAnchor:  [12, 41],
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
     popupAnchor: [1, -34],
     tooltipAnchor: [16, -28],
-    shadowSize:  [41, 41]
+    shadowSize: [41, 41]
 })
 
 // 1. 픽스점 레이어 그룹 생성
@@ -49,8 +45,7 @@ const Map = () => {
 
 
     return (
-        <StyledMapContainer center={[36.0, 128.09]} zoom={7} minZoom={4} maxZoom={14} zoomControl={true}>
-            <ZoomControl position={'bottomright'} />
+        <StyledMapContainer center={[36.0, 128.09]} zoom={7} minZoom={4} maxZoom={10}>
             <TileLayer url="http://localhost:3000/v1/api/map/{z}/{x}/{y}" attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Dev by. Hee Sang Shin' />
             <LayersControl position="topright">
                 <LayersControl.Overlay name='range-bearing' checked>
@@ -63,15 +58,20 @@ const Map = () => {
 
 
                 <LayersControl.Overlay name='site' checked>
-                        <Pane name='site' style={{zIndex:500}}>
+                    <LayerGroup pane='site'>
+                        <Pane name='site' style={{ zIndex: 600 }}>
                             <LoadSites />
                         </Pane>
+                    </LayerGroup>
                 </LayersControl.Overlay>
 
                 <LayersControl.Overlay name='sector' checked>
-                        <Pane name='sector' style={{zIndex:500}}>
+                    <LayerGroup pane='sector'>
+                        <Pane name='hover' style={{ zIndex: 999 }}></Pane>
+                        <Pane name='sector' style={{ zIndex: 200 }}>
                             <LoadSector />
                         </Pane>
+                    </LayerGroup>
                 </LayersControl.Overlay>
 
 

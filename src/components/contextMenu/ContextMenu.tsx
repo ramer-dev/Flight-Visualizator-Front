@@ -61,7 +61,12 @@ function ContextMenu({ startPosition, setSelectedMenu, popup, setOpen }: Wrapper
             </CoordinateView>
             <Divider sx={{ width: '100%' }} />
             <Menu>
-                <MenuItem onClick={(e) => { e.stopPropagation(); setSelectedMenu('range-bearing'); setOpen(false); popup.addTo(map); }}>
+                <MenuItem onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedMenu('range-bearing');
+                    setOpen(false);
+                    popup.addTo(map);
+                }}>
                     좌표
                 </MenuItem>
                 <MenuItem onClick={() => { setSelectedMenu('analyze') }}>

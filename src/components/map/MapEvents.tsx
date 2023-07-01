@@ -21,10 +21,6 @@ const MapEvents = ({ isOpen, setOpen }: Props) => {
     const [selectedMenu, setSelectedMenu] = useState<MenuType>(null);
     const currLine = useRef<Polyline | null>(null);
 
-    useEffect(() => {
-        console.log(selectedMenu)
-    }, [selectedMenu])
-
     const events = useMapEvents({
         contextmenu(e) {
             setPosition(e.latlng)
