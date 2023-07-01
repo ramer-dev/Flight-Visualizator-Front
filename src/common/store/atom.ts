@@ -15,3 +15,7 @@ export const contentViewFormat = atom<ContentViewType>({
     key:'contentView',
     default:'NONE'
 })
+
+export const globalMap = atom<L.Map>({
+    key:'map',
+})

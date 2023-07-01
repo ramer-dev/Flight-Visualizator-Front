@@ -11,7 +11,7 @@ import { ReactComponent as ICQuestion } from 'atom/icon/icon_question.svg';
 import FlightContent from "../flight/FlightContent";
 import { ContentType, ContentViewType, NavBarType } from "common/type/NavBarType";
 import { contentFormat, contentViewFormat, page } from 'common/store/atom'
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import NavSideBar from "./NavSideBar";
 import NavEtcItem from "./NavEtcItem";
 
@@ -56,8 +56,7 @@ const ContentView = styled.div`
 
 const NavBar = () => {
     const [selectedPage, setPage] = useRecoilState<NavBarType>(page);
-    const [content, setContent] = useRecoilState<ContentType>(contentFormat); 
-    const [contentView, setContentView] = useRecoilState<ContentViewType>(contentViewFormat);
+    const setContentView = useSetRecoilState<ContentViewType>(contentViewFormat);
 
     const onButtonClick = (str: NavBarType) => {
 
@@ -85,7 +84,7 @@ const NavBar = () => {
             </Wrapper>
             {selectedPage &&
                 <ContentView>
-                    <NavSideBar selectedPage={selectedPage} setPage={setPage} content={content} setContent={setContent} contentView={contentView} setContentView={setContentView}/>
+                    <NavSideBar selectedPage={selectedPage}/>
                 </ContentView>}
 
         </Container>

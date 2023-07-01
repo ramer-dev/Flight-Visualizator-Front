@@ -9,7 +9,7 @@ import { Box, Fab } from '@mui/material';
 import styled from "@emotion/styled";
 import AddIcon from '@mui/icons-material/Add'
 import { contentFormat } from "common/store/atom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import NavCloseButton from "../navbar/NavCloseButton";
 import CustomAxios from "module/axios";
 import { FlightList } from "common/type/FlightType";
@@ -40,7 +40,7 @@ const CustomInput = styled(StyledInputBox)`
 
 
 const FlightContent = () => {
-    const [content, setContentView] = useRecoilState(contentFormat)
+    const setContentView = useSetRecoilState(contentFormat)
     const [list, setList] = useState<FlightList[]>();
     const [value, setValue] = useState('');
     const getFlightList = async () => {

@@ -36,18 +36,12 @@ const Wrapper = styled(motion.div)`
     /* padding: ${(props: StyleProp) => props.isHidden ? '0' : '10px 25px'}; */
 `
 
-type propType = {
-  setPage: (a: NavBarType) => void;
-  selectedPage: NavBarType | null;
-  content: ContentType;
-  setContent: (a: ContentType) => void;
-  contentView: ContentViewType;
-  setContentView: (a: ContentViewType) => void;
+type propType = { 
+  selectedPage: NavBarType | null; 
 }
 
 
 const NavSideBar = (prop: propType) => {
-  const [content, setContent] = useRecoilState(contentFormat);
   const [contentView, setContentView] = useRecoilState(contentViewFormat)
   return (
     <Container>
@@ -78,4 +72,4 @@ const NavSideBar = (prop: propType) => {
   );
 };
 
-export default NavSideBar;
+export default React.memo(NavSideBar);
