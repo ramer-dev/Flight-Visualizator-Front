@@ -11,7 +11,6 @@ import { useContext, useEffect, useRef } from "react";
 import { useMap } from "react-leaflet";
 import { useRecoilValue } from "recoil";
 import { globalMap } from "common/store/atom";
-import { AppContext } from "App";
 
 const InputWrapper = styled.div`
     margin: 10px;
@@ -33,7 +32,7 @@ const AddButton = styled(Button)`
 
 
 export default function Marking() {
-    const map = useContext(AppContext);
+    const map = useMap();
     const onDragEnd = (result: DropResult): void => {
         const { source, destination } = result;
         if (!destination) return;
@@ -61,7 +60,9 @@ export default function Marking() {
                 let origin_ = origin.current.split('/')
                 const point : LatLngLiteral = {lat:+origin_[0], lng:+origin_[1]}
                 
-                L.marker(L.GeometryUtil.destination(point, range.current, distance.current * 1852)).addTo(map);
+                const target = L.GeometryUtil.destination(point, range.current, distance.current * 1852)
+                L.polyline([point, target]).addTo(map);
+                L.marker(target).addTo(map);
 
                 return
             }
