@@ -40,10 +40,9 @@ const ButtonContainer = styled.div`
 `
 
 const ModifyButton = styled.a`
-    padding:5px 8px;
+    padding:3px 8px;
     text-decoration:none;
     transition:0.2s ease;
-    font-size:12px;
     border-width: 1px 0px 1px 1px;
     border-style: solid;
     border-color: #D9D9D9;
@@ -54,7 +53,7 @@ const ModifyButton = styled.a`
 `
 
 const DeleteButton = styled.a`
-    padding:5px 8px;
+    padding:3px 8px;
     text-decoration:none;
     transition:0.2s ease;
     font-size:12px;

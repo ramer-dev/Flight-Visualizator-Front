@@ -32,7 +32,6 @@ const Wrapper = styled(motion.div)`
     transition: 0.3s ease all;
     padding:10px 25px;
     position:${(props:StyleProp) => props.isHidden ? 'fixed' : 'relative'};
-    z-index:190;
     /* padding: ${(props: StyleProp) => props.isHidden ? '0' : '10px 25px'}; */
 `
 

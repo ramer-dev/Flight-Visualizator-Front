@@ -1,5 +1,6 @@
-import { MapContainer, TileLayer, LayersControl, LayerGroup, useMap, Pane } from 'react-leaflet'
+import { MapContainer, TileLayer, LayersControl, LayerGroup, useMap, Pane, ZoomControl } from 'react-leaflet'
 // import 'leaflet/dist/leaflet.css';
+import NavBar from 'components/navbar/NavBar';
 
 import 'lib/leaflet/leaflet.css'
 import icon from 'lib/leaflet/images/marker-icon.png'
@@ -35,10 +36,7 @@ L.Marker.prototype.options.icon = L.icon({
 
 // 1. 픽스점 레이어 그룹 생성
 // 2. 
-type Props = {
-    setMapRef: (a: L.Map) => void
-}
-const Map = ({setMapRef} : Props) => {
+const Map = () => {
     const [contextMenuOpened, setContextMenuOpened] = useState<boolean>(false);
     const [geojson, setGeojson] = useState<FeatureCollection>({
         type: 'FeatureCollection',
@@ -96,7 +94,9 @@ const Map = ({setMapRef} : Props) => {
 
     return (
         (
-            <StyledMapContainer center={[36.0, 128.09]} zoom={7} minZoom={4} maxZoom={10} id='enroute' ref={setMapRef}>
+            <StyledMapContainer center={[36.0, 128.09]} zoom={7} minZoom={4} maxZoom={10} id='enroute' zoomControl={false}>
+                <ZoomControl position='bottomright'/>
+                <NavBar></NavBar>
                 <MapEvents isOpen={contextMenuOpened} setOpen={setContextMenuOpened}/>
 
                 <TileLayer url="http://localhost:3000/v1/api/map/{z}/{x}/{y}" attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Dev by. Hee Sang Shin' />

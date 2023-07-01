@@ -19,8 +19,9 @@ const Container = styled.div`
     display: inline-flex;
     height:100vh;
     width:64px;
-    z-index:200;
+    z-index:1000;
     margin:0;
+    font-family: 'Pretendard';
 `
 const Wrapper = styled.div`
     background-color:#ffffff;   
@@ -29,7 +30,7 @@ const Wrapper = styled.div`
     flex-direction: column;
     border-right: 1px solid #D9D9D9;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    z-index:250;
+    z-index:1100;
 
 `
 const MainNavBar = styled.div`
@@ -51,6 +52,7 @@ const ContentView = styled.div`
     position:fixed;
     margin-left:64px;
     background-color:#ffffff;   
+    z-index:1100;
 
 `
 
