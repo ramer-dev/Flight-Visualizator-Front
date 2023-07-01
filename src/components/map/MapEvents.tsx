@@ -1,8 +1,10 @@
+import { globalMap } from "common/store/atom";
 import ContextMenu from "components/contextMenu/ContextMenu";
 import L from "leaflet";
 import { LatLng, Polyline } from "leaflet";
 import { useEffect, useRef, useState } from "react";
 import { Popup, useMap, useMapEvents } from "react-leaflet";
+import { useSetRecoilState } from "recoil";
 
 type Props = {
     isOpen: boolean,
@@ -12,6 +14,7 @@ type Props = {
 const MapEvents = ({ isOpen, setOpen }: Props) => {
     type MenuType = 'range-bearing' | 'analyze' | null;
     const map = useMap()
+
     const popup = useRef(L.popup({
         closeButton: false,
         autoClose: false,
@@ -20,6 +23,7 @@ const MapEvents = ({ isOpen, setOpen }: Props) => {
     const [position, setPosition] = useState<LatLng>(new LatLng(36.0, 128.09))
     const [selectedMenu, setSelectedMenu] = useState<MenuType>(null);
     const currLine = useRef<Polyline | null>(null);
+
 
     const events = useMapEvents({
         contextmenu(e) {
