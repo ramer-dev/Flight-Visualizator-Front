@@ -4,14 +4,20 @@ import { LatLngLiteral } from 'leaflet';
 import CustomAxios from 'module/axios';
 import { convertToWGS } from 'module/DMS';
 import React, { useEffect, useRef, useState } from 'react'
-import { LayerGroup, LayersControl, Marker, Pane, Polygon, Popup, Rectangle, Tooltip } from 'react-leaflet';
+import { Polygon, Popup, Tooltip } from 'react-leaflet';
 
 
 const LoadEntireSector = async () => {
-    return await CustomAxios.get<Sector[]>('sector');
+    try {
+        const sector = await CustomAxios.get<Sector[]>('sector');
+        return sector.data;
+    } catch (e) {
+        console.log('sector load failed')
+        return [];
+    }
 }
 
-const DashedSector = (st : string) => {
+const DashedSector = (st: string) => {
     if (st === '제주중부') return '10, 10';
     return undefined;
 }
@@ -20,7 +26,7 @@ function LoadSector() {
     const [site, setSite] = useState<Sector[]>([])
     const result = LoadEntireSector();
     useEffect(() => {
-        result.then(t => { setSite(t.data) }).catch(e => console.error(e))
+        result.then(t => { setSite(t) }).catch(e => console.error(e))
     }, [])
 
     return (

@@ -10,13 +10,19 @@ import lowSiteIcon from 'atom/icon/ic_lowsite.png'
 import vortacIcon from 'atom/icon/ic_vortac.png'
 
 const LoadEntireSite = async () => {
-    return await CustomAxios.get<Site[]>('site');
+    try {
+        const res = await CustomAxios.get<Site[]>('site');
+        return res;
+    } catch (e) {
+        return {data:[]};
+    }
+
 }
 
 const SiteIcon = L.icon({
     iconUrl: siteIcon,
     iconSize: [24, 24],
-    iconAnchor: [12,12],
+    iconAnchor: [12, 12],
     popupAnchor: [0, -12],
     tooltipAnchor: [12, 0],
 })
@@ -24,7 +30,7 @@ const SiteIcon = L.icon({
 const LowSiteIcon = L.icon({
     iconUrl: lowSiteIcon,
     iconSize: [24, 24],
-    iconAnchor: [12,12],
+    iconAnchor: [12, 12],
     popupAnchor: [0, -12],
     tooltipAnchor: [12, 0],
 })
@@ -32,7 +38,7 @@ const LowSiteIcon = L.icon({
 const VortacIcon = L.icon({
     iconUrl: vortacIcon,
     iconSize: [24, 24],
-    iconAnchor: [12,12],
+    iconAnchor: [12, 12],
     popupAnchor: [0, -12],
     tooltipAnchor: [12, 0],
 })
@@ -51,7 +57,9 @@ function LoadSites() {
     const [site, setSite] = useState<Site[]>([])
     const result = LoadEntireSite();
     useEffect(() => {
-        result.then(t => { setSite(t.data) }).catch(e => console.error(e))
+        result
+            .then(t => { setSite(t.data) })
+            .catch(e => { setSite([]) })
     }, [])
 
     return (

@@ -36,22 +36,30 @@ const StyledFab = styled(Fab)`
 const CustomInput = styled(StyledInputBox)`
 
 `
-
+const getFlightList = async () => {
+    try {
+        const flightList = await CustomAxios.get<FlightList[]>('flight/list');
+        return flightList.data;
+    } catch (e) {
+        console.error(e);
+        console.log('Failed to Load Flight List');
+        return []
+    }
+}
 
 
 const FlightContent = () => {
     const setContentView = useSetRecoilState(contentFormat)
     const [list, setList] = useState<FlightList[]>();
     const [value, setValue] = useState('');
-    const getFlightList = async () => {
-        const flightList = await CustomAxios.get<FlightList[]>('flight/list');
 
-        setList(flightList.data);
-    }
     useEffect(() => {
-        getFlightList()
+        const flightList = getFlightList();
+        flightList
+            .then(t => setList(t))
+            .catch(e => console.error(e))
     }, [])
-    
+
     const AddFlightResultEvent = (e: any) => {
         e.stopPropagation();
         setContentView('ADD');
