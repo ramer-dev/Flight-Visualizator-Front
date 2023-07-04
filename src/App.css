@@ -319,3 +319,7 @@ body::-webkit-scrollbar-track {
 .leaflet-oldie .leaflet-draw-toolbar {
   border: 1px solid #999
 }
+
+path.leaflet-interactive:focus{
+  outline:none;  
+}
