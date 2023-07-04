@@ -60,6 +60,7 @@ export default function Marking() {
             site = filter[0].siteCoordinate as LatLngLiteral;
         }
 
+        // 사이트 값이 고정되는 버그 있음
         if(!marking.selection && originRef.current) {
             originRef.current.value = marking.coordinate.lat.toFixed(5) + '/' +marking.coordinate.lng.toFixed(5);
         }
