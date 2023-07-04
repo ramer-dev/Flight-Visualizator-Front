@@ -19,6 +19,7 @@ const Container = styled.div`
 `
 
 const Wrapper = styled.div`
+    height:100%;
 `
 
 const Content = styled.div`
@@ -27,15 +28,16 @@ const Content = styled.div`
     margin-top:15px;
 `
 
+const Scroll = styled.div`
+    overflow-y:scroll;
+`
+
 const StyledFab = styled(Fab)`
     position:absolute;
     bottom:20px;
     right:10px;
 `
 
-const CustomInput = styled(StyledInputBox)`
-
-`
 const getFlightList = async () => {
     try {
         const flightList = await CustomAxios.get<FlightList[]>('flight/list');
@@ -73,6 +75,7 @@ const FlightContent = () => {
                 <Title>비행검사</Title>
                 <StyledInputBox onChange={(e) => setValue(e.target.value)} label="비행검사 이름" fullWidth size='small' color="primary"></StyledInputBox>
                 <Content>
+                    <Scroll>
                     {
                         list?.map((it, i) => {
                             return it.testName.includes(value) ? <div key={it.id}>
@@ -87,6 +90,7 @@ const FlightContent = () => {
                             <FlightItem key={i*2} />
                         </>
                     })} */}
+                    </Scroll>
                 </Content>
             </Wrapper>
 

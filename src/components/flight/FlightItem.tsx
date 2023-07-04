@@ -2,10 +2,11 @@ import React, { useEffect } from 'react'
 import { ReactComponent as ICMarking } from 'atom/icon/icon_marking.svg';
 
 import styled from '@emotion/styled'
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { ContentType } from 'common/type/NavBarType';
-import { contentFormat } from 'common/store/atom';
+import { contentFormat, flightResultData, flightResultDataID } from 'common/store/atom';
 import { FlightList } from 'common/type/FlightType';
+import CustomAxios from 'module/axios';
 
 const Container = styled.div`
     padding:20px 10px;
@@ -47,6 +48,7 @@ const ModifyButton = styled.a`
     border-style: solid;
     border-color: #D9D9D9;
     border-radius: 10px 0px 0px 10px;
+    cursor:pointer;
     &:hover{
         background-color:#d9d9d9;
     }
@@ -61,6 +63,7 @@ const DeleteButton = styled.a`
     border-style: solid;
     border-color: #D9D9D9;
     border-radius:0 10px 10px 0;
+    cursor:pointer;
     &:hover{
         background-color:#ff3737;
         border-color: #ff3737;
@@ -75,6 +78,7 @@ const PinButton = styled.div`
     border:#d9d9d9 solid 1px;
     border-radius:50%;
     transition:0.2s ease;
+    cursor:pointer;
     &:hover{
         background-color:#d9d9d9;
     }
@@ -88,10 +92,12 @@ const PinButton = styled.div`
     }
 `
 
-const FlightItem = ({testName, testType, testDate, id}:FlightList) => {
+const FlightItem = ({ testName, testType, testDate, id }: FlightList) => {
     const [content, setContent] = useRecoilState<ContentType>(contentFormat);
-    const ViewFlightItem = (e: any) => {
+    const setFlightData = useSetRecoilState(flightResultDataID);
+    const ViewFlightItem = (e: any, id: number) => {
         e.stopPropagation();
+        setFlightData(id)
         setContent('VIEW');
     }
 
@@ -106,12 +112,12 @@ const FlightItem = ({testName, testType, testDate, id}:FlightList) => {
     }
 
     return (
-        <Container onClick={ViewFlightItem}>
+        <Container onClick={(e) => ViewFlightItem(e, id)}>
 
             <Title>{testName}</Title>
             <ContentWrapper>
                 <FlightType>{testType}</FlightType>
-                <FlightDate>{testDate.toString()}</FlightDate>
+                <FlightDate>{testDate.toString().split('T')[0]}</FlightDate>
             </ContentWrapper>
             <ButtonContainer>
                 <ModifyButton onClick={EditFlightItem}>수정</ModifyButton>

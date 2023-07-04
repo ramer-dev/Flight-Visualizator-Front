@@ -7,10 +7,11 @@ import { Divider } from "@mui/material";
 import { Button } from "@mui/material";
 import { DragDropContext, DropResult } from 'react-beautiful-dnd'
 import L, { LatLngExpression, LatLngLiteral } from "leaflet";
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useMap } from "react-leaflet";
 import { useRecoilValue } from "recoil";
-import { globalMap } from "common/store/atom";
+import { globalMap, siteState } from "common/store/atom";
+import { Destination } from "module/Destination";
 
 const InputWrapper = styled.div`
     margin: 10px;
@@ -31,8 +32,10 @@ const AddButton = styled(Button)`
 `
 
 
+
 export default function Marking() {
     const map = useMap();
+    const sites = useRecoilValue(siteState)
     const onDragEnd = (result: DropResult): void => {
         const { source, destination } = result;
         if (!destination) return;
@@ -41,41 +44,25 @@ export default function Marking() {
             
         }
     }
-    const origin = useRef<string | LatLngExpression | null>(null)
+    const [origin, setOrigin] = useState<string | LatLngExpression | null>(null)
     const range = useRef<number|null>(null)
     const distance = useRef<number|null>(null)
-    // const range = useRef<number|null>(null)
-
+    let site : LatLngLiteral | null = null;
     useEffect(() => {
-        console.log(map);
-    })
-    const handleClick = () => {
-        if(!origin.current) return;
-        if(!range.current) return;
-        if(!distance.current) return;
-        if(!map) return;
-
-        if(typeof origin.current === 'string') {
-            if(origin.current?.includes('/')){
-                let origin_ = origin.current.split('/')
-                const point : LatLngLiteral = {lat:+origin_[0], lng:+origin_[1]}
-                
-                const target = L.GeometryUtil.destination(point, range.current, distance.current * 1852)
-                L.polyline([point, target]).addTo(map);
-                L.marker(target).addTo(map);
-
-                return
-            }
+        const filter = sites.filter(t => t.siteName === origin);
+        console.log(filter)
+        if(filter.length){
+            site = filter[0].siteCoordinate as LatLngLiteral;
         }
-    }
-    
+    },[origin])
+    // const range = useRef<number|null>(null)
 
     return (
         <div>
             <Title>마킹</Title>
             <SearchBox>
                 <InputWrapper>
-                    <StyledInputBox onChange={(e) => {origin.current = e.target.value}} label='기준점' fullWidth size='small' />
+                    <StyledInputBox onChange={(e) => {setOrigin(e.target.value)}} label='기준점' fullWidth size='small' />
                 </InputWrapper>
                 <InputWrapper>
                     <FlexBox>
@@ -86,7 +73,10 @@ export default function Marking() {
                 <InputWrapper>
                     <StyledInputBox label='색상' fullWidth size='small' />
                 </InputWrapper>
-                <AddButton variant='outlined' sx={{ borderRadius: '16px', width: 100 }} onClick={handleClick}>추가</AddButton>
+                <AddButton variant='outlined' sx={{ borderRadius: '16px', width: 100 }} onClick={() => {
+                    console.log(origin, site, range, distance  )
+                    Destination(map, site ? site : origin, range.current, distance.current)
+                }}>추가</AddButton>
             </SearchBox>
             <Divider />
 

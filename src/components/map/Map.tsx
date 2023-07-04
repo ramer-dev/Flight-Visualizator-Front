@@ -97,7 +97,7 @@ const Map = () => {
         (
             <StyledMapContainer center={[36.0, 128.09]} zoom={7} minZoom={4} maxZoom={10} id='enroute' zoomControl={false}>
                 <ZoomControl position='bottomright'/>
-                <NavBar></NavBar>
+                <NavBar/>
                 <Initializer/>
                 <MapEvents isOpen={contextMenuOpened} setOpen={setContextMenuOpened}/>
 

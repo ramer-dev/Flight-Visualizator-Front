@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useState, useEffect, useReducer } from 'react';
+import { useState, useEffect, useReducer, useRef } from 'react';
 import NavItem from "./NavItem";
 import { ReactComponent as ICFlightCheck } from 'atom/icon/icon_flightcheck.svg';
 import { ReactComponent as ICMarking } from 'atom/icon/icon_marking.svg';
@@ -14,6 +14,7 @@ import { contentFormat, contentViewFormat, page } from 'common/store/atom'
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import NavSideBar from "./NavSideBar";
 import NavEtcItem from "./NavEtcItem";
+import L from 'leaflet';
 
 const Container = styled.div`
     display: inline-flex;
@@ -22,6 +23,7 @@ const Container = styled.div`
     z-index:1000;
     margin:0;
     font-family: 'Pretendard';
+    cursor:auto;
 `
 const Wrapper = styled.div`
     background-color:#ffffff;   
@@ -58,26 +60,34 @@ const ContentView = styled.div`
 
 const NavBar = () => {
     const [selectedPage, setPage] = useRecoilState<NavBarType>(page);
+    const container = useRef<HTMLDivElement>(null);
     const setContentView = useSetRecoilState<ContentViewType>(contentViewFormat);
 
     const onButtonClick = (str: NavBarType) => {
 
-        if(selectedPage !== str) {
+        if (selectedPage !== str) {
             setPage(str);
             setContentView('NONE');
         }
     }
 
+    useEffect(() => {
+        if (container.current) {
+            L.DomEvent.disableClickPropagation(container.current);
+            L.DomEvent.disableScrollPropagation(container.current);
+        }
+    }, [])
+
     return (
-        <Container>
+        <Container ref={container}>
             <Wrapper>
                 <LogoImg>LOGO</LogoImg>
                 <MainNavBar>
                     <NavItem icon={ICFlightCheck} title={"FLIGHT_RESULT"} content={"비행검사"} onclick={() => { onButtonClick("FLIGHT_RESULT") }} />
-                    <NavItem icon={ICSearch} title={"SEARCH"} content={"검색"} onclick={() => { onButtonClick("SEARCH") }}  />
-                    <NavItem icon={ICMarking} title={"MARKING"} content={"마킹"} onclick={() => { onButtonClick("MARKING") }}  />
-                    <NavItem icon={ICNotice} title={"NOTICE"} content={"공지사항"} onclick={() => { onButtonClick("NOTICE") }}  />
-                    <NavItem icon={ICSetting} title={"SETTING"} content={"설정"} onclick={() => { onButtonClick("SETTING") }}  />
+                    <NavItem icon={ICSearch} title={"SEARCH"} content={"검색"} onclick={() => { onButtonClick("SEARCH") }} />
+                    <NavItem icon={ICMarking} title={"MARKING"} content={"마킹"} onclick={() => { onButtonClick("MARKING") }} />
+                    <NavItem icon={ICNotice} title={"NOTICE"} content={"공지사항"} onclick={() => { onButtonClick("NOTICE") }} />
+                    <NavItem icon={ICSetting} title={"SETTING"} content={"설정"} onclick={() => { onButtonClick("SETTING") }} />
                 </MainNavBar>
                 <SubNavBar>
                     <NavEtcItem icon={ICQuestion} title={"도움말"} onclick={() => { }} isClicked={false} />
@@ -86,7 +96,7 @@ const NavBar = () => {
             </Wrapper>
             {selectedPage &&
                 <ContentView>
-                    <NavSideBar selectedPage={selectedPage}/>
+                    <NavSideBar selectedPage={selectedPage} />
                 </ContentView>}
 
         </Container>

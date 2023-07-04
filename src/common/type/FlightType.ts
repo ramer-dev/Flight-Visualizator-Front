@@ -32,7 +32,7 @@ export interface FlightResult {
 export interface FlightList {
   id: number,
   testName: string,
-  testDate: Date,
+  testDate: Date | string,
   testType: string,
   testRoute?: string,
   userId: string,

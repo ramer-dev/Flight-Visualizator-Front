@@ -8,6 +8,8 @@ import L from 'leaflet';
 import siteIcon from 'atom/icon/ic_site.png'
 import lowSiteIcon from 'atom/icon/ic_lowsite.png'
 import vortacIcon from 'atom/icon/ic_vortac.png'
+import { useSetRecoilState } from 'recoil';
+import { siteState } from 'common/store/atom';
 
 const LoadEntireSite = async () => {
     try {
@@ -55,10 +57,13 @@ const iconSelector = (st: string) => {
 }
 function LoadSites() {
     const [site, setSite] = useState<Site[]>([])
+    const siteSetter = useSetRecoilState(siteState);
     const result = LoadEntireSite();
     useEffect(() => {
         result
-            .then(t => { setSite(t.data) })
+            .then(t => { setSite(t.data); 
+                siteSetter(t.data)
+            })
             .catch(e => { setSite([]) })
     }, [])
 
