@@ -9,9 +9,10 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 type Props = {
     isOpen: boolean,
     setOpen: (a: boolean) => void,
+    setZoom: (a:number) => void,
 }
 
-const MapEvents = ({ isOpen, setOpen }: Props) => {
+const MapEvents = ({ isOpen, setOpen, setZoom }: Props) => {
     type MenuType = 'range-bearing' | 'analyze' | null;
     const map = useMap()
 
@@ -63,6 +64,10 @@ const MapEvents = ({ isOpen, setOpen }: Props) => {
                 setOpen(false);
             }
         },
+        zoomend(e){
+            setZoom(e.target._animateToZoom)
+        },
+        
 
 
     })

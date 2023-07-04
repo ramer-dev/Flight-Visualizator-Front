@@ -18,6 +18,7 @@ import React from 'react';
 import { useSetRecoilState } from 'recoil';
 import { globalMap } from 'common/store/atom';
 import Initializer from './initialize/Initializer';
+import CustomZoomControl from './control/CustomZoomControl';
 
 const StyledMapContainer = styled(MapContainer)`
     width:100%;
@@ -39,11 +40,16 @@ L.Marker.prototype.options.icon = L.icon({
 // 2. 
 const Map = () => {
     const [contextMenuOpened, setContextMenuOpened] = useState<boolean>(false);
+    const [zoom, setZoom] = useState<number>(7);
     const [geojson, setGeojson] = useState<FeatureCollection>({
         type: 'FeatureCollection',
         features: [
         ],
-    }); 
+    });
+
+    useEffect(() => {
+        console.log(zoom)
+    }, [zoom])
 
     // const displayMap = useMemo(
     //     () => (
@@ -95,13 +101,13 @@ const Map = () => {
 
     return (
         (
-            <StyledMapContainer center={[36.0, 128.09]} zoom={7} minZoom={4} maxZoom={10} id='enroute' zoomControl={false}>
-                <ZoomControl position='bottomright'/>
-                <NavBar/>
-                <Initializer/>
-                <MapEvents isOpen={contextMenuOpened} setOpen={setContextMenuOpened}/>
+            <StyledMapContainer center={[36.0, 128.09]} zoom={zoom} minZoom={4} maxZoom={10} id='enroute' zoomControl={false}>
+                <NavBar />
+                <Initializer />
+                <MapEvents isOpen={contextMenuOpened} setOpen={setContextMenuOpened} setZoom={setZoom} />
 
                 <TileLayer url="http://localhost:3000/v1/api/map/{z}/{x}/{y}" attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Dev by. Hee Sang Shin' />
+
                 <LayersControl position="topright">
                     <LayersControl.Overlay name='range-bearing' checked>
                         <LayerGroup pane='range-bearing'>
@@ -124,7 +130,7 @@ const Map = () => {
                         <LayerGroup pane='sector'>
                             <Pane name='hover' style={{ zIndex: 999 }}></Pane>
                             <Pane name='sector' style={{ zIndex: 200 }}>
-                            
+
                             </Pane>
                         </LayerGroup>
                     </LayersControl.Overlay>
@@ -137,6 +143,7 @@ const Map = () => {
                     </LayersControl.Overlay>
                 </LayersControl>
                 <EditControlFC geojson={geojson} setGeojson={setGeojson} />
+                <CustomZoomControl position="bottomright" zoom={zoom} />
 
             </StyledMapContainer>
         )
