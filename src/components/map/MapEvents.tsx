@@ -1,10 +1,10 @@
-import { globalMap } from "common/store/atom";
+import { globalMap, markingSelectCursor } from "common/store/atom";
 import ContextMenu from "components/contextMenu/ContextMenu";
 import L from "leaflet";
 import { LatLng, Polyline } from "leaflet";
 import { useEffect, useRef, useState } from "react";
 import { Popup, useMap, useMapEvents } from "react-leaflet";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 type Props = {
     isOpen: boolean,
@@ -22,6 +22,7 @@ const MapEvents = ({ isOpen, setOpen }: Props) => {
     }));
     const [position, setPosition] = useState<LatLng>(new LatLng(36.0, 128.09))
     const [selectedMenu, setSelectedMenu] = useState<MenuType>(null);
+    const [marking, setMarking] = useRecoilState(markingSelectCursor)
     const currLine = useRef<Polyline | null>(null);
 
 
@@ -31,7 +32,7 @@ const MapEvents = ({ isOpen, setOpen }: Props) => {
             popup.current.setLatLng(e.latlng);
             setOpen(true);
         },
-        mousemove(e: any) {
+        mousemove(e) {
             if (selectedMenu === 'range-bearing') {
                 const angle = L.GeometryUtil.angle(map, position, e.latlng)
                 const distance = map.distance(position, e.latlng) / 1000
@@ -42,11 +43,21 @@ const MapEvents = ({ isOpen, setOpen }: Props) => {
 
                 popup.current.setLatLng(e.latlng).setContent(`${angle.toFixed(1)}|${(distance * 0.539957).toFixed(1)}`)
             }
+
+            if (marking.selection) {
+                console.log(e.latlng)
+            }
+
         },
 
         click(e) {
             if (selectedMenu === 'range-bearing') {
                 setSelectedMenu(null)
+            }
+
+            if (marking.selection) {
+
+                setMarking({ selection: false, coordinate: e.latlng })
             }
             if (isOpen) {
                 setOpen(false);

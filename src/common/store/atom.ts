@@ -42,3 +42,9 @@ export const siteState = atom<Site[]>({
     default:[]
     
 })
+
+
+export const markingSelectCursor = atom({
+    key:'markingSelectCursor',
+    default:{selection : false, coordinate: {lat:36.0, lng:128.09}}
+}) 
