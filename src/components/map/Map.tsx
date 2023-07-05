@@ -99,55 +99,58 @@ const Map = () => {
     // )
     // , [])
 
-    return (
-        (
-            <StyledMapContainer center={[36.0, 128.09]} zoom={zoom} minZoom={4} maxZoom={10} id='enroute' zoomControl={false}>
-                <NavBar />
-                <Initializer />
-                <MapEvents isOpen={contextMenuOpened} setOpen={setContextMenuOpened} setZoom={setZoom} />
+    const MapFunction = useMemo(() => (
+        <StyledMapContainer center={[36.0, 128.09]} zoom={zoom} minZoom={4} maxZoom={10} id='enroute' zoomControl={false}>
+            <NavBar />
+            <Initializer />
+            <MapEvents isOpen={contextMenuOpened} setOpen={setContextMenuOpened} setZoom={setZoom} />
 
-                <TileLayer url="http://localhost:3000/v1/api/map/{z}/{x}/{y}" attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Dev by. Hee Sang Shin' />
+            <TileLayer url="http://localhost:3000/v1/api/map/{z}/{x}/{y}" attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Dev by. Hee Sang Shin' />
 
-                <LayersControl position="topright">
-                    <LayersControl.Overlay name='range-bearing' checked>
-                        <LayerGroup pane='range-bearing'>
-                            <Pane name='range-bearing'>
+            <LayersControl position="topright">
+                <LayersControl.Overlay name='range-bearing' checked>
+                    <LayerGroup pane='range-bearing'>
+                        <Pane name='range-bearing'>
 
-                            </Pane>
-                        </LayerGroup>
-                    </LayersControl.Overlay>
-
-
-                    <LayersControl.Overlay name='site' checked>
-                        <LayerGroup pane='site'>
-                            <Pane name='site' style={{ zIndex: 600 }}>
-
-                            </Pane>
-                        </LayerGroup>
-                    </LayersControl.Overlay>
-
-                    <LayersControl.Overlay name='sector' checked>
-                        <LayerGroup pane='sector'>
-                            <Pane name='hover' style={{ zIndex: 999 }}></Pane>
-                            <Pane name='sector' style={{ zIndex: 200 }}>
-
-                            </Pane>
-                        </LayerGroup>
-                    </LayersControl.Overlay>
+                        </Pane>
+                    </LayerGroup>
+                </LayersControl.Overlay>
 
 
-                    <LayersControl.Overlay name='draw2' checked>
-                        <LayerGroup >
+                <LayersControl.Overlay name='site' checked>
+                    <LayerGroup pane='site'>
+                        <Pane name='site' style={{ zIndex: 600 }}>
 
-                        </LayerGroup>
-                    </LayersControl.Overlay>
-                </LayersControl>
-                <EditControlFC geojson={geojson} setGeojson={setGeojson} />
-                <CustomZoomControl position="bottomright" zoom={zoom} />
+                        </Pane>
+                    </LayerGroup>
+                </LayersControl.Overlay>
 
-            </StyledMapContainer>
-        )
+                <LayersControl.Overlay name='sector' checked>
+                    <LayerGroup pane='sector'>
+                        <Pane name='hover' style={{ zIndex: 999 }}></Pane>
+                        <Pane name='sector' style={{ zIndex: 200 }}>
+
+                        </Pane>
+                    </LayerGroup>
+                </LayersControl.Overlay>
+
+
+                <LayersControl.Overlay name='draw2' checked>
+                    <LayerGroup >
+
+                    </LayerGroup>
+                </LayersControl.Overlay>
+            </LayersControl>
+            <EditControlFC geojson={geojson} setGeojson={setGeojson} />
+            <CustomZoomControl position="bottomright" zoom={zoom} />
+
+        </StyledMapContainer>
     )
+        , [])
+
+    return MapFunction;
+       
+    
 }
 
 export default Map;

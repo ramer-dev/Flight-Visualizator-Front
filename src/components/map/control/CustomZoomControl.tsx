@@ -48,14 +48,14 @@ function CustomZoomControl({ position, zoom }: ControlOptions & StyleProp) {
         display:flex;
         flex-direction:column;
         justify-content:center;
-        align-items:center;
+        cursor:pointer;
+        align-items:center;A
     `
 
     const EnabledBar = styled.div`
         background: #5096ff;
         height:${(props: StyleProp) => ((props.zoom - 4) / 6) * 100 + '%'};
         width:7px;
-        cursor:pointer;
         transition: 0.2s ease all;
     `
     const DisabledBar = styled.div`
@@ -63,7 +63,6 @@ function CustomZoomControl({ position, zoom }: ControlOptions & StyleProp) {
         height:${(props: StyleProp) => ((10 - props.zoom) / 6) * 100 + '%'};
         background: #D9D9D9;
         transition: 0.2s ease all;
-        cursor:pointer;
     `
     const IconWrapper = styled.div`
         padding:5px 10px;
@@ -91,6 +90,7 @@ function CustomZoomControl({ position, zoom }: ControlOptions & StyleProp) {
     }
 
     const onClickHandler = (e: any, ) => {
+        e.stopPropagation();
         const rect = barRef.current?.getBoundingClientRect()
         const { clientX, clientY } = e;
         if (rect?.y) {
@@ -107,7 +107,7 @@ function CustomZoomControl({ position, zoom }: ControlOptions & StyleProp) {
                 <IconWrapper onClick={zoomIn}>
                     <ICPlus />
                 </IconWrapper>
-                <BarWrapper onClick={(e) => onClickHandler(e)} ref={barRef}>
+                <BarWrapper onClick={onClickHandler} onDragEnd={onClickHandler} ref={barRef}>
                     <DisabledBar zoom={zoom} />
                     <Handler draggable />
                     <EnabledBar zoom={zoom} />
