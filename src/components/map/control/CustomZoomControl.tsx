@@ -20,6 +20,7 @@ type StyleProp = {
 function CustomZoomControl({ position, zoom }: ControlOptions & StyleProp) {
     const map = useMap();
     const containerRef = useRef<HTMLDivElement>(null);
+    const barRef = useRef<HTMLDivElement>(null);
     const positionClass = (position && POSITION_CLASSES[position]) || POSITION_CLASSES.topright
     useEffect(() => {
         if (containerRef.current) {
@@ -52,14 +53,16 @@ function CustomZoomControl({ position, zoom }: ControlOptions & StyleProp) {
 
     const EnabledBar = styled.div`
         background: #5096ff;
-        height:${(props: StyleProp) => ((props.zoom - 4) / 7) * 100 + '%'};
+        height:${(props: StyleProp) => ((props.zoom - 4) / 6) * 100 + '%'};
         width:7px;
         cursor:pointer;
+        transition: 0.2s ease all;
     `
     const DisabledBar = styled.div`
         width:7px;
-        height:${(props: StyleProp) => ((11 - props.zoom) / 7) * 100 + '%'};
+        height:${(props: StyleProp) => ((10 - props.zoom) / 6) * 100 + '%'};
         background: #D9D9D9;
+        transition: 0.2s ease all;
         cursor:pointer;
     `
     const IconWrapper = styled.div`
@@ -77,25 +80,36 @@ function CustomZoomControl({ position, zoom }: ControlOptions & StyleProp) {
         cursor:pointer;
     `
 
-    const zoomIn = (e:any) => {
+    const zoomIn = (e: any) => {
         e.stopPropagation();
         map.zoomIn();
-    } 
+    }
 
-    const zoomOut = (e:any) => {
+    const zoomOut = (e: any) => {
         e.stopPropagation();
         map.zoomOut();
-    } 
+    }
 
+    const onClickHandler = (e: any, ) => {
+        const rect = barRef.current?.getBoundingClientRect()
+        const { clientX, clientY } = e;
+        if (rect?.y) {
+            const diff = clientY - rect.y;
+            const zoomLevel = (5 - Math.round(diff / (rect.height / 6))) + 5
+            console.log(diff, zoomLevel)
+
+            map.setZoom(zoomLevel)
+        }
+    }
     return (
         <Container ref={containerRef} className={positionClass}>
             <Wrapper className="leaflet-control leaflet-bar">
                 <IconWrapper onClick={zoomIn}>
                     <ICPlus />
                 </IconWrapper>
-                <BarWrapper>
+                <BarWrapper onClick={(e) => onClickHandler(e)} ref={barRef}>
                     <DisabledBar zoom={zoom} />
-                    <Handler/>
+                    <Handler draggable />
                     <EnabledBar zoom={zoom} />
                 </BarWrapper>
                 <IconWrapper onClick={zoomOut}>

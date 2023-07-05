@@ -1,9 +1,9 @@
 import { ContentType, ContentViewType } from "common/type/NavBarType";
-import { StyledInputBox } from "components/common/InputText";
+import { StyledInputBox, StyledSelectBox } from "components/common/InputText";
 import Title from "components/common/Title";
 import styled from "@emotion/styled";
 import { borderRadius } from "@mui/system";
-import { Divider, InputProps } from "@mui/material";
+import { Divider, InputProps, MenuItem } from "@mui/material";
 import { Button } from "@mui/material";
 import { DragDropContext, DropResult } from 'react-beautiful-dnd'
 import L, { LatLngExpression, LatLngLiteral } from "leaflet";
@@ -61,10 +61,16 @@ export default function Marking() {
         }
 
         // 사이트 값이 고정되는 버그 있음
-        if(!marking.selection && originRef.current) {
-            originRef.current.value = marking.coordinate.lat.toFixed(5) + '/' +marking.coordinate.lng.toFixed(5);
+        // if( originRef.current) {
+        //     originRef.current.value = marking.coordinate.lat.toFixed(5) + '/' +marking.coordinate.lng.toFixed(5);
+        // }
+    }, [origin])
+
+    useEffect(() => {
+        if (!marking.selection && originRef.current) {
+            originRef.current.value = marking.coordinate.lat.toFixed(5) + '/' + marking.coordinate.lng.toFixed(5);
         }
-    }, [origin, marking])
+    }, [marking])
     // const range = useRef<number|null>(null)
 
     return (
@@ -73,10 +79,14 @@ export default function Marking() {
             <SearchBox>
                 <InputWrapper>
                     <FlexBox>
-                        <StyledInputBox autoFocus inputRef={originRef} onChange={(e) => { setOrigin(e.target.value) }} label='기준점' fullWidth size='small' />
-                        <PinButton onClick={() => {setMarking({selection:true, coordinate: marking.coordinate})}}>Select</PinButton>
+                        <StyledSelectBox autoFocus inputRef={originRef} onChange={(e: any) => { setOrigin(e.target.value) }} label='기준점' fullWidth size='small'>
+                            {sites.map((site) => (
+                                <MenuItem>{site.siteName}</MenuItem>
+                            ))}
+                        </StyledSelectBox>
+                        <PinButton onClick={() => { setMarking({ selection: true, coordinate: marking.coordinate }) }}>Select</PinButton>
                     </FlexBox>
-                    </InputWrapper>
+                </InputWrapper>
                 <InputWrapper>
                     <FlexBox>
                         <StyledInputBox sx={{ borderRadius: '15px' }} label='방위' size='small' onChange={(e) => { range.current = +e.target.value }} />
