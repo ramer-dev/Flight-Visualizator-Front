@@ -47,58 +47,6 @@ const Map = () => {
         ],
     });
 
-    useEffect(() => {
-        console.log(zoom)
-    }, [zoom])
-
-    // const displayMap = useMemo(
-    //     () => (
-    //     (
-    //         <StyledMapContainer center={[36.0, 128.09]} zoom={7} minZoom={4} maxZoom={10} id='enroute' ref={map}>
-    //             <MapEvents isOpen={contextMenuOpened} setOpen={setContextMenuOpened} />
-
-    //             <TileLayer url="http://localhost:3000/v1/api/map/{z}/{x}/{y}" attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Dev by. Hee Sang Shin' />
-    //             <LayersControl position="topright">
-    //                 <LayersControl.Overlay name='range-bearing' checked>
-    //                     <LayerGroup pane='range-bearing'>
-    //                         <Pane name='range-bearing'>
-
-    //                         </Pane>
-    //                     </LayerGroup>
-    //                 </LayersControl.Overlay>
-
-
-    //                 <LayersControl.Overlay name='site' checked>
-    //                     <LayerGroup pane='site'>
-    //                         <Pane name='site' style={{ zIndex: 600 }}>
-    //                             <LoadSites />
-    //                         </Pane>
-    //                     </LayerGroup>
-    //                 </LayersControl.Overlay>
-
-    //                 <LayersControl.Overlay name='sector' checked>
-    //                     <LayerGroup pane='sector'>
-    //                         <Pane name='hover' style={{ zIndex: 999 }}></Pane>
-    //                         <Pane name='sector' style={{ zIndex: 200 }}>
-    //                             <LoadSector />
-    //                         </Pane>
-    //                     </LayerGroup>
-    //                 </LayersControl.Overlay>
-
-
-    //                 <LayersControl.Overlay name='draw2' checked>
-    //                     <LayerGroup >
-
-    //                     </LayerGroup>
-    //                 </LayersControl.Overlay>
-    //             </LayersControl>
-    //             <EditControlFC geojson={geojson} setGeojson={setGeojson} />
-
-    //         </StyledMapContainer>
-    //     )
-    // )
-    // , [])
-
     const MapFunction = useMemo(() => (
         <StyledMapContainer center={[36.0, 128.09]} zoom={zoom} minZoom={4} maxZoom={10} id='enroute' zoomControl={false}>
             <NavBar />
@@ -129,7 +77,6 @@ const Map = () => {
                     <LayerGroup pane='sector'>
                         <Pane name='hover' style={{ zIndex: 999 }}></Pane>
                         <Pane name='sector' style={{ zIndex: 200 }}>
-
                         </Pane>
                     </LayerGroup>
                 </LayersControl.Overlay>
@@ -145,12 +92,11 @@ const Map = () => {
             <CustomZoomControl position="bottomright" zoom={zoom} />
 
         </StyledMapContainer>
-    )
-        , [])
+    ), [])
 
     return MapFunction;
-       
-    
+
+
 }
 
 export default Map;
