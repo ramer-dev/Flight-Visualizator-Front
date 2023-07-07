@@ -27,7 +27,8 @@ function CustomZoomControl({ position, zoom }: ControlOptions & StyleProp) {
             L.DomEvent.disableClickPropagation(containerRef.current);
             L.DomEvent.disableScrollPropagation(containerRef.current);
         }
-    }, [containerRef.current])
+        console.log(zoom);
+    }, [containerRef.current, zoom])
 
     const Container = styled.div`
         margin-bottom:15px;
@@ -96,7 +97,6 @@ function CustomZoomControl({ position, zoom }: ControlOptions & StyleProp) {
         if (rect?.y) {
             const diff = clientY - rect.y;
             const zoomLevel = (5 - Math.round(diff / (rect.height / 6))) + 5
-            console.log(diff, zoomLevel)
 
             map.setZoom(zoomLevel)
         }

@@ -40,7 +40,7 @@ L.Marker.prototype.options.icon = L.icon({
 // 2. 
 const Map = () => {
     const [contextMenuOpened, setContextMenuOpened] = useState<boolean>(false);
-    const [zoom, setZoom] = useState<number>(7);
+    const [zoom, setZoom] = useState<number>(6);
     const [geojson, setGeojson] = useState<FeatureCollection>({
         type: 'FeatureCollection',
         features: [
@@ -92,7 +92,7 @@ const Map = () => {
             <CustomZoomControl position="bottomright" zoom={zoom} />
 
         </StyledMapContainer>
-    ), [])
+    ), [zoom, contextMenuOpened])
 
     return MapFunction;
 

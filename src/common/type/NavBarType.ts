@@ -6,6 +6,7 @@ export type NavBarType = 'FLIGHT_RESULT'
 | null
 
 export type ContentType = null
+| 'NONE'
 | 'ADD'
 | 'VIEW'
 | 'EDIT'

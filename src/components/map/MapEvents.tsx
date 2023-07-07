@@ -65,10 +65,9 @@ const MapEvents = ({ isOpen, setOpen, setZoom }: Props) => {
             }
         },
         zoomend(e){
+            console.log(e.target._animateToZoom)
             setZoom(e.target._animateToZoom)
         },
-        
-
 
     })
 

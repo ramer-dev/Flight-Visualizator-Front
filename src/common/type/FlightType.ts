@@ -29,6 +29,10 @@ export interface FlightResult {
   deletedAt?: Date,
 }
 
+export interface TableFlightResult extends FlightResult {
+  isNew?:boolean,
+}
+
 export interface FlightList {
   id: number,
   testName: string,
@@ -39,4 +43,8 @@ export interface FlightList {
   updatedAt?: Date,
   deletedAt?: Date
   data?: FlightResult[]
+}
+
+export interface TableFlightList extends FlightList {
+  data:TableFlightResult[],
 }

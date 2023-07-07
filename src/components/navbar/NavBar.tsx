@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useState, useEffect, useReducer, useRef } from 'react';
+import { useState, useEffect, useReducer, useRef, useMemo } from 'react';
 import NavItem from "./NavItem";
 import { ReactComponent as ICFlightCheck } from 'atom/icon/icon_flightcheck.svg';
 import { ReactComponent as ICMarking } from 'atom/icon/icon_marking.svg';
@@ -78,7 +78,7 @@ const NavBar = () => {
         }
     }, [])
 
-    return (
+    const NavBarFunc = useMemo(() => (
         <Container ref={container}>
             <Wrapper>
                 <LogoImg>LOGO</LogoImg>
@@ -100,6 +100,8 @@ const NavBar = () => {
                 </ContentView>}
 
         </Container>
-    )
+    ), [selectedPage])
+
+    return NavBarFunc
 }
 export default NavBar;
