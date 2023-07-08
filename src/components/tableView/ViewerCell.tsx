@@ -5,6 +5,7 @@ import { Input } from '@mui/base'
 import { FlightResult } from 'common/type/FlightType';
 interface ColumnType {
     id: number,
+    pk: number,
     column: keyof FlightResult,
     label?: string,
     auth?: number,
@@ -28,7 +29,7 @@ const StyledInput = styled.input`
 `
 
 
-function ViewerColumn({ id, column, label, auth, children, mutateRowData }: ColumnType) {
+function ViewerColumn({ id, pk, column, label, auth, children, mutateRowData }: ColumnType) {
     const [focused, setFocused] = useState(false);
     const changed = useRef(false);
     const inputValue = useRef(children);
@@ -49,7 +50,11 @@ function ViewerColumn({ id, column, label, auth, children, mutateRowData }: Colu
         if(column === 'siteName') {
             e.target.style.width = e.target.value.length*2 + 1 + 'ch';
         } else {
-            e.target.style.width = e.target.value.length + 1 + 'ch';
+            if(e.target.value.length < 4){
+                e.target.style.width = 4 + 'ch'
+            } else {
+                e.target.style.width = e.target.value.length + 1 + 'ch';
+            }
         }
 
     }
@@ -60,7 +65,7 @@ function ViewerColumn({ id, column, label, auth, children, mutateRowData }: Colu
             return <StyledInput defaultValue={inputValue.current} autoFocus onFocus={onInputFocused} onChange={onChangeHandler} />
         } else {
             if (mutateRowData && changed.current) {
-                mutateRowData(id, column, inputValue.current);
+                mutateRowData(pk, column, inputValue.current);
                 changed.current = false
             }
             return inputValue.current;

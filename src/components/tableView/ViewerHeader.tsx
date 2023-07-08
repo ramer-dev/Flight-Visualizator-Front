@@ -3,7 +3,7 @@ import { TableHead, TableRow, TableCell, Checkbox, TableSortLabel, Box } from '@
 import {visuallyHidden} from '@mui/utils'
 import { FlightList, FlightResult } from 'common/type/FlightType';
 import React from 'react'
-import { headCells, Order, TableHeaderCellType} from './TableTypes';
+import { headCells, Order, TableEditCellType} from './TableTypes';
 
 // interface Props {
 //     data: string[]

@@ -1,8 +1,9 @@
 import { FlightResult } from "common/type/FlightType";
 
-export interface TableHeaderCellType extends FlightResult {
+export interface TableEditCellType extends FlightResult {
     no: number,
     action: any
+    isNew: boolean;
 }
 
 export interface HeadCell {
@@ -11,6 +12,8 @@ export interface HeadCell {
     label: string;
     numeric: boolean;
 }
+
+
 
 export const headCells: readonly HeadCell[] = [
     { id: 'id', label:'No', numeric: true, disablePadding: false },

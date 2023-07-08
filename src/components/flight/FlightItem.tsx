@@ -113,7 +113,7 @@ const FlightItem = ({ testName, testType, testDate, id }: FlightList) => {
     }
 
     return (
-        <Container onClick={(e) => {ViewFlightItem(e, id); console.log(id)}}>
+        <Container onClick={(e) => {ViewFlightItem(e, id)}}>
 
             <Title>{testName}</Title>
             <ContentWrapper>

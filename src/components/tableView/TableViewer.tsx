@@ -2,8 +2,8 @@ import { FlightList, FlightResult } from 'common/type/FlightType'
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from '@emotion/styled'
 import ViewerHeader from './ViewerHeader'
-import { Box, Checkbox, Table, TableBody, TableCell, TableContainer, TablePagination, TableRow } from '@mui/material'
-import { headCells, Order, TableHeaderCellType } from './TableTypes'
+import { Box, Checkbox, Table, TableBody, TableCell, TableContainer, TablePagination, TableRow, TableFooter } from '@mui/material'
+import { headCells, Order, TableEditCellType } from './TableTypes'
 import ViewerColumn from './ViewerCell'
 
 const ViewerContainer = styled(TableContainer)`
@@ -11,47 +11,46 @@ const ViewerContainer = styled(TableContainer)`
 `
 
 // 호환 테이블 정렬 기능
-function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) {
-  const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) {
-      return order;
-    }
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
+// function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) {
+//   const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
+//   stabilizedThis.sort((a, b) => {
+//     const order = comparator(a[0], b[0]);
+//     if (order !== 0) {
+//       return order;
+//     }
+//     return a[1] - b[1];
+//   });
+//   return stabilizedThis.map((el) => el[0]);
+// }
 
-// 내림차순 비교 함수
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
+// // 내림차순 비교 함수
+// function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
+//   if (b[orderBy] < a[orderBy]) {
+//     return -1;
+//   }
+//   if (b[orderBy] > a[orderBy]) {
+//     return 1;
+//   }
+//   return 0;
+// }
 
-function getComparator<Key extends keyof any>(
-  order: Order,
-  orderBy: Key,
-): (
-  // a: { [key in Key]: number | string  },
-  // b: { [key in Key]: number | string },
-  a: any,
-  b: any,
-) => number {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
+// function getComparator<Key extends keyof any>(
+//   order: Order,
+//   orderBy: Key,
+// ): (
+//   a: { [key in Key]: number | string | undefined },
+//   b: { [key in Key]: number | string | undefined },
+//   // a: { [key in Key]: any },
+//   // b: { [key in Key]: any },
+// ) => number {
+//   return order === 'desc'
+//     ? (a, b) => descendingComparator(a, b, orderBy)
+//     : (a, b) => -descendingComparator(a, b, orderBy);
+// }
 
 interface Props {
   data: FlightList | null;
 }
-
 
 function TableViewer({ data }: Props) {
   // const [tableData, setTableData] = useState(data ? data : null);
@@ -63,7 +62,7 @@ function TableViewer({ data }: Props) {
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(100);
-
+  const [visibleRows, setVisibleRows] = useState(dataRow);
   const mutateRowData = (id: number, col: string, value: any) => {
 
     const updatedData = dataRow.map(row => {
@@ -76,10 +75,6 @@ function TableViewer({ data }: Props) {
     setDataRow(updatedData);
   };
 
-  const stateRefresh = () => {
-    setDataRow([]);
-  }
-
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
     property: keyof FlightResult,
@@ -91,7 +86,7 @@ function TableViewer({ data }: Props) {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked && dataRow?.length) {
-      const newSelected = dataRow?.map((n) => (n.id).toString());
+      const newSelected = dataRow?.map((n, i) => (i).toString());
       setSelected(newSelected);
       return;
     }
@@ -133,35 +128,68 @@ function TableViewer({ data }: Props) {
 
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
 
+  const CreateNewRow = () => {
+    const newRowData = {} as FlightResult;
+    setDataRow([...dataRow, newRowData])
+  }
+
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 && data?.data ? Math.max(0, (1 + page) * rowsPerPage - data?.data?.length) : 0;
+    page > 0 && dataRow ? Math.max(0, (1 + page) * rowsPerPage - dataRow.length) : 0;
 
-  const visibleRows = useMemo(
-    () => {
-      return dataRow ? stableSort(dataRow, getComparator(order, orderBy)).slice(
+  const sortedData = [...dataRow].sort((a, b) => {
+
+    const valueA = a[orderBy]!;
+    const valueB = b[orderBy]!;
+
+    if (typeof valueA === 'number' && typeof valueB === 'number') {
+      // const result = valueA < valueB ? -1 : valueA > valueB ? 1 : 0;
+      return order === 'asc' ? valueA - valueB : valueB - valueA;
+    }
+    if (typeof valueA === 'string' && typeof valueB === 'string') {
+      return order === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA);
+
+    }
+    return 0;
+  })
+
+  useEffect(() => {
+    console.log(sortedData);
+    setVisibleRows(sortedData.slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
-      ) : null
-    },
-    [order, orderBy, page, rowsPerPage],
-  );
+      )
+    )
+    
+
+  }, [order, orderBy, page, rowsPerPage])
+
+  // const visibleRows = useMemo(
+  //   () => {
+  //     return dataRow ? sortedData.slice(
+  //       page * rowsPerPage,
+  //       page * rowsPerPage + rowsPerPage
+  //     ) : null
+  //   },
+  //   [sortedData, order, orderBy, page, rowsPerPage],
+  // );
 
   return (
-    <Box sx={{overflow:'hidden'}}>
-      <ViewerContainer sx={{maxHeight:'calc(100vh - 200px)'}}>
+    <Box sx={{ overflow: 'hidden' }}>
+      <ViewerContainer sx={{ maxHeight: 'calc(100vh - 200px)' }}>
         <Table stickyHeader size={'small'}>
           <ViewerHeader numSelected={selected.length}
             order={order}
             orderBy={orderBy}
             onSelectAllClick={handleSelectAllClick}
             onRequestSort={handleRequestSort}
-            rowCount={dataRow?.length ? dataRow.length : 0} headCells={headCells} />
+            rowCount={dataRow.length ? dataRow.length : 0} headCells={headCells} />
 
 
           <TableBody>
-            {visibleRows?.map((row, index) => {
-              const isItemSelected = isSelected(row.id.toString());
+            {visibleRows?.map((row: FlightResult, index) => {
+              const id = row.id
+              const isItemSelected = isSelected(index.toString());
               const labelId = `enhanced-table-checkbox-${index}`;
               return (
                 <TableRow
@@ -169,12 +197,12 @@ function TableViewer({ data }: Props) {
                   role="checkbox"
                   aria-checked={isItemSelected}
                   tabIndex={-1}
-                  key={row.id}
+                  key={index + 'row'}
                   selected={isItemSelected}
                   sx={{ cursor: 'pointer' }}
                 >
                   <TableCell padding="checkbox"
-                    onClick={(e) => handleClick(e, row.id.toString())}
+                    onClick={(e) => handleClick(e, index.toString())}
                   >
                     <Checkbox
                       color="primary"
@@ -193,20 +221,25 @@ function TableViewer({ data }: Props) {
                   >
                     {order === 'asc' ? (page) * rowsPerPage + index + 1 : dataRow.length - (page * rowsPerPage) - index}
                   </TableCell>
-                  <ViewerColumn column='siteName' id={row.id} label="표지소" mutateRowData={mutateRowData}>{row.siteName}</ViewerColumn>
-                  <ViewerColumn column='frequency' id={row.id} label="주파수" mutateRowData={mutateRowData}>{row.frequency}</ViewerColumn>
-                  <ViewerColumn column='txmain' id={row.id} label="TX-M" mutateRowData={mutateRowData}>{row.txmain}</ViewerColumn>
-                  <ViewerColumn column='rxmain' id={row.id} label="RX-M" mutateRowData={mutateRowData}>{row.rxmain}</ViewerColumn>
-                  <ViewerColumn column='txstby' id={row.id} label="TX-S" mutateRowData={mutateRowData}>{row.txstby}</ViewerColumn>
-                  <ViewerColumn column='rxstby' id={row.id} label="RX-S" mutateRowData={mutateRowData}>{row.rxstby}</ViewerColumn>
-                  <ViewerColumn column='angle' id={row.id} label="각도" mutateRowData={mutateRowData}>{row.angle}</ViewerColumn>
-                  <ViewerColumn column='distance' id={row.id} label="거리" mutateRowData={mutateRowData}>{row.distance}</ViewerColumn>
-                  <ViewerColumn column='height' id={row.id} label="고도" mutateRowData={mutateRowData}>{row.height}</ViewerColumn>
+                  <ViewerColumn column='siteName' id={index} pk={id} label="표지소" mutateRowData={mutateRowData}>{row.siteName}</ViewerColumn>
+                  <ViewerColumn column='frequency' id={index} pk={id} mutateRowData={mutateRowData}>{row.frequency}</ViewerColumn>
+                  <ViewerColumn column='txmain' id={index} pk={id} label="TX-M" mutateRowData={mutateRowData}>{row.txmain}</ViewerColumn>
+                  <ViewerColumn column='rxmain' id={index} pk={id} label="RX-M" mutateRowData={mutateRowData}>{row.rxmain}</ViewerColumn>
+                  <ViewerColumn column='txstby' id={index} pk={id} label="TX-S" mutateRowData={mutateRowData}>{row.txstby}</ViewerColumn>
+                  <ViewerColumn column='rxstby' id={index} pk={id} label="RX-S" mutateRowData={mutateRowData}>{row.rxstby}</ViewerColumn>
+                  <ViewerColumn column='angle' id={index} pk={id} label="각도" mutateRowData={mutateRowData}>{row.angle}</ViewerColumn>
+                  <ViewerColumn column='distance' id={index} pk={id} label="거리" mutateRowData={mutateRowData}>{row.distance}</ViewerColumn>
+                  <ViewerColumn column='height' id={index} pk={id} label="고도" mutateRowData={mutateRowData}>{row.height}</ViewerColumn>
 
                 </TableRow>
               )
             })}
           </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell onClick={CreateNewRow}>AddData</TableCell>
+            </TableRow>
+          </TableFooter>
         </Table>
       </ViewerContainer>
       <TablePagination
