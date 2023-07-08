@@ -10,6 +10,7 @@ import CustomAxios from 'module/axios';
 
 const Container = styled.div`
     padding:20px 10px;
+    cursor:pointer;
     &:hover{
         background-color:#f0f0f0;
     }
@@ -112,7 +113,7 @@ const FlightItem = ({ testName, testType, testDate, id }: FlightList) => {
     }
 
     return (
-        <Container onClick={(e) => ViewFlightItem(e, id)}>
+        <Container onClick={(e) => {ViewFlightItem(e, id); console.log(id)}}>
 
             <Title>{testName}</Title>
             <ContentWrapper>
