@@ -50,7 +50,7 @@ function ViewerHeader({ onSelectAllClick, order, orderBy, numSelected, rowCount,
                 {headCells.map(headCell => (
                     <TableCell
                         key={headCell.id}
-                        align={'center'}
+                        align={'left'}
                         padding={headCell.disablePadding ? 'none' : 'normal'}
                         sortDirection={orderBy === headCell.id ? order : false}
                     >

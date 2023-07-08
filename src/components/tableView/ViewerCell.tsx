@@ -9,20 +9,22 @@ interface ColumnType {
     label?: string,
     auth?: number,
     children: any;
-    mutateRowData?: (id: number, col: keyof FlightResult, value: number|string) => void;
+    mutateRowData?: (id: number, col: keyof FlightResult, value: number | string) => void;
 }
 
 const Cell = styled(TableCell)`
+    transition:0.2s all ease;
+    line-height:36px;
+    padding:0px 5px;
 `
-
-const TableInput = styled(TextField)`
-    & .MuiInputBase-root {
-        border: 1px solid #bcbcbc;
-        font-size:14px;
-        margin: 0;
-        width: 75px;
-        font-weight: 400
-    }
+const StyledInput = styled.input`
+    box-sizing: border-box;
+    outline: 2px solid #5096ff;
+    border:none;
+    border-radius:2px;
+    padding: 4px;
+    /* width: 100%;
+    min-width: 0; */
 `
 
 
@@ -38,13 +40,24 @@ function ViewerColumn({ id, column, label, auth, children, mutateRowData }: Colu
     }
 
     const onChangeHandler = (e: any) => {
+        e.target.style.width = e.target.value.length + 1 + 'ch';
         changed.current = true;
         inputValue.current = e.target.value;
     }
 
+    const onInputFocused = (e:any) => {
+        if(column === 'siteName') {
+            e.target.style.width = e.target.value.length*2 + 1 + 'ch';
+        } else {
+            e.target.style.width = e.target.value.length + 1 + 'ch';
+        }
+
+    }
+
     const temp = () => {
         if (focused) {
-            return <TableInput defaultValue={inputValue.current} size='small' variant='outlined' label={label} autoFocus onChange={onChangeHandler}></TableInput>
+            // return <TableInput defaultValue={inputValue.current} size='small' variant='outlined' label={label} autoFocus onChange={onChangeHandler}></TableInput>
+            return <StyledInput defaultValue={inputValue.current} autoFocus onFocus={onInputFocused} onChange={onChangeHandler} />
         } else {
             if (mutateRowData && changed.current) {
                 mutateRowData(id, column, inputValue.current);
@@ -56,7 +69,7 @@ function ViewerColumn({ id, column, label, auth, children, mutateRowData }: Colu
 
     return (
 
-        <Cell sx={{ fontWeight: 400, maxWidth: '100px' }} tabIndex={0} onFocus={FocusHandler} onBlur={FocusHandler}>
+        <Cell align={'left'} sx={{ fontWeight: 400, maxWidth: '100px' }} tabIndex={0} onFocus={FocusHandler} onBlur={FocusHandler}>
             {temp()}
         </Cell>
 

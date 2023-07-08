@@ -53,7 +53,7 @@ interface Props {
 }
 
 
-function TableViewer({data}: Props) {
+function TableViewer({ data }: Props) {
   // const [tableData, setTableData] = useState(data ? data : null);
   const [defInfo, setDefInfo] = useState(data);
   const [dataRow, setDataRow] = useState(data?.data ? data.data : []);
@@ -78,7 +78,7 @@ function TableViewer({data}: Props) {
 
   const stateRefresh = () => {
     setDataRow([]);
-  } 
+  }
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -151,7 +151,6 @@ function TableViewer({data}: Props) {
     <Box>
       <ViewerContainer>
         <Table size={'small'}>
-
           <ViewerHeader numSelected={selected.length}
             order={order}
             orderBy={orderBy}
