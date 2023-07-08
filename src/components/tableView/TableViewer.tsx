@@ -62,7 +62,7 @@ function TableViewer({ data }: Props) {
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
-  const [rowsPerPage, setRowsPerPage] = useState(25);
+  const [rowsPerPage, setRowsPerPage] = useState(100);
 
   const mutateRowData = (id: number, col: string, value: any) => {
 
@@ -148,9 +148,9 @@ function TableViewer({ data }: Props) {
   );
 
   return (
-    <Box>
-      <ViewerContainer>
-        <Table size={'small'}>
+    <Box sx={{overflow:'hidden'}}>
+      <ViewerContainer sx={{maxHeight:'calc(100vh - 200px)'}}>
+        <Table stickyHeader size={'small'}>
           <ViewerHeader numSelected={selected.length}
             order={order}
             orderBy={orderBy}
@@ -191,7 +191,7 @@ function TableViewer({ data }: Props) {
                     scope="row"
                     padding="none"
                   >
-                    {(page) * rowsPerPage + index + 1}
+                    {order === 'asc' ? (page) * rowsPerPage + index + 1 : dataRow.length - (page * rowsPerPage) - index}
                   </TableCell>
                   <ViewerColumn column='siteName' id={row.id} label="표지소" mutateRowData={mutateRowData}>{row.siteName}</ViewerColumn>
                   <ViewerColumn column='frequency' id={row.id} label="주파수" mutateRowData={mutateRowData}>{row.frequency}</ViewerColumn>

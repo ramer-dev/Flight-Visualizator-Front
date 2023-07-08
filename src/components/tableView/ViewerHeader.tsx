@@ -38,7 +38,7 @@ function ViewerHeader({ onSelectAllClick, order, orderBy, numSelected, rowCount,
         };
 
     return (
-        <TableHead sx={{position:'sticky'}}>
+        <TableHead >
             <RowContainer>
                 <TableCell padding='checkbox'>
                     <Checkbox color='primary' indeterminate={numSelected > 0 && numSelected < rowCount}

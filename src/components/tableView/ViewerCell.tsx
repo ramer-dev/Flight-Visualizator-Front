@@ -40,7 +40,7 @@ function ViewerColumn({ id, column, label, auth, children, mutateRowData }: Colu
     }
 
     const onChangeHandler = (e: any) => {
-        e.target.style.width = e.target.value.length + 1 + 'ch';
+        onInputFocused(e);
         changed.current = true;
         inputValue.current = e.target.value;
     }
