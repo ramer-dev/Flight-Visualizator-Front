@@ -139,8 +139,8 @@ function TableViewer({ data }: Props) {
 
   const sortedData = [...dataRow].sort((a, b) => {
 
-    const valueA = a[orderBy]!;
-    const valueB = b[orderBy]!;
+    const valueA : any = a[orderBy]!;
+    const valueB : any = b[orderBy]!;
 
     if (typeof valueA === 'number' && typeof valueB === 'number') {
       // const result = valueA < valueB ? -1 : valueA > valueB ? 1 : 0;

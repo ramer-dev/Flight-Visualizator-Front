@@ -9,17 +9,17 @@ import { useRecoilValue } from 'recoil'
 import { siteState } from 'common/store/atom'
 
 export const Field: GridColDef[] = [
-    { field: 'id', headerName: 'ID', minWidth: 50, maxWidth: 100 },
-    { field: 'no', headerName: 'No' },
-    { field: 'siteName', headerName: '표지소', type: 'singleSelect', editable: true, minWidth: 50, maxWidth: 100, valueOptions: ['부안', '안양'] },
-    { field: 'frequency', headerName: '주파수', editable: true, minWidth: 50, maxWidth: 100 },
-    { field: 'txmain', headerName: 'TX-M', editable: true, minWidth: 50, maxWidth: 100 },
-    { field: 'rxmain', headerName: 'RX-M', editable: true, minWidth: 50, maxWidth: 100 },
-    { field: 'txstby', headerName: 'TX-S', editable: true, minWidth: 50, maxWidth: 100 },
-    { field: 'rxstby', headerName: 'RX-S', editable: true, minWidth: 50, maxWidth: 100 },
-    { field: 'angle', headerName: '각도', editable: true, minWidth: 50, maxWidth: 100 },
-    { field: 'distance', headerName: '거리', editable: true, minWidth: 50, maxWidth: 100 },
-    { field: 'height', headerName: '고도', editable: true, minWidth: 50, maxWidth: 100 },
+    { field: 'id', headerName: 'ID', minWidth: 50, maxWidth: 100, flex:1},
+    { field: 'no', headerName: 'No',  minWidth: 50, maxWidth: 100,},
+    { field: 'siteName', headerName: '표지소', type: 'singleSelect', editable: true, minWidth: 50, maxWidth: 100, valueOptions: ['부안', '안양'], flex:1 },
+    { field: 'frequency', headerName: '주파수', editable: true, minWidth: 100, maxWidth: 100, flex:1 },
+    { field: 'txmain', headerName: 'TX-M', editable: true, minWidth: 50, maxWidth: 100, flex:1 },
+    { field: 'rxmain', headerName: 'RX-M', editable: true, minWidth: 50, maxWidth: 100, flex:1 },
+    { field: 'txstby', headerName: 'TX-S', editable: true, minWidth: 50, maxWidth: 100, flex:1 },
+    { field: 'rxstby', headerName: 'RX-S', editable: true, minWidth: 50, maxWidth: 100, flex:1 },
+    { field: 'angle', headerName: '각도', editable: true, minWidth: 50, maxWidth: 100, flex:1 },
+    { field: 'distance', headerName: '거리', editable: true, minWidth: 50, maxWidth: 100, flex:1 },
+    { field: 'height', headerName: '고도', editable: true, minWidth: 50, maxWidth: 100, flex:1 },
     {
         field: 'delete', headerName: '삭제', renderCell: () => <Button color="warning" variant='outlined' size='small' >-</Button>,
     }

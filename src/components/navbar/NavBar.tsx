@@ -54,7 +54,7 @@ const ContentView = styled.div`
     position:fixed;
     margin-left:64px;
     background-color:#ffffff;   
-    z-index:1100;
+    z-index:1000;
 
 `
 

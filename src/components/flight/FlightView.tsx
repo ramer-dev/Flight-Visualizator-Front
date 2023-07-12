@@ -1,5 +1,6 @@
 import { flightResultData } from 'common/store/atom'
 import { FlightList } from 'common/type/FlightType'
+import DataGridViewer from 'components/common/Not use/DataGridViewer'
 import ScreenTitle from 'components/common/ScreenTitle'
 import TableViewer from 'components/tableView/TableViewer'
 import React, { useTransition } from 'react'
@@ -30,7 +31,8 @@ function FlightView() {
   return (
     <>
       <ScreenTitle text={"비행검사 조회"} />
-      {<TableViewer data={data} />}
+      {/* {<TableViewer data={data} />} */}
+      {data ? <DataGridViewer data={data.data}/> : null}
 
       <NavCloseButton format={['MID', 'FULLSCREEN']} />
     </>
