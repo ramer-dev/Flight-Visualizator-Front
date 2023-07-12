@@ -1,4 +1,5 @@
 import {createTheme} from "@mui/material/styles"
+import { fontWeight } from "@mui/system"
 
 export const theme = createTheme({
     palette: {
@@ -8,5 +9,12 @@ export const theme = createTheme({
         info: {
             main: "#FFF"
         }
+    },
+    typography:{
+        fontFamily:"Pretendard",
+        fontWeightBold:700,
+        fontWeightLight:200,
+        fontWeightMedium:400,
+        fontWeightRegular:600,
     }
 })

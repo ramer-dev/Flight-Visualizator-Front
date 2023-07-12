@@ -4,7 +4,7 @@ import { useRecoilState } from 'recoil';
 import { contentFormat, contentViewFormat, page } from 'common/store/atom';
 import { ContentType, ContentViewType, NavBarType } from 'common/type/NavBarType';
 import NavCloseButton from './NavCloseButton';
-import { FlightScreen } from './flight/FlightScreen';
+import { FlightScreen } from '../flight/FlightScreen';
 
 type styleProp = {
     contentView: string | null;
@@ -14,6 +14,8 @@ const Container = styled.div`
     width:${(props: styleProp) => (props.contentView)};
     transition:all 0.3s ease; 
     overflow:hidden;
+    user-select: auto;
+
 `
 
 const widthMap = {
@@ -45,13 +47,14 @@ function NavScreen() {
     const [contentView, setContentView] = useRecoilState<ContentViewType>(contentViewFormat);
     const [content, setContent] = useRecoilState<ContentType>(contentFormat)
     return (
-        <>
+        <div>
             {content &&
                 <Container contentView={widthMap[contentView]}>
                     {selector(selectedPage)}
                 </Container>
             }
-        </>
+        </div>
+
     );
 }
 
