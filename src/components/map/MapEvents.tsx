@@ -46,7 +46,7 @@ const MapEvents = ({ isOpen, setOpen, setZoom }: Props) => {
             }
 
             if (marking.selection) {
-                console.log(e.latlng)
+                // console.log(e.latlng)
             }
 
         },
