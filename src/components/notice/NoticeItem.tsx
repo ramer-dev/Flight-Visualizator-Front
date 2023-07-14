@@ -2,12 +2,12 @@ import React, { useState } from 'react'
 import styled from '@emotion/styled'
 import { ReactComponent as ICArrowLeft } from 'atom/icon/icon_arrow_left.svg'
 import { Divider } from '@mui/material'
+import NoticeContent from './NoticeContent'
+import { NoticeContext } from 'common/type/NoticeType'
 
-interface Props {
-    isUpdate?: boolean,
-    title: string,
-    date: string,
-    content: string,
+interface Props extends NoticeContext {
+    removeFunc : (id: number) => void;
+    modifyFunc : (item : NoticeContext) => void;
 }
 
 interface StyleProps {
@@ -21,7 +21,7 @@ const Container = styled.div`
     border-radius:5px;
     border: 1px solid #ABABAB;
     padding:10px;
-    transition: 0.3s ease all;
+    transition: height 0.3s ease ;
 
 `
 
@@ -68,9 +68,8 @@ const ArrowIcon = styled(ICArrowLeft)`
     transform: ${(({ isOpen }: StyleProps) => (isOpen ? 'rotateZ(90deg)' : 'rotateZ(-90deg)'))};
 `
 
-function NoticeItem({ title, date, content, isUpdate }: Props) {
+function NoticeItem({ id, title, date, content, isUpdate, removeFunc, modifyFunc }: Props) {
     const [isOpen, setIsOpen] = useState(false);
-
     const openHandler = () => {
         setIsOpen(!isOpen);
     }
@@ -94,14 +93,10 @@ function NoticeItem({ title, date, content, isUpdate }: Props) {
 
 
             </Wrapper>
-            {isOpen &&
-                <>
-                    <Divider />
-                    <>
-                    이곳에 내용을 작성
-                    </>
-                </>
-            }
+
+            {isOpen && <NoticeContent id={id} content={content} isOpen={isOpen} removeFunc={removeFunc} modifyFunc={modifyFunc}/>}
+
+
         </Container>
     )
 }
