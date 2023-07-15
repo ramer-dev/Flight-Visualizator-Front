@@ -2,8 +2,8 @@ import { Site } from 'common/type/SiteType';
 import { LatLngLiteral } from 'leaflet';
 import CustomAxios from 'module/axios';
 import { convertToWGS } from 'module/DMS';
-import React, { useEffect, useRef, useState } from 'react'
-import { LayerGroup, LayersControl, Marker, Pane, Popup, Rectangle, Tooltip } from 'react-leaflet';
+import React, { useEffect, useState } from 'react'
+import { Marker, Popup, Tooltip } from 'react-leaflet';
 import L from 'leaflet';
 import siteIcon from 'atom/icon/ic_site.png'
 import lowSiteIcon from 'atom/icon/ic_lowsite.png'

@@ -1,7 +1,5 @@
-import { siteState } from "common/store/atom";
 import L from "leaflet";
 import { LatLngExpression, LatLngLiteral } from "leaflet";
-import { useRecoilValue } from "recoil";
 import { convertToWGS } from 'module/DMS'
 
 export const Destination = (map: L.Map, origin: string | LatLngExpression | null, range: number | null, distance: number | null, line = true) => {

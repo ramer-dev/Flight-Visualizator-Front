@@ -6,17 +6,13 @@ import 'lib/leaflet/leaflet.css'
 import icon from 'lib/leaflet/images/marker-icon.png'
 import iconShadow from 'lib/leaflet/images/marker-shadow.png';
 import styled from '@emotion/styled';
-import { Ref, useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import L from 'leaflet';
 import type { FeatureCollection } from 'geojson';
 import 'leaflet-geometryutil'
 import EditControlFC from './DrawHooks';
-import LoadSites from './initialize/LoadSites';
 import MapEvents from './MapEvents';
-import LoadSector from './initialize/LoadSector';
 import React from 'react';
-import { useSetRecoilState } from 'recoil';
-import { globalMap } from 'common/store/atom';
 import Initializer from './initialize/Initializer';
 import CustomZoomControl from './control/CustomZoomControl';
 

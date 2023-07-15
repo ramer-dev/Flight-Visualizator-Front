@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { page } from 'common/store/atom';
 import { useRecoilValue } from 'recoil';

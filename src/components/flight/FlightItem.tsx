@@ -1,12 +1,11 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { ReactComponent as ICMarking } from 'atom/icon/icon_marking.svg';
 
 import styled from '@emotion/styled'
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { ContentType } from 'common/type/NavBarType';
-import { contentFormat, flightResultData, flightResultDataID } from 'common/store/atom';
+import { contentFormat, flightResultDataID } from 'common/store/atom';
 import { FlightList } from 'common/type/FlightType';
-import CustomAxios from 'module/axios';
 import { DeleteButton, ModifyButton, PinButton } from 'components/common/CustomButton';
 
 const Container = styled.div`
@@ -44,7 +43,7 @@ const ButtonContainer = styled.div`
 
 
 const FlightItem = ({ testName, testType, testDate, id }: FlightList) => {
-    const [content, setContent] = useRecoilState<ContentType>(contentFormat);
+    const setContent = useSetRecoilState<ContentType>(contentFormat);
     const setFlightData = useSetRecoilState(flightResultDataID);
     const ViewFlightItem = (e: any, id: number) => {
         e.stopPropagation();

@@ -1,20 +1,17 @@
 import React, { useState } from 'react'
 import styled from '@emotion/styled'
 import { ReactComponent as ICArrowLeft } from 'atom/icon/icon_arrow_left.svg'
-import { Divider } from '@mui/material'
 import NoticeContent from './NoticeContent'
 import { NoticeContext } from 'common/type/NoticeType'
 
-interface Props extends NoticeContext {
-    removeFunc : (id: number) => void;
-    modifyFunc : (item : NoticeContext) => void;
-}
+interface Props extends NoticeContext {}
 
 interface StyleProps {
     isOpen: boolean,
 }
 
 const Container = styled.div`
+    user-select:none;
     display:flex;
     flex-direction : column;
     margin:10px 15px;
@@ -68,7 +65,7 @@ const ArrowIcon = styled(ICArrowLeft)`
     transform: ${(({ isOpen }: StyleProps) => (isOpen ? 'rotateZ(90deg)' : 'rotateZ(-90deg)'))};
 `
 
-function NoticeItem({ id, title, date, content, isUpdate, removeFunc, modifyFunc }: Props) {
+function NoticeItem({ id, title, date, content, isUpdate }: Props) {
     const [isOpen, setIsOpen] = useState(false);
     const openHandler = () => {
         setIsOpen(!isOpen);
@@ -94,7 +91,7 @@ function NoticeItem({ id, title, date, content, isUpdate, removeFunc, modifyFunc
 
             </Wrapper>
 
-            {isOpen && <NoticeContent id={id} content={content} isOpen={isOpen} removeFunc={removeFunc} modifyFunc={modifyFunc}/>}
+            {isOpen && <NoticeContent id={id} content={content} isOpen={isOpen} />}
 
 
         </Container>

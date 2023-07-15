@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { contentFormat, contentViewFormat, page } from 'common/store/atom';
 import { ContentType, ContentViewType, NavBarType } from 'common/type/NavBarType';
-import NavCloseButton from './NavCloseButton';
 import { FlightScreen } from '../flight/FlightScreen';
 
 type styleProp = {
@@ -43,9 +42,9 @@ const selector = (page_: NavBarType) => {
 }
 
 function NavScreen() {
-    const [selectedPage, setPage] = useRecoilState<NavBarType>(page);
-    const [contentView, setContentView] = useRecoilState<ContentViewType>(contentViewFormat);
-    const [content, setContent] = useRecoilState<ContentType>(contentFormat)
+    const selectedPage = useRecoilValue<NavBarType>(page);
+    const contentView = useRecoilValue<ContentViewType>(contentViewFormat);
+    const content = useRecoilValue<ContentType>(contentFormat)
     return (
         <div>
             {content &&

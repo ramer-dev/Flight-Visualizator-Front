@@ -1,18 +1,15 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {motion} from 'framer-motion'
-import { ContentType, ContentViewType, NavBarType } from "../../common/type/NavBarType";
+import { NavBarType } from "../../common/type/NavBarType";
 import styled from "@emotion/styled";
-import { StyledInputBox } from "../common/InputText";
 import FlightContent from '../flight/FlightContent';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { contentFormat, contentViewFormat } from 'common/store/atom';
+import { useRecoilState } from 'recoil';
+import {  contentViewFormat } from 'common/store/atom';
 import NavScreen from './NavScreen';
 import Marking from 'components/marking/Marking';
-import NavCloseButton from './NavCloseButton';
 import Search from 'components/search/Search';
 import Setting from 'components/setting/Setting';
 import Notice from 'components/notice/Notice';
-import { ButtonProps } from '@mui/material';
 
 type StyleProp = { isHidden: boolean }
 

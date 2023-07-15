@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useState, useEffect, useReducer, useRef, useMemo } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import NavItem from "./NavItem";
 import { ReactComponent as ICFlightCheck } from 'atom/icon/icon_flightcheck.svg';
 import { ReactComponent as ICMarking } from 'atom/icon/icon_marking.svg';
@@ -8,9 +8,8 @@ import { ReactComponent as ICNotice } from 'atom/icon/icon_notice.svg';
 import { ReactComponent as ICSetting } from 'atom/icon/icon_setting.svg';
 import { ReactComponent as ICLogin } from 'atom/icon/icon_login.svg';
 import { ReactComponent as ICQuestion } from 'atom/icon/icon_question.svg';
-import FlightContent from "../flight/FlightContent";
-import { ContentType, ContentViewType, NavBarType } from "common/type/NavBarType";
-import { contentFormat, contentViewFormat, page } from 'common/store/atom'
+import { ContentViewType, NavBarType } from "common/type/NavBarType";
+import { contentViewFormat, page } from 'common/store/atom'
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import NavSideBar from "./NavSideBar";
 import NavEtcItem from "./NavEtcItem";

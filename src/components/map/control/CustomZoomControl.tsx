@@ -1,5 +1,5 @@
 import { ControlOptions } from 'leaflet';
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useMap } from 'react-leaflet'
 import { ReactComponent as ICPlus } from 'atom/icon/icon_plus.svg';
 import { ReactComponent as ICMinus } from 'atom/icon/icon_minus.svg';
@@ -93,7 +93,7 @@ function CustomZoomControl({ position, zoom }: ControlOptions & StyleProp) {
     const onClickHandler = (e: any, ) => {
         e.stopPropagation();
         const rect = barRef.current?.getBoundingClientRect()
-        const { clientX, clientY } = e;
+        const { clientY } = e;
         if (rect?.y) {
             const diff = clientY - rect.y;
             const zoomLevel = (5 - Math.round(diff / (rect.height / 6))) + 5

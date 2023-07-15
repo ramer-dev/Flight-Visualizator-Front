@@ -1,7 +1,6 @@
 import { Tab, Tabs, Modal } from '@mui/material'
 import { NoticeContext } from 'common/type/NoticeType';
 import Title from 'components/common/Title'
-import NavCloseButton from 'components/navbar/NavCloseButton'
 import React, { useState } from 'react'
 import NoticeItem from './NoticeItem';
 
@@ -19,16 +18,9 @@ function Notice() {
     setValue(newValue);
   };
 
-  const removeListItem = (id: number) => {
-    const removedItemList = list.filter(t => t.id !== id);
-    setOpen(true);
-    setList(removedItemList);
-  }
-
-  const modifyListItem = ({ id, title, content, date, isUpdate }: NoticeContext) => {
-    const item = { id, title, content, date, isUpdate };
-    const newItemList = list.map(t => t.id === id ? item : t);
-    setList(newItemList);
+  const stateRefresh = () => {
+    const result : NoticeContext[] = [];
+    setList(result);
   }
 
   const modalHandleClose =() => {
@@ -51,8 +43,7 @@ function Notice() {
 
       {
     list.map(t => {
-      return <NoticeItem key={t.id} id={t.id} title={t.title} date={t.date} content={t.content} isUpdate={t.isUpdate}
-        removeFunc={removeListItem} modifyFunc={modifyListItem} />
+      return <NoticeItem key={t.id} id={t.id} title={t.title} date={t.date} content={t.content} isUpdate={t.isUpdate} />
     })
   }
     </>
