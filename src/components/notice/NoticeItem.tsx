@@ -58,40 +58,40 @@ const IconWrapper = styled.div`
     padding: 1px 4px;
     text-align:center;
     cursor:pointer;
-`
-
-const ArrowIcon = styled(ICArrowLeft)`
     transition: 0.3s ease all;
     transform: ${(({ isOpen }: StyleProps) => (isOpen ? 'rotateZ(90deg)' : 'rotateZ(-90deg)'))};
 `
 
-function NoticeItem({ id, title, date, content, isUpdate }: Props) {
+const ArrowIcon = styled(ICArrowLeft)`
+
+`
+
+function NoticeItem({ id, title, date, context, type }: Props) {
     const [isOpen, setIsOpen] = useState(false);
     const openHandler = () => {
         setIsOpen(!isOpen);
     }
 
     return (
-        <Container>
-            <Wrapper>
+        <Container >
+            <Wrapper onClick={openHandler}>
                 <ContentWrapper>
                     <TextWrapper>
-                        {isUpdate ? <TypeTypo>[업데이트]</TypeTypo> : <TypeTypo>[일반]</TypeTypo>}
-
+                        <TypeTypo>[{type}]</TypeTypo>
                         <TitleTypo>{title}</TitleTypo>
                     </TextWrapper>
                     <DateTypo>
                         {date}
                     </DateTypo>
                 </ContentWrapper>
-                <IconWrapper onClick={openHandler}>
-                    <ArrowIcon isOpen={isOpen} />
+                <IconWrapper onClick={openHandler} isOpen={isOpen}>
+                    <ArrowIcon/>
                 </IconWrapper>
 
 
             </Wrapper>
 
-            {isOpen && <NoticeContent id={id} content={content} isOpen={isOpen} />}
+            {isOpen && <NoticeContent id={id} context={context} isOpen={isOpen} />}
 
 
         </Container>

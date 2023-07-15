@@ -8,7 +8,7 @@ import NoticeManager from './NoticeManager';
 
 interface Props {
     id: number,
-    content?: string;
+    context?: string;
     isOpen?: boolean;
     auth?: number; 
 }
@@ -19,12 +19,12 @@ interface Props {
 //     transition:0.3s all ease;
 // `
 
-function NoticeContent({ id, content, isOpen  }: Props) {
+function NoticeContent({ id, context, isOpen  }: Props) {
     const authLevel = useRecoilValue(auth);
     return (
         <motion.div>
             <Divider sx={{ margin: '10px 15px' }} />
-            <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>{content}</motion.div>
+            <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>{context}</motion.div>
             {authLevel ? <NoticeManager id={id} /> : null}
         </motion.div>
     )

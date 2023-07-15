@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { Divider } from '@mui/material'
+import { deleteNotice } from 'common/service/noticeService'
 import { DeleteButton, ModifyButton } from 'components/common/CustomButton'
 import { motion } from 'framer-motion'
 import React from 'react'
@@ -19,7 +20,7 @@ function NoticeManager({id} : Props) {
             <Divider sx={{margin:'10px 15px'}}/>
             <ButtonWrapper>
                 <ModifyButton>수정</ModifyButton>
-                <DeleteButton>삭제</DeleteButton>
+                <DeleteButton onClick={() => deleteNotice(id)}>삭제</DeleteButton>
             </ButtonWrapper>
         </motion.div>
     )
