@@ -7,6 +7,7 @@ import { ContentType } from 'common/type/NavBarType';
 import { contentFormat, flightResultDataID } from 'common/store/atom';
 import { FlightList } from 'common/type/FlightType';
 import { DeleteButton, ModifyButton, PinButton } from 'components/common/CustomButton';
+import dayjs from 'dayjs'
 
 const Container = styled.div`
     padding:20px 10px;
@@ -67,7 +68,7 @@ const FlightItem = ({ testName, testType, testDate, id }: FlightList) => {
             <Title>{testName}</Title>
             <ContentWrapper>
                 <FlightType>{testType}</FlightType>
-                <FlightDate>{testDate.toString().split('T')[0]}</FlightDate>
+                <FlightDate>{dayjs(testDate).format('YYYY-MM-DD')}</FlightDate>
             </ContentWrapper>
             <ButtonContainer>
                 <ModifyButton onClick={EditFlightItem}>수정</ModifyButton>
