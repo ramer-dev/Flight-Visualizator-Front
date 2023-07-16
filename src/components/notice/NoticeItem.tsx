@@ -3,6 +3,7 @@ import styled from '@emotion/styled'
 import { ReactComponent as ICArrowLeft } from 'atom/icon/icon_arrow_left.svg'
 import NoticeContent from './NoticeContent'
 import { NoticeContentType } from 'common/type/NoticeType'
+import dayjs from 'dayjs'
 
 interface Props extends NoticeContentType {}
 
@@ -29,18 +30,18 @@ const Wrapper = styled.div`
     align-items:center;
 `
 const ContentWrapper = styled.div`
-    
+
 `
 
 const TextWrapper = styled.div`
+    width:260px;
     display:flex;
-    gap:10px;
+    gap:5px;
 `
 
 const TypeTypo = styled.h3`
+    width:70px;
     color:#5096ff;
-    margin-right:6px;
-    white-space:nowrap;
 `
 
 const TitleTypo = styled.h3`
@@ -81,7 +82,7 @@ function NoticeItem({ id, title, date, context, type }: Props) {
                         <TitleTypo>{title}</TitleTypo>
                     </TextWrapper>
                     <DateTypo>
-                        {date}
+                        {dayjs(date).format('YYYY-MM-DD')}
                     </DateTypo>
                 </ContentWrapper>
                 <IconWrapper onClick={openHandler} isOpen={isOpen}>
