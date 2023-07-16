@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import styled from '@emotion/styled'
 import { ReactComponent as ICArrowLeft } from 'atom/icon/icon_arrow_left.svg'
 import NoticeContent from './NoticeContent'
-import { NoticeContext } from 'common/type/NoticeType'
+import { NoticeContentType } from 'common/type/NoticeType'
 
-interface Props extends NoticeContext {}
+interface Props extends NoticeContentType {}
 
 interface StyleProps {
     isOpen: boolean,
@@ -14,7 +14,7 @@ const Container = styled.div`
     user-select:none;
     display:flex;
     flex-direction : column;
-    margin:10px 15px;
+    margin:15px 15px;
     border-radius:5px;
     border: 1px solid #ABABAB;
     padding:10px;
@@ -73,7 +73,7 @@ function NoticeItem({ id, title, date, context, type }: Props) {
     }
 
     return (
-        <Container >
+        <Container>
             <Wrapper onClick={openHandler}>
                 <ContentWrapper>
                     <TextWrapper>
@@ -91,7 +91,7 @@ function NoticeItem({ id, title, date, context, type }: Props) {
 
             </Wrapper>
 
-            {isOpen && <NoticeContent id={id} context={context} isOpen={isOpen} />}
+            {isOpen && <NoticeContent id={id} title={title} date={date} type={type} context={context} isOpen={isOpen} />}
 
 
         </Container>

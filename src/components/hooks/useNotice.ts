@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
 import { getNotice } from 'common/service/noticeService'
-import { NoticeContext } from "common/type/NoticeType";
+import { NoticeContentType } from "common/type/NoticeType";
 
-export function useGetNotice(): NoticeContext[] {
-  const fallback : NoticeContext[] = []
+export function useGetNotice(): NoticeContentType[] {
+  const fallback : NoticeContentType[] = []
   const { data = fallback } = useQuery(['notice'], async () => getNotice(), /*{ suspense: true }*/)
   return data
 }

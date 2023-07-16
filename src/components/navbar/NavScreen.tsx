@@ -4,6 +4,7 @@ import { useRecoilValue } from 'recoil';
 import { contentFormat, contentViewFormat, page } from 'common/store/atom';
 import { ContentType, ContentViewType, NavBarType } from 'common/type/NavBarType';
 import { FlightScreen } from '../flight/FlightScreen';
+import { NoticeScreen } from 'components/notice/NoticeScreen';
 
 type styleProp = {
     contentView: string | null;
@@ -31,7 +32,7 @@ const selector = (page_: NavBarType) => {
         case "MARKING":
             return null;
         case "NOTICE":
-            return null;
+            return <NoticeScreen/>;
         case "SEARCH":
             return null;
         case "SETTING":
