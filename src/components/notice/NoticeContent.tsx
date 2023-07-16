@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { Divider } from '@mui/material';
 import { auth } from 'common/store/auth';
 import { NoticeContentType } from 'common/type/NoticeType';
+import MarkdownRenderer from 'components/common/MarkdownRenderer';
 import { motion } from 'framer-motion';
 import React from 'react'
 import { useRecoilValue } from 'recoil';
@@ -29,6 +30,7 @@ function NoticeContent({ id, context, isOpen, type, title, date  }: Props) {
         <motion.div>
             <Divider sx={{ margin: '10px 15px' }} />
             <Content initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>{context}</Content>
+            <MarkdownRenderer/>
             {authLevel ? <NoticeManager id={id} title={title} context={context} type={type} date={date}/> : null}
         </motion.div>
     )
