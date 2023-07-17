@@ -10,6 +10,8 @@ import React, { createContext, useCallback, useEffect, useRef, useState } from '
 import NoticeItem from './NoticeItem';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { contentFormat, contentViewFormat } from 'common/store/atom';
+import ErrorPage from 'components/common/ErrorPage';
+import LoadingPage from 'components/common/LoadingPage';
 
 const Container = styled.div`
   overflow-y : scroll;
@@ -47,18 +49,16 @@ function Notice() {
   // const data = useGetNotice();
   const [value, setValue] = useState("전체");
   const id = useRef<number>(-1);
+  const { data, isLoading, isError, refetch } = useGetNotice();
   const contentView = useRecoilValue(contentViewFormat);
-  const [list, setList] = useState<NoticeContentType[]>();
+  // const [list, setList] = useState<NoticeContentType[]>(data);
   const [open, setOpen] = useState(true);
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
 
   const stateRefresh = async () => {
-    const response = await getNotice();
-    setList(response);
-
-    console.log(response)
+    refetch()
   }
 
   const deleteItemFunction = async (id: number) => {
@@ -66,8 +66,10 @@ function Notice() {
   }
 
   useEffect(() => {
-    stateRefresh()
-    console.log('notice refreshed')
+    if(contentView === "NONE"){
+      stateRefresh()
+      console.log('notice refreshed', isError, isLoading)  
+    }
   }, [value, contentView])
 
   const modalOpener = () => {
@@ -111,12 +113,18 @@ function Notice() {
           <Tab label="기타" value={"기타"} />
         </Tabs>
         <Container>
-
+        {/* <NoticeItem key={'-1'} id={-1} title={'테스트'} date={'2023-07-17'} context={'테스트'} type={'테스트'} /> */}
           {
-            list?.filter(t => value === '업데이트' ? t.type === '업데이트' : value === '기타' ? t.type !== '업데이트' : true).map(t => {
-              return <NoticeItem key={t.id} id={t.id} title={t.title} date={t.date} context={t.context} type={t.type} />
-            })
+            isLoading
+              ? <LoadingPage/>
+              : isError
+                ? <ErrorPage code='NOT-01'/>
+                : data?.filter(t => value === '업데이트' ? t.type === '업데이트' : value === '기타' ? t.type !== '업데이트' : true).map(t => {
+                  return <NoticeItem key={t.id} id={t.id} title={t.title} date={t.date} context={t.context} type={t.type} />
+                })
+
           }
+
         </Container>
 
       </>

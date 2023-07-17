@@ -28,12 +28,6 @@ const test = `
 function MarkdownRenderer() {
   return (
     <MarkdownStyle>
-        <ReactMarkdown
-            renderers={{
-                // inlineCode: InlineCodeBlock,
-            }}
-            source={test}
-        />
         
     </MarkdownStyle>
   )
