@@ -4,12 +4,19 @@ import { DeleteButton, ModifyButton, PinButton } from 'components/common/CustomB
 import { ReactComponent as ICMarking } from 'atom/icon/icon_marking.svg';
 import { LatLngExpression, LatLngLiteral } from 'leaflet';
 
+interface StyleProps {
+  isDragging? : boolean
+}
+
 const Container = styled.div`
     display:flex;
-    
+    user-select:none;
     justify-content: space-around;
     align-items:center;
     padding: 15px 0;
+    border-radius:4px;
+    margin-bottom:1px;
+    background-color: ${({isDragging}:StyleProps) => (isDragging ? '#999' : 'white')}
 `
 
 const FlexBox = styled.div`
@@ -44,17 +51,18 @@ const InfoText = styled.div`
   font-weight:400;
 `
 
-interface Props {
+export interface MarkingCardProps {
   site: string,
   distance: number,
   angle: number,
   index: number,
+  isDragging?: boolean,
   coord?: LatLngLiteral
 }
 
-function MarkingCard({ site, coord, distance, angle, index }: Props) {
+function MarkingCard({ site, coord, distance, angle, index, isDragging }: MarkingCardProps) {
   return (
-    <Container>
+    <Container isDragging={isDragging}>
       <FlexBox>
         <Index>
           {index}

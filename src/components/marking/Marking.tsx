@@ -6,6 +6,7 @@ import { Button } from "@mui/material";
 // import { DragDropContext, DropResult } from 'react-beautiful-dnd'
 // import { Destination } from "module/Destination";
 import MarkingCard from "./MarkingCard";
+import MarkingDragDrop from "./MarkingDragDrop";
 
 const InputWrapper = styled.div`
     margin: 10px;
@@ -66,8 +67,9 @@ export default function Marking() {
             {/* <DragDropContext>
 
             </DragDropContext> */}
-            <MarkingCard site={"안양"} distance={110} angle={25} index={1} />
-            <MarkingCard site={"안양"} distance={110} angle={25} index={1} coord={{lat:126.34, lng:242.44}} />
+            {/* <MarkingCard site={"안양"} distance={110} angle={25} index={1} /> */}
+            {/* <MarkingCard site={"안양"} distance={110} angle={25} index={1} coord={{lat:126.34, lng:242.44}} /> */}
+            <MarkingDragDrop/>
 
         </div >
     )
