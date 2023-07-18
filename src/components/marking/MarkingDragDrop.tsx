@@ -1,10 +1,10 @@
-import React, { Component, useState } from "react";
+import React, { Component, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import styled from '@emotion/styled';
 import MarkingCard from "./MarkingCard";
 interface Props {
-    children: JSX.Element[]
+    children: Element[] | React.ReactNode[]
 }
 interface ItemType {
     id: string,
@@ -49,13 +49,14 @@ const grid = 8;
 
 const StyledDragList = styled.div`
 background: ${(props: ListStyleType) => props.isDraggingOver ? "lightgrey" : "white"};
-padding: grid;
-width: 250;
+height:100%;
+overflow-y:auto;
 `
 
 
-export default function MarkingDragDrop() {
-    const [items, setItems] = useState(getItems(10))
+export default function MarkingDragDrop<T>({children} : Props) {
+    // const [items, setItems] = useState(getItems(10))
+    const items = useRef(children)
 
     const onDragEnd = (result: any) => {
         // dropped outside the list
@@ -64,7 +65,7 @@ export default function MarkingDragDrop() {
         }
 
         const orderedItems = reorder(
-            items,
+            items.current,
             result.source.index,
             result.destination.index
         );

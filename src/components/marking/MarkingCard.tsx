@@ -5,22 +5,21 @@ import { ReactComponent as ICMarking } from 'atom/icon/icon_marking.svg';
 import { LatLngExpression, LatLngLiteral } from 'leaflet';
 
 interface StyleProps {
-  isDragging? : boolean
+  isDragging?: boolean
 }
 
 const Container = styled.div`
     display:flex;
     user-select:none;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items:center;
-    padding: 15px 0;
+    padding: 15px 10px;
     border-radius:4px;
     margin-bottom:1px;
-    background-color: ${({isDragging}:StyleProps) => (isDragging ? '#999' : 'white')}
+    background-color: ${({ isDragging }: StyleProps) => (isDragging ? '#999' : 'white')}
 `
 
 const FlexBox = styled.div`
-  width:230px;
   display:flex;
   align-items:center;
   gap:7px;
@@ -70,14 +69,15 @@ function MarkingCard({ site, coord, distance, angle, index, isDragging }: Markin
         <Site>{coord ? coord.lat.toFixed(4) + ' / ' + coord.lng.toFixed(4) : site}</Site>
         <InfoText>{angle}/{distance}</InfoText>
       </FlexBox>
-      <ButtonBox>
-        <ModifyButton>수정</ModifyButton>
-        <DeleteButton>삭제</DeleteButton>
-      </ButtonBox>
-      <PinButton>
-        <ICMarking />
-      </PinButton>
-
+      <FlexBox>
+        <ButtonBox>
+          <ModifyButton>수정</ModifyButton>
+          <DeleteButton>삭제</DeleteButton>
+        </ButtonBox>
+        <PinButton>
+          <ICMarking />
+        </PinButton>
+      </FlexBox>
     </Container>
   )
 }
