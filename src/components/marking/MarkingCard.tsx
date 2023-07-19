@@ -16,7 +16,7 @@ const Container = styled.div`
     padding: 15px 10px;
     border-radius:4px;
     margin-bottom:1px;
-    background-color: ${({ isDragging }: StyleProps) => (isDragging ? '#999' : 'white')}
+    background-color: ${({ isDragging }: StyleProps) => (isDragging ? '#999' : 'white')};
 `
 
 const FlexBox = styled.div`
@@ -51,6 +51,7 @@ const InfoText = styled.div`
 `
 
 export interface MarkingCardProps {
+  id:string,
   site: string,
   distance: number,
   angle: number,
@@ -59,12 +60,12 @@ export interface MarkingCardProps {
   coord?: LatLngLiteral
 }
 
-function MarkingCard({ site, coord, distance, angle, index, isDragging }: MarkingCardProps) {
+const MarkingCard : React.FC<MarkingCardProps> = ({ site, coord, distance, angle, index, isDragging }: MarkingCardProps) => {
   return (
     <Container isDragging={isDragging}>
       <FlexBox>
         <Index>
-          {index}
+          {index+1}
         </Index>
         <Site>{coord ? coord.lat.toFixed(4) + ' / ' + coord.lng.toFixed(4) : site}</Site>
         <InfoText>{angle}/{distance}</InfoText>

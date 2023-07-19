@@ -57,8 +57,8 @@ export default function Marking() {
                 </InputWrapper>
                 <AddButton variant='outlined' sx={{ borderRadius: '16px', width: 100 }}
                 // onClick={() => {
-                //     console.log(origin, site, range, distance)
-                //     Destination(map, site ? site : origin, range.current, distance.current)
+                // console.log(origin, site, range, distance)
+                // Destination(map, site ? site : origin, range.current, distance.current)
                 // }}
                 >추가</AddButton>
             </SearchBox>
@@ -66,9 +66,14 @@ export default function Marking() {
 
             <DragDropContext>
                 <MarkingDragDrop>
-                    <MarkingCard site={"안양"} distance={110} angle={25} index={1} />
-                    <MarkingCard site={"안양"} distance={110} angle={25} index={1} coord={{ lat: 126.34, lng: 242.44 }} />
-
+                    <MarkingCard id={'1'} site={"안양"} distance={110} angle={25} index={1} />
+                    <MarkingCard id={'2'} site={"안양"} distance={110} angle={25} index={1} />
+                    <MarkingCard id={'3'} site={"안양"} distance={111} angle={25} index={1} />
+                    <MarkingCard id={'4'} site={"안양"} distance={110} angle={25} index={1} />
+                    <MarkingCard id={'5'} site={"안양"} distance={110} angle={25} index={1} />
+                    <MarkingCard id={'6'} site={"안양"} distance={110} angle={25} index={1} />
+                    <MarkingCard id={'7'} site={"안양"} distance={110} angle={25} index={1} />
+                    <div id={'8'}> 테스트 ㅋㅋ</div>
                 </MarkingDragDrop>
 
             </DragDropContext>
