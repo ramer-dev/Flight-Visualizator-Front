@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from '@emotion/styled'
 import { DeleteButton, ModifyButton, PinButton } from 'components/common/CustomButton'
 import { ReactComponent as ICMarking } from 'atom/icon/icon_marking.svg';
@@ -16,7 +16,7 @@ const Container = styled.div`
     padding: 15px 10px;
     border-radius:4px;
     margin-bottom:1px;
-    background-color: ${({ isDragging }: StyleProps) => (isDragging ? '#999' : 'white')};
+    background-color: ${({ isDragging }: StyleProps) => (isDragging ? '#cccccc' : 'white')};
 `
 
 const FlexBox = styled.div`
@@ -60,7 +60,10 @@ export interface MarkingCardProps {
   coord?: LatLngLiteral
 }
 
-const MarkingCard : React.FC<MarkingCardProps> = ({ site, coord, distance, angle, index, isDragging }: MarkingCardProps) => {
+const MarkingCard = ({ site, coord, distance, angle, index, isDragging, id }: MarkingCardProps) => {
+  useEffect(() => {
+    console.log(id, isDragging)
+  })
   return (
     <Container isDragging={isDragging}>
       <FlexBox>

@@ -1,22 +1,21 @@
-import React, { Component, PropsWithChildren, ReactElement, ReactNode, useEffect, useRef, useState } from "react";
-import ReactDOM from "react-dom";
+import React, { PropsWithChildren, ReactElement, ReactNode, useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import styled from '@emotion/styled';
+import { markingCards } from "common/store/atom";
+import { useRecoilState } from "recoil";
+import MarkingCard, { MarkingCardProps } from "./MarkingCard";
 
 interface ItemType {
-    site: string;
-    distance: number;
-    angle: number;
+    // site: string;
+    // distance: number;
+    isDragging?: boolean,
     id: string,
-    index:number,
+    index: number,
 }
 
-
-interface ListStyleType {
-    isDraggingOver: boolean,
+interface Props {
+    item: ReactNode[]
 }
- 
-
 
 const StyledDragList = styled.div`
 background: 'white';
@@ -24,22 +23,22 @@ height:100%;
 overflow-y:auto;
 `
 
-export default function MarkingDragDrop<T extends ReactNode[]>({ children }: PropsWithChildren<{ children: T }>) {
-    // const [items, setItems] = useState(getItems(10))
-    const [items, setItems] = useState<ReactElement[]>(React.Children.toArray(children).filter(React.isValidElement))
-    useEffect(() => {
-        // console.log(items)
+// export default function MarkingDragDrop<T extends ReactNode[]>({ children }: PropsWithChildren<{ children: T }>) {
+//     const [items, setItems] = useState<ReactElement[]>(React.Children.toArray(children) as ReactElement[])
+//     console.log(items,children)
 
-    }, [items])
+export default function MarkingDragDrop() {
+    const [list, setList] = useRecoilState<MarkingCardProps[]>(markingCards);
+
+    // const [items, setItems] = useState<ReactElement[]>(React.Children.toArray(children).filter(React.isValidElement))
 
     const onDragEnd = (result: any) => {
         // dropped outside the list
-        console.log(result)
         if (!result.destination) return;
-        const data = [...items];
+        const data = [...list];
         const [reorderedItem] = data.splice(result.source.index, 1);
         data.splice(result.destination.index, 0, reorderedItem);
-        setItems(data);
+        setList(data);
     }
 
     // Normally you would want to split things out into separate components.
@@ -52,19 +51,34 @@ export default function MarkingDragDrop<T extends ReactNode[]>({ children }: Pro
                         className="cardlists"
                         {...provided.droppableProps}
                         ref={provided.innerRef}>
-                        {items.map((item: ReactElement<ItemType>, index: number) => {
-                            const itemPropsWithIndex = React.cloneElement(item, {index:index})
+                        {list.map(t => {
+                            return <Draggable key={`drag-${t.id}`} draggableId={`drag-${t.id}`} index={t.index}>
+                                {(provided, snapshot) => {
+                                    // const itemPropsWithIndex = React.cloneElement(t, { index: index, isDragging: snapshot.isDragging })
 
-                            return <Draggable key={'mark-' + `${item.props.id}`} draggableId={'mark-' + `${item.props.id}`} index={index}>
-                                {(provided, snapshot) => (
-                                    <div {...provided.draggableProps}
+                                    return <div {...provided.draggableProps}
                                         {...provided.dragHandleProps}
                                         ref={provided.innerRef}>
-                                        {itemPropsWithIndex} 
+                                        <MarkingCard id={t.id} site={t.site} distance={t.distance} angle={t.angle} index={t.index} />
                                     </div>
-                                )}
+                                }}
                             </Draggable>
                         })}
+{/* 
+                        {items.map((item: ReactElement<ItemType>, index: number) => {
+                            return <Draggable key={'drag-' + `${item.props.id}`} draggableId={'drag-' + `${item.props.id}`} index={index}>
+                                {(provided, snapshot) => {
+
+                                    const itemPropsWithIndex = React.cloneElement(item, { index: index, isDragging: snapshot.isDragging })
+
+                                    return <div {...provided.draggableProps}
+                                        {...provided.dragHandleProps}
+                                        ref={provided.innerRef}>
+                                        {itemPropsWithIndex}
+                                    </div>
+                                }}
+                            </Draggable>
+                        })} */}
                         {provided.placeholder}
                     </StyledDragList>
                 )}
