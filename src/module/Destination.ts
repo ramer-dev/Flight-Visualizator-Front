@@ -2,13 +2,13 @@ import L from "leaflet";
 import { LatLngExpression, LatLngLiteral } from "leaflet";
 import { convertToWGS } from 'module/DMS'
 import { renderToString } from 'react-dom/server'
+import divicon from "./NumberIcon";
 
 const radians = (i: number) => {
     return i * Math.PI / 180;
 }
 
 
-const divicon = (point: LatLngExpression, index: number) => { return L.divIcon({ html: `<div style="background-color:white">${index}</div>` }) }
 
 
 export const Destination = (map: L.Map, origin: string | LatLngExpression | null, range: number | null, distance: number | null, line = true) => {
