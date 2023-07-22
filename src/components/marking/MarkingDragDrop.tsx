@@ -38,7 +38,8 @@ export default function MarkingDragDrop() {
         const data = [...list];
         const [reorderedItem] = data.splice(result.source.index, 1);
         data.splice(result.destination.index, 0, reorderedItem);
-        setList(data);
+        const newArray = data.map((t,i) => {return {...t, index:i}})
+        setList(newArray);
     }
 
     // Normally you would want to split things out into separate components.

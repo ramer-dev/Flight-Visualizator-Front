@@ -3,6 +3,8 @@ import styled from '@emotion/styled'
 import { DeleteButton, ModifyButton, PinButton } from 'components/common/CustomButton'
 import { ReactComponent as ICMarking } from 'atom/icon/icon_marking.svg';
 import { LatLngExpression, LatLngLiteral } from 'leaflet';
+import { useRecoilState } from 'recoil';
+import { markingCards } from 'common/store/atom';
 
 interface StyleProps {
   isDragging?: boolean
@@ -51,7 +53,7 @@ const InfoText = styled.div`
 `
 
 export interface MarkingCardProps {
-  id:string,
+  id: string,
   site: string,
   distance: number,
   angle: number,
@@ -60,15 +62,22 @@ export interface MarkingCardProps {
   coord?: LatLngLiteral
 }
 
+
+
 const MarkingCard = ({ site, coord, distance, angle, index, isDragging, id }: MarkingCardProps) => {
-  useEffect(() => {
-    console.log(id, isDragging)
-  })
+
+  const [list, setList] = useRecoilState<MarkingCardProps[]>(markingCards);
+
+  const handlerDeleteClick = () => {
+    const newArray = list.filter(t => t.id !== id)
+    setList(newArray);
+  }
+
   return (
     <Container isDragging={isDragging}>
       <FlexBox>
         <Index>
-          {index+1}
+          {index + 1}
         </Index>
         <Site>{coord ? coord.lat.toFixed(4) + ' / ' + coord.lng.toFixed(4) : site}</Site>
         <InfoText>{angle}/{distance}</InfoText>
@@ -76,11 +85,11 @@ const MarkingCard = ({ site, coord, distance, angle, index, isDragging, id }: Ma
       <FlexBox>
         <ButtonBox>
           <ModifyButton>수정</ModifyButton>
-          <DeleteButton>삭제</DeleteButton>
+          <DeleteButton onClick={handlerDeleteClick}>삭제</DeleteButton>
         </ButtonBox>
-        <PinButton>
+        {/* <PinButton>
           <ICMarking />
-        </PinButton>
+        </PinButton> */}
       </FlexBox>
     </Container>
   )
