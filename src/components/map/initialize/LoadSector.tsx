@@ -1,9 +1,8 @@
 import { Sector } from 'common/type/SectorType';
-import { Site } from 'common/type/SiteType';
 import { LatLngLiteral } from 'leaflet';
 import CustomAxios from 'module/axios';
 import { convertToWGS } from 'module/DMS';
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Polygon, Popup, Tooltip } from 'react-leaflet';
 
 

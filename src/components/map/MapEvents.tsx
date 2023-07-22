@@ -1,10 +1,10 @@
-import { globalMap, markingSelectCursor } from "common/store/atom";
+import {  markingSelectCursor } from "common/store/atom";
 import ContextMenu from "components/contextMenu/ContextMenu";
 import L from "leaflet";
 import { LatLng, Polyline } from "leaflet";
-import { useEffect, useRef, useState } from "react";
+import {  useRef, useState } from "react";
 import { Popup, useMap, useMapEvents } from "react-leaflet";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 
 type Props = {
     isOpen: boolean,
@@ -27,7 +27,7 @@ const MapEvents = ({ isOpen, setOpen, setZoom }: Props) => {
     const currLine = useRef<Polyline | null>(null);
 
 
-    const events = useMapEvents({
+    useMapEvents({
         contextmenu(e) {
             setPosition(e.latlng)
             popup.current.setLatLng(e.latlng);

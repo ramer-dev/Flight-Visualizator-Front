@@ -1,5 +1,4 @@
 import {createTheme} from "@mui/material/styles"
-import { fontWeight } from "@mui/system"
 
 export const theme = createTheme({
     palette: {

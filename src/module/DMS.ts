@@ -1,4 +1,3 @@
-import { LatLngExpression, LatLngLiteral } from "leaflet";
 
 export function convertToWGS(coord : number){
     const degree = Math.floor(coord);

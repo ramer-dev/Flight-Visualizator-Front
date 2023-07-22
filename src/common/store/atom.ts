@@ -2,6 +2,7 @@
 import { FlightResultService } from "common/service/flightService";
 import { FlightList } from "common/type/FlightType";
 import { ContentType, ContentViewType, NavBarType } from "common/type/NavBarType";
+import { NoticeContentType } from "common/type/NoticeType";
 import { Site } from "common/type/SiteType";
 import { atom, selector } from "recoil";
 
@@ -25,13 +26,13 @@ export const globalMap = atom<L.Map>({
 })
 
 export const flightResultDataID = atom({
-    key:'flightDataID',
+    key: 'flightDataID',
     default: 0
 })
 
 export const flightResultData = selector<FlightList>({
     key: 'flightData',
-    get: async ({get}) => {
+    get: async ({ get }) => {
         const id = get(flightResultDataID);
         const response = await FlightResultService.getData(id)
         return response;
@@ -39,13 +40,17 @@ export const flightResultData = selector<FlightList>({
 })
 
 export const siteState = atom<Site[]>({
-    key:'siteState',
-    default:[]
-    
+    key: 'siteState',
+    default: []
+
 })
 
-
 export const markingSelectCursor = atom({
-    key:'markingSelectCursor',
-    default:{selection : false, coordinate: {lat:36.0, lng:128.09}}
-}) 
+    key: 'markingSelectCursor',
+    default: { selection: false, coordinate: { lat: 36.0, lng: 128.09 } }
+})
+
+export const editingNoticeContent = atom<NoticeContentType>({
+    key: 'editingNoticeContent',
+    default: { id: -1, type: '', title: '', date: '', context: '' }
+})

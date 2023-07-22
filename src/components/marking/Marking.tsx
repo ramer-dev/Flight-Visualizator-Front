@@ -1,17 +1,10 @@
-import { ContentType, ContentViewType } from "common/type/NavBarType";
 import { StyledInputBox, StyledSelectBox } from "components/common/InputText";
 import Title from "components/common/Title";
 import styled from "@emotion/styled";
-import { borderRadius } from "@mui/system";
-import { Divider, InputLabel, InputProps, MenuItem, SelectChangeEvent } from "@mui/material";
+import { Divider, InputLabel } from "@mui/material";
 import { Button } from "@mui/material";
-import { DragDropContext, DropResult } from 'react-beautiful-dnd'
-import L, { LatLngExpression, LatLngLiteral } from "leaflet";
-import { useContext, useEffect, useRef, useState } from "react";
-import { useMap } from "react-leaflet";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { globalMap, markingSelectCursor, siteState } from "common/store/atom";
-import { Destination } from "module/Destination";
+// import { DragDropContext, DropResult } from 'react-beautiful-dnd'
+// import { Destination } from "module/Destination";
 import MarkingCard from "./MarkingCard";
 
 const InputWrapper = styled.div`
@@ -39,7 +32,7 @@ const AddButton = styled(Button)`
 
 
 export default function Marking() {
-    const map = useMap();
+    // const map = useMap();
 
     return (
         <div>
