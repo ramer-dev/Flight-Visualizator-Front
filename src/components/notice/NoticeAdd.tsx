@@ -50,7 +50,7 @@ function NoticeAdd() {
       title: title?.current ? title.current.value : noticeContent.title,
       type: tag?.current ? tag.current.value : noticeContent.type,
       context: content?.current ? content.current.value : noticeContent.context,
-      date: noticeContent.date,
+      date: new Date().toISOString(),
       version: '',
       user: ''
     }
