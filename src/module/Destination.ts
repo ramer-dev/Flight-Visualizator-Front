@@ -9,9 +9,7 @@ const radians = (i: number) => {
 }
 
 
-
-
-export const Destination = (map: L.Map, origin: string | LatLngExpression | null, range: number | null, distance: number | null, line = true) => {
+export const Destination = (map: L.Map, origin: string | LatLngExpression | null, range: number | null, distance: number | null, level:number, index:number, line = true) => {
     if (!origin) return;
     if (range === null) return;
     if (distance === null) return;
@@ -29,7 +27,7 @@ export const Destination = (map: L.Map, origin: string | LatLngExpression | null
 
             if (line) L.polyline([point, target]).addTo(map);
             // L.marker(target).addTo(map);
-            L.marker(target, { icon: divicon(target, 1) }).addTo(map);
+            L.marker(target, { icon: divicon(0, 1) }).addTo(map);
 
             // divicon(target, 1).addTo(map);
             return
@@ -41,7 +39,7 @@ export const Destination = (map: L.Map, origin: string | LatLngExpression | null
         origin = { lat: convertToWGS(origin['lat']), lng: convertToWGS(origin['lng']) }
         const target = L.GeometryUtil.destination(origin, radians(range), distance * 1852)
         if (line) L.polyline([origin, target]).addTo(map);
-        L.marker(target, { icon: divicon(target, 1) }).addTo(map);
+        L.marker(target, { icon: divicon(level, index) }).addTo(map);
 
 
     }

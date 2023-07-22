@@ -126,7 +126,7 @@ export default function Marking() {
                     <AddButton variant='outlined' sx={{ borderRadius: '16px', width: 100 }}
                         onClick={() => {
                             console.log(origin.current, site, range.current, distance.current)
-                            Destination(map, origin.current, range.current * (180/Math.PI), distance.current)
+                            Destination(map, origin.current, range.current * (180/Math.PI), distance.current, 5, list.length)
                             AddElement(origin.current, site, range.current, distance.current)
                         }}
                     >추가</AddButton>
