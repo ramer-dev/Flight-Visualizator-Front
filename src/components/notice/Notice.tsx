@@ -68,7 +68,6 @@ function Notice() {
   useEffect(() => {
     if(contentView === "NONE"){
       stateRefresh()
-      console.log('notice refreshed', isError, isLoading)  
     }
   }, [value, contentView])
 

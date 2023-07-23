@@ -11,13 +11,14 @@ const Wrapper = styled.div`
 `
 interface Props {
     code?: string;
+    content?: string
 }
 
-export default function ErrorPage({ code }: Props) {
+export default function ErrorPage({ code, content }: Props) {
     return (
         <Wrapper>
             <ErrorOutlineOutlinedIcon color='disabled' sx={{ fontSize: '120px' }} />
-            <Typography>에러가 발생했습니다.</Typography>
+            <Typography>{content ? content : '에러가 발생했습니다.'}</Typography>
             <Typography>code : {code}</Typography>
         </Wrapper>
     )

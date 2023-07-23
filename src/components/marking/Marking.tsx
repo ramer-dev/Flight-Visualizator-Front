@@ -63,7 +63,6 @@ export default function Marking() {
     const layerGroup = useRef(L.layerGroup([], { pane: 'marking' }))
 
     useEffect(() => {
-        console.log(list);
         const layer = list.map((t: MarkingCardProps, index: number) => L.marker(t.coord!, { icon: divicon(t.level, index), pane: 'marking' })
             .bindTooltip(MarkingTooltip(t)))
 
