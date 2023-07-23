@@ -1,9 +1,9 @@
 import { StyledInputBox } from "components/common/InputText";
 import Title from "components/common/Title";
 import styled from "@emotion/styled";
-import { Divider, FormControl, MenuItem, Radio, RadioGroup, Select } from "@mui/material";
+import { Divider, FormControl, MenuItem, Radio, Select } from "@mui/material";
 import { Button } from "@mui/material";
-import MarkingCard, { MarkingCardProps } from "./MarkingCard";
+import { MarkingCardProps } from "./MarkingCard";
 import MarkingDragDrop from "./MarkingDragDrop";
 import { useGetSite } from "components/hooks/useSite";
 import { useEffect, useRef, useState } from "react";
@@ -15,7 +15,7 @@ import { useRecoilState } from "recoil";
 import { markingCards } from "common/store/atom";
 import divicon from "module/NumberIcon";
 import L from "leaflet";
-import { blue, green, orange, pink, red, yellow } from "@mui/material/colors";
+import { blue, green, orange, red, yellow } from "@mui/material/colors";
 import MarkingTooltip from "./MarkingTooltip";
 
 
@@ -27,10 +27,6 @@ const FlexBox = styled.div`
     display:flex;
     justify-content:center;
     align-content:center;
-`
-
-const PinButton = styled(Button)`
-    
 `
 
 const SearchBox = styled.div`
@@ -98,27 +94,27 @@ export default function Marking() {
         origin.current = coordinate;
     }
 
-    const Validation = () => {
-        const arr = [false, false, false];
+    // const Validation = () => {
+    //     const arr = [false, false, false];
 
-        site === ''
-            ? arr[0] = true
-            : arr[0] = false;
+    //     site === ''
+    //         ? arr[0] = true
+    //         : arr[0] = false;
 
-        if (angle.current && distance.current) {
-            angle.current.value === ''
-                ? arr[1] = true
-                : arr[1] = false;
+    //     if (angle.current && distance.current) {
+    //         angle.current.value === ''
+    //             ? arr[1] = true
+    //             : arr[1] = false;
 
-            distance.current.value === ''
-                ? arr[2] = true
-                : arr[2] = false;
-        }
+    //         distance.current.value === ''
+    //             ? arr[2] = true
+    //             : arr[2] = false;
+    //     }
 
-        // setError(arr);
-        if (arr.includes(true)) return true;
-        return false;
-    }
+    //     // setError(arr);
+    //     if (arr.includes(true)) return true;
+    //     return false;
+    // }
 
     const AddElement = (origin_: LatLngExpression, site_: string) => {
         if (angle.current && distance.current) {
@@ -132,7 +128,7 @@ export default function Marking() {
                 angle: +angle.current.value,
                 index: list.length,
                 level: +color,
-                coord: Destination(map, origin_, +angle.current.value, +distance.current.value, +color, list.length)
+                coord: Destination(map, origin_, +angle.current.value, +distance.current.value)
             }
             const arr = [...list, item]
             setList(arr);

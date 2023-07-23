@@ -1,5 +1,4 @@
 import L from 'leaflet'
-import { LatLngExpression } from 'leaflet'
 import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { ReactComponent as MarkerBlack } from 'atom/icon/marker_black.svg';
@@ -8,8 +7,6 @@ import { ReactComponent as MarkerOrange } from 'atom/icon/marker_orange.svg';
 import { ReactComponent as MarkerYellow } from 'atom/icon/marker_yellow.svg';
 import { ReactComponent as MarkerGreen } from 'atom/icon/marker_green.svg';
 import { ReactComponent as MarkerBlue } from 'atom/icon/marker_blue.svg';
-import styled from '@emotion/styled';
-import { lineHeight } from '@mui/system';
 
 interface Props {
     index: number,
@@ -20,14 +17,6 @@ interface TemplateProps {
     Temp: React.FC,
     index: number,
 }
-
-const Container = styled.div`
-    position:relative;
-`
-
-const MarkerBox = styled.div`
-    position:absolute;
-`
 
 const MarkerTemplate = ({ Temp, index }: TemplateProps) => {
     return (

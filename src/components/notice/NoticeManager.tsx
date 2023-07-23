@@ -1,6 +1,5 @@
 import styled from '@emotion/styled'
 import { Divider } from '@mui/material'
-import { deleteNotice } from 'common/service/noticeService'
 import { contentFormat, editingNoticeContent } from 'common/store/atom'
 import { NoticeContentType } from 'common/type/NoticeType'
 import { DeleteButton, ModifyButton } from 'components/common/CustomButton'

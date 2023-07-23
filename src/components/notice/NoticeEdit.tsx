@@ -4,9 +4,8 @@ import { patchNotice } from 'common/service/noticeService'
 import { contentViewFormat, editingNoticeContent } from 'common/store/atom'
 import { NoticeContentType } from 'common/type/NoticeType'
 import NavCloseButton from 'components/navbar/NavCloseButton'
-import React, { useEffect, useRef } from 'react'
+import React, { useRef } from 'react'
 import { useRecoilState, useSetRecoilState } from 'recoil'
-import { NoticeContext } from './Notice'
 
 const Wrapper = styled.div`
   display:flex;

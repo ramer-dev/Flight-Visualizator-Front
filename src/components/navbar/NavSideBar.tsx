@@ -3,7 +3,7 @@ import {motion} from 'framer-motion'
 import { NavBarType } from "../../common/type/NavBarType";
 import styled from "@emotion/styled";
 import FlightContent from '../flight/FlightContent';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import {  contentViewFormat } from 'common/store/atom';
 import NavScreen from './NavScreen';
 import Marking from 'components/marking/Marking';
@@ -38,7 +38,7 @@ type propType = {
 
 
 const NavSideBar = (prop: propType) => {
-  const [contentView, setContentView] = useRecoilState(contentViewFormat)
+  const contentView = useRecoilValue(contentViewFormat)
   return (
     <Container>
 

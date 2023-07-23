@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useEffect, useRef, useMemo, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import NavItem from "./NavItem";
 import { ReactComponent as ICFlightCheck } from 'atom/icon/icon_flightcheck.svg';
 import { ReactComponent as ICMarking } from 'atom/icon/icon_marking.svg';
@@ -93,7 +93,7 @@ const NavBar = () => {
     return (
         <>
             <LoginComponent open={dialogOpen} closeLogin={closeLogin} />
-            
+
             <Container ref={container}>
 
                 <Wrapper>
