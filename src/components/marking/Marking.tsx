@@ -3,7 +3,7 @@ import Title from "components/common/Title";
 import styled from "@emotion/styled";
 import { Divider, FormControl, FormHelperText, MenuItem, Radio, RadioGroup, Select } from "@mui/material";
 import { Button } from "@mui/material";
-import { MarkingCardProps } from "./MarkingCard";
+import MarkingCard, { MarkingCardProps } from "./MarkingCard";
 import MarkingDragDrop from "./MarkingDragDrop";
 import { useGetSite } from "components/hooks/useSite";
 import { useEffect, useRef, useState } from "react";
@@ -16,6 +16,8 @@ import { markingCards } from "common/store/atom";
 import divicon from "module/NumberIcon";
 import L from "leaflet";
 import { blue, green, orange, pink, red, yellow } from "@mui/material/colors";
+import MarkingTooltip from "./MarkingTooltip";
+
 
 const InputWrapper = styled.div`
     margin: 10px 10px 0px;
@@ -54,18 +56,18 @@ export default function Marking() {
     const [siteMenuOpen, setSiteMenuOpen] = useState(false);
     const [list, setList] = useRecoilState<MarkingCardProps[]>(markingCards);
     const [color, setColor] = useState<string>('5');
-    const [error, setError] = useState<boolean[]>([false, false, false]);
+    // const [error, setError] = useState<boolean[]>([false, false, false]);
     const origin = useRef<LatLngExpression>({ lat: 0, lng: 0 });
     const angle = useRef<HTMLInputElement>(null);
     const distance = useRef<HTMLInputElement>(null);
-    const layerGroup = useRef(L.layerGroup([]))
+    const layerGroup = useRef(L.layerGroup([], { pane: 'marking' }))
 
     useEffect(() => {
         console.log(list);
-        const layer = list.map((t: MarkingCardProps, index: number) => L.marker(t.coord!, { icon: divicon(t.level, index) })
-            .setTooltipContent(`
-                <div>tooltip!</div>
-            `))
+        const layer = list.map((t: MarkingCardProps, index: number) => L.marker(t.coord!, { icon: divicon(t.level, index), pane: 'marking' })
+            .bindTooltip(MarkingTooltip(t)))
+
+
         layerGroup.current.clearLayers()
         for (let i of layer) {
             layerGroup.current.addLayer(i)
@@ -96,7 +98,7 @@ export default function Marking() {
     }
 
     const Validation = () => {
-        const arr = error;
+        const arr = [false, false, false];
 
         site === ''
             ? arr[0] = true
@@ -112,14 +114,15 @@ export default function Marking() {
                 : arr[2] = false;
         }
 
-        setError(arr);
+        // setError(arr);
+        if (arr.includes(true)) return true;
+        return false;
     }
 
     const AddElement = (origin_: LatLngExpression, site_: string) => {
-
         if (angle.current && distance.current) {
 
-            Validation()
+            // if (Validation()) return;
 
             const item: MarkingCardProps = {
                 id: list.length.toString(),
@@ -159,7 +162,7 @@ export default function Marking() {
                 <FormControl>
                     <InputWrapper>
                         <h6>기준점</h6>
-                        <Select MenuProps={{ sx: { maxHeight: '400px' } }} error={error[0]} open={siteMenuOpen} value={site} fullWidth size='small'
+                        <Select MenuProps={{ sx: { maxHeight: '400px' } }} open={siteMenuOpen} value={site} fullWidth size='small'
                             onClick={handleSiteClickOpen}
                             onClose={handleSiteClickClose}
                             onChange={handleSiteChange}>
@@ -167,13 +170,13 @@ export default function Marking() {
                                 return <MenuItem onClick={handleSiteClickClose} key={t.siteId} value={t.siteName}>{t.siteName}</MenuItem>
                             })}
                         </Select>
-                        {<FormHelperText error={error[0]}>{error[0] ? '기준점을 선택해주세요.' : ' '}</FormHelperText>}
+                        {/* {<FormHelperText error={error[0]}>{error[0] ? '기준점을 선택해주세요.' : ' '}</FormHelperText>} */}
                         {/* <PinButton onClick={() => { setMarking({ selection: true, coordinate: marking.coordinate }) }}>Select</PinButton> */}
                     </InputWrapper>
                     <InputWrapper>
                         <FlexBox>
-                            <StyledInputBox inputRef={angle} error={error[1]} type={'number'} sx={{ borderRadius: '15px' }} label='방위' size='small' helperText={error[1] ? '각도를 입력해주세요.' : ' '} />
-                            <StyledInputBox inputRef={distance} error={error[2]} type={'number'} label='거리' size='small' helperText={error[1] ? '거리를 입력해주세요.' : ' '} />
+                            <StyledInputBox inputRef={angle} type={'number'} sx={{ borderRadius: '15px' }} label='방위' size='small' />
+                            <StyledInputBox inputRef={distance} type={'number'} label='거리' size='small' />
                         </FlexBox>
                     </InputWrapper>
                     <InputWrapper>
