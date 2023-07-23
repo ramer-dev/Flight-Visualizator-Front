@@ -52,15 +52,15 @@ export default function MarkingDragDrop() {
                         className="cardlists"
                         {...provided.droppableProps}
                         ref={provided.innerRef}>
-                        {list.map(t => {
-                            return <Draggable key={`drag-${t.id}`} draggableId={`drag-${t.id}`} index={t.index}>
+                        {list.map((t, i) => {
+                            return <Draggable key={`drag-${t.id}`} draggableId={`drag-${t.id}`} index={i}>
                                 {(provided, snapshot) => {
                                     // const itemPropsWithIndex = React.cloneElement(t, { index: index, isDragging: snapshot.isDragging })
 
                                     return <div {...provided.draggableProps}
                                         {...provided.dragHandleProps}
                                         ref={provided.innerRef}>
-                                        <MarkingCard id={t.id} site={t.site} distance={t.distance} angle={t.angle} index={t.index} />
+                                        <MarkingCard id={t.id} site={t.site} distance={t.distance} angle={t.angle} index={i} level={t.level} />
                                     </div>
                                 }}
                             </Draggable>

@@ -5,6 +5,7 @@ import { ReactComponent as ICMarking } from 'atom/icon/icon_marking.svg';
 import { LatLngExpression, LatLngLiteral } from 'leaflet';
 import { useRecoilState } from 'recoil';
 import { markingCards } from 'common/store/atom';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 interface StyleProps {
   isDragging?: boolean
@@ -59,6 +60,7 @@ export interface MarkingCardProps {
   angle: number,
   index: number,
   isDragging?: boolean,
+  level: number,
   coord?: LatLngLiteral
 }
 
@@ -84,8 +86,8 @@ const MarkingCard = ({ site, coord, distance, angle, index, isDragging, id }: Ma
       </FlexBox>
       <FlexBox>
         <ButtonBox>
-          <ModifyButton>수정</ModifyButton>
-          <DeleteButton onClick={handlerDeleteClick}>삭제</DeleteButton>
+          {/* <ModifyButton>수정</ModifyButton> */}
+          <CancelIcon sx={{cursor:'pointer'}} onClick={handlerDeleteClick}/>
         </ButtonBox>
         {/* <PinButton>
           <ICMarking />

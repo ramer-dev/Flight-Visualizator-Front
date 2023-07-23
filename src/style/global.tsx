@@ -42,3 +42,13 @@ export const h5 = css`
         font-size:10px
     }
 `
+
+export const h6 = css`
+    h6{
+        margin-block-end:0;
+        margin-block-start:0;
+        margin:0;
+        line-height:10px;
+        font-size:10px
+    }
+`

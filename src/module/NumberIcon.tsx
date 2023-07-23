@@ -32,9 +32,9 @@ const MarkerBox = styled.div`
 const MarkerTemplate = ({ Temp, index }: TemplateProps) => {
     return (
         <div style={{ position: 'relative' }}>
-            <h2 style={{ zIndex: 1000, position: 'relative', textAlign: 'center', paddingTop: '3px', lineHeight: '25px' }}>
+            <h3 style={{ zIndex: 1000, position: 'relative', textAlign: 'center', paddingTop: '3px', lineHeight: '25px' }}>
                 {index}
-            </h2>
+            </h3>
             <div style={{ position: 'absolute', top: 0 }}>
                 <Temp />
             </div>
@@ -48,7 +48,7 @@ export const divicon = (level: number, index: number) => {
         iconSize: [41, 41],
         iconAnchor: [20, 38],
         popupAnchor: [1, -34],
-        tooltipAnchor: [16, -28], className: `custom-marker-${level}`, html: renderToString(<NumberIcon level={level} index={index} />)
+        tooltipAnchor: [16, -28], className: `custom-marker-${level}`, html: renderToString(<NumberIcon level={level} index={index+1} />)
     })
 }
 
