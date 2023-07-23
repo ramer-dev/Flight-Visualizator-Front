@@ -50,7 +50,10 @@ const Map = () => {
             <MapEvents isOpen={contextMenuOpened} setOpen={setContextMenuOpened} setZoom={setZoom} />
 
             <TileLayer url="http://localhost:3000/v1/api/map/{z}/{x}/{y}" attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Dev by. Hee Sang Shin' />
-
+            {/* <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            /> */}
             <LayersControl position="topright">
                 <LayersControl.Overlay name='range-bearing' checked>
                     <LayerGroup pane='range-bearing'>
@@ -81,6 +84,14 @@ const Map = () => {
                 <LayersControl.Overlay name='draw2' checked>
                     <LayerGroup >
 
+                    </LayerGroup>
+                </LayersControl.Overlay>
+
+                <LayersControl.Overlay name='marking' checked>
+                    <LayerGroup pane='marking'>
+                        <Pane name='marking'>
+
+                        </Pane>
                     </LayerGroup>
                 </LayersControl.Overlay>
             </LayersControl>

@@ -3,7 +3,8 @@ import { FlightResultService } from "common/service/flightService";
 import { FlightList } from "common/type/FlightType";
 import { ContentType, ContentViewType, NavBarType } from "common/type/NavBarType";
 import { NoticeContentType } from "common/type/NoticeType";
-import { Site } from "common/type/SiteType";
+import { SiteType } from "common/type/SiteType";
+import { MarkingCardProps } from "components/marking/MarkingCard";
 import { atom, selector } from "recoil";
 
 export const page = atom<NavBarType>({
@@ -39,7 +40,7 @@ export const flightResultData = selector<FlightList>({
     }
 })
 
-export const siteState = atom<Site[]>({
+export const siteState = atom<SiteType[]>({
     key: 'siteState',
     default: []
 
@@ -53,4 +54,9 @@ export const markingSelectCursor = atom({
 export const editingNoticeContent = atom<NoticeContentType>({
     key: 'editingNoticeContent',
     default: { id: -1, type: '', title: '', date: '', context: '' }
+})
+
+export const markingCards = atom<MarkingCardProps[]>({
+    key: 'markingCards',
+    default: []
 })

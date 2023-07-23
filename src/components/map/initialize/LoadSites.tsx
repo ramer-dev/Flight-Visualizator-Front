@@ -1,4 +1,4 @@
-import { Site } from 'common/type/SiteType';
+import { SiteType } from 'common/type/SiteType';
 import { LatLngLiteral } from 'leaflet';
 import CustomAxios from 'module/axios';
 import { convertToWGS } from 'module/DMS';
@@ -13,7 +13,7 @@ import { siteState } from 'common/store/atom';
 
 const LoadEntireSite = async () => {
     try {
-        const res = await CustomAxios.get<Site[]>('site');
+        const res = await CustomAxios.get<SiteType[]>('site');
         return res;
     } catch (e) {
         return {data:[]};
@@ -56,7 +56,7 @@ const iconSelector = (st: string) => {
     }
 }
 function LoadSites() {
-    const [site, setSite] = useState<Site[]>([])
+    const [site, setSite] = useState<SiteType[]>([])
     const siteSetter = useSetRecoilState(siteState);
     const result = LoadEntireSite();
     useEffect(() => {
