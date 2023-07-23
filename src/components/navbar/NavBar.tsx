@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useEffect, useRef, useMemo } from 'react';
+import { useEffect, useRef, useMemo, useState } from 'react';
 import NavItem from "./NavItem";
 import { ReactComponent as ICFlightCheck } from 'atom/icon/icon_flightcheck.svg';
 import { ReactComponent as ICMarking } from 'atom/icon/icon_marking.svg';
@@ -14,6 +14,7 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import NavSideBar from "./NavSideBar";
 import NavEtcItem from "./NavEtcItem";
 import L from 'leaflet';
+import LoginComponent from "components/login/LoginComponent";
 
 const Container = styled.div`
     display: inline-flex;
@@ -61,6 +62,7 @@ const NavBar = () => {
     const [selectedPage, setPage] = useRecoilState<NavBarType>(page);
     const container = useRef<HTMLDivElement>(null);
     const setContentView = useSetRecoilState<ContentViewType>(contentViewFormat);
+    const [dialogOpen, setDialogOpen] = useState(false);
 
     const onButtonClick = (str: NavBarType) => {
 
@@ -77,30 +79,47 @@ const NavBar = () => {
         }
     }, [])
 
-    const NavBarFunc = useMemo(() => (
-        <Container ref={container}>
-            <Wrapper>
-                <LogoImg>LOGO</LogoImg>
-                <MainNavBar>
-                    <NavItem icon={ICFlightCheck} title={"FLIGHT_RESULT"} content={"비행검사"} onclick={() => { onButtonClick("FLIGHT_RESULT") }} />
-                    <NavItem icon={ICSearch} title={"SEARCH"} content={"검색"} onclick={() => { onButtonClick("SEARCH") }} />
-                    <NavItem icon={ICMarking} title={"MARKING"} content={"마킹"} onclick={() => { onButtonClick("MARKING") }} />
-                    <NavItem icon={ICNotice} title={"NOTICE"} content={"공지사항"} onclick={() => { onButtonClick("NOTICE") }} />
-                    <NavItem icon={ICSetting} title={"SETTING"} content={"설정"} onclick={() => { onButtonClick("SETTING") }} />
-                </MainNavBar>
-                <SubNavBar>
-                    <NavEtcItem icon={ICQuestion} title={"도움말"} onclick={() => { }} isClicked={false} />
-                    <NavEtcItem icon={ICLogin} title={"로그인"} onclick={() => { }} isClicked={false} />
-                </SubNavBar>
-            </Wrapper>
-            {selectedPage &&
-                <ContentView>
-                    <NavSideBar selectedPage={selectedPage} />
-                </ContentView>}
 
-        </Container>
-    ), [selectedPage])
 
-    return NavBarFunc
+    const openLogin = () => {
+        setDialogOpen(true);
+    }
+
+    const closeLogin = () => {
+        setDialogOpen(false);
+    }
+
+
+    return (
+        <>
+            <LoginComponent open={dialogOpen} closeLogin={closeLogin} />
+            
+            <Container ref={container}>
+
+                <Wrapper>
+                    <LogoImg>LOGO</LogoImg>
+                    <MainNavBar>
+                        <NavItem icon={ICFlightCheck} title={"FLIGHT_RESULT"} content={"비행검사"} onclick={() => { onButtonClick("FLIGHT_RESULT") }} />
+                        <NavItem icon={ICSearch} title={"SEARCH"} content={"검색"} onclick={() => { onButtonClick("SEARCH") }} />
+                        <NavItem icon={ICMarking} title={"MARKING"} content={"마킹"} onclick={() => { onButtonClick("MARKING") }} />
+                        <NavItem icon={ICNotice} title={"NOTICE"} content={"공지사항"} onclick={() => { onButtonClick("NOTICE") }} />
+                        <NavItem icon={ICSetting} title={"SETTING"} content={"설정"} onclick={() => { onButtonClick("SETTING") }} />
+                    </MainNavBar>
+                    <SubNavBar>
+                        <NavEtcItem icon={ICQuestion} title={"도움말"} onClick={() => { }} isClicked={false} />
+                        <NavEtcItem icon={ICLogin} title={"로그인"} onClick={() => { openLogin() }} isClicked={false} />
+
+                    </SubNavBar>
+                </Wrapper>
+                {selectedPage &&
+                    <ContentView>
+                        <NavSideBar selectedPage={selectedPage} />
+                    </ContentView>}
+
+            </Container>
+
+        </>
+    )
+
 }
 export default NavBar;

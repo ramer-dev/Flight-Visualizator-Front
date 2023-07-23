@@ -1,14 +1,14 @@
 import { StyledInputBox } from "components/common/InputText";
 import Title from "components/common/Title";
 import styled from "@emotion/styled";
-import { Divider, FormControl, FormHelperText, MenuItem, Radio, RadioGroup, Select } from "@mui/material";
+import { Divider, FormControl, MenuItem, Radio, RadioGroup, Select } from "@mui/material";
 import { Button } from "@mui/material";
 import MarkingCard, { MarkingCardProps } from "./MarkingCard";
 import MarkingDragDrop from "./MarkingDragDrop";
 import { useGetSite } from "components/hooks/useSite";
 import { useEffect, useRef, useState } from "react";
 import { Destination } from "module/Destination";
-import { LatLngExpression, LatLngLiteral } from "leaflet";
+import { LatLngExpression } from "leaflet";
 import { useMap } from "react-leaflet";
 import React from "react";
 import { useRecoilState } from "recoil";
@@ -72,7 +72,9 @@ export default function Marking() {
             layerGroup.current.addLayer(i)
         }
         layerGroup.current.addTo(map);
-
+        return () => {
+            layerGroup.current.clearLayers()
+        }
     }, [list])
     const handleSiteChange = (e: any) => {
         const it = e.target.value as string
