@@ -5,12 +5,11 @@ import styled from '@emotion/styled'
 
 const Container = styled.div`
     height:100vh;
-    width:calc(100vw - 465px);
+    width:100%;
 `
 
 function CustomTable({ data }: { data: FlightList }) {
     const apiRef = useGridApiRef()
-    const editingColumnId = useRef<number>(-1)
     const rows: GridRowsProp = data.data
     // .map(t => {
     //     return { id: t.id, 
@@ -31,22 +30,39 @@ function CustomTable({ data }: { data: FlightList }) {
 
     const columns: GridColDef[] = [
 
-        { field: 'id', editable: true },
-        { field: 'siteName', editable: true },
-        { field: 'frequency', editable: true },
-        { field: 'testId', editable: true },
-        { field: 'txmain', editable: true },
-        { field: 'rxmain', editable: true },
-        { field: 'txstby', editable: true },
-        { field: 'rxstby', editable: true },
-        { field: 'angle', editable: true },
-        { field: 'distance', editable: true },
-        { field: 'height', editable: true },
-        { field: 'status', editable: true },
-        { field: 'updatedAt' },
-        { field: 'deletedAt' },
+        { field: 'id', editable: true, flex: 1 },
+        { field: 'siteName', editable: true, flex: 1 },
+        { field: 'frequency', editable: true, flex: 1 },
+        { field: 'testId', editable: true, flex: 1 },
+        { field: 'txmain', editable: true, flex: 1 },
+        { field: 'rxmain', editable: true, flex: 1 },
+        { field: 'txstby', editable: true, flex: 1 },
+        { field: 'rxstby', editable: true, flex: 1 },
+        { field: 'angle', editable: true, flex: 1 },
+        { field: 'distance', editable: true, flex: 1 },
+        { field: 'height', editable: true, flex: 1 },
+        { field: 'status', editable: true, flex: 1 },
+        { field: 'updatedAt', flex: 1 },
+        { field: 'deletedAt', flex: 1 },
 
     ]
+
+    const columnVisibilityModel = {
+        'id': false,
+        // 'siteName': false,
+        // 'frequency': false,
+        // 'testId': false,
+        // 'txmain': false,
+        // 'rxmain': false,
+        // 'txstby': false,
+        // 'rxstby': false,
+        // 'angle': false,
+        // 'distance': false,
+        // 'height': false,
+        'status': false,
+        'updatedAt': false,
+        'deletedAt': false,
+    }
 
     const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
 
@@ -55,24 +71,8 @@ function CustomTable({ data }: { data: FlightList }) {
 
         return () => setRowModesModel({});
     }, [data])
-    // const handleRowDoubleClick = (params: GridCellParams, e:React.MouseEvent) => {
-    // if(editingColumnId.current > 0) apiRef.current.stopRowEditMode({id:editingColumnId.current})
-    // apiRef.current.startRowEditMode({id:params.id})
-    // editingColumnId.current = params.id;
-    // }
 
     const handleRowClick = (params: GridRowParams, event: React.MouseEvent) => {
-        console.log(Object.keys(rowModesModel))
-        event.stopPropagation()
-        //     if (Object.keys(rowModesModel).length) {
-        //         setRowModesModel({
-        //             // [Object.keys(rowModesModel)[0]]: { mode: GridRowModes.View },
-        //             [params.id]: { mode: GridRowModes.Edit }
-        //         })
-        //     } else {
-        //         setRowModesModel({ [params.id]: { mode: GridRowModes.Edit } })
-        //     }
-
         setRowModesModel((prevModel) => {
             return {
                 ...Object.keys(prevModel).reduce(
@@ -93,18 +93,14 @@ function CustomTable({ data }: { data: FlightList }) {
             setRowModesModel(newModel);
         },
         [],
-    );
-
-    const test = () => {
-        console.log(rowModesModel);
-    }
+    ); 
     return (
         <Container>
             <DataGrid apiRef={apiRef} editMode='row' rows={rows} columns={columns}
+                columnVisibilityModel={columnVisibilityModel}
+
                 rowModesModel={rowModesModel}
                 onRowClick={handleRowClick}
-            // onCellClick={test}
-            // onRowModesModelChange={handleRowModesModelChange}
             />
         </Container>
     )
