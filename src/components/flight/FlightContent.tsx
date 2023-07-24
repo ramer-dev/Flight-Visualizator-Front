@@ -80,7 +80,7 @@ const FlightContent = () => {
                         list?.map((it, i) => {
                             return it.testName.includes(value) ? <div key={it.id}>
                                 <HorizontalLine />
-                                <FlightItem testName={it.testName} testDate={it.testDate} testType={it.testType} id={it.id} userId={it.userId} />
+                                <FlightItem testName={it.testName} testDate={it.testDate} testType={it.testType} id={it.id} userId={it.userId} data={[]} />
                             </div> : null
                         })
                     }

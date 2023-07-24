@@ -42,7 +42,7 @@ export interface FlightList {
   userId: string,
   updatedAt?: Date,
   deletedAt?: Date
-  data?: FlightResult[]
+  data: FlightResult[]
 }
 
 export interface TableFlightList extends FlightList {

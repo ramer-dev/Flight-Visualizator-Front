@@ -1,5 +1,7 @@
 import { flightResultData } from 'common/store/atom'
 import { FlightList } from 'common/type/FlightType'
+import CustomTable from 'components/common/CustomTable'
+import LoadingPage from 'components/common/LoadingPage'
 import DataGridViewer from 'components/common/Not use/DataGridViewer'
 import ScreenTitle from 'components/common/ScreenTitle'
 import TableViewer from 'components/tableView/TableViewer'
@@ -32,7 +34,7 @@ function FlightView() {
     <>
       <ScreenTitle text={"비행검사 조회"} />
       {/* {<TableViewer data={data} />} */}
-      {data ? <DataGridViewer data={data.data}/> : null}
+      {data ? <CustomTable data={data}/> : <LoadingPage/>}
 
       <NavCloseButton format={['MID', 'FULLSCREEN']} />
     </>

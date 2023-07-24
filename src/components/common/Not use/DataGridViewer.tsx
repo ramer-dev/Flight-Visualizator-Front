@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { DataGrid, GridColDef, GridRowModel, useGridApiRef, GridCellModesModel, GridCellParams, GridCellModes } from '@mui/x-data-grid'
+import { DataGrid, GridColDef, GridRowModel, useGridApiRef, GridCellModesModel, GridCellParams, GridCellModes, GridRowId, MuiBaseEvent, MuiEvent } from '@mui/x-data-grid'
 import { TempData } from '../DataCreater'
 import styled from '@emotion/styled'
 import { Box, Button, LinearProgress } from '@mui/material'
@@ -48,46 +48,46 @@ function DataGridViewer({ data }: Props) {
     }, [data])
     const row = data ? data.map((item, idx) => ({ no: idx + 1, ...item })) : []
 
-    const handleCellClick = useCallback(
-        (params: GridCellParams, event: React.MouseEvent) => {
-            if (!params.isEditable) {
-                return;
-            }
+    // const handleCellClick = useCallback(
+    //     (params: GridCellParams, event: React.MouseEvent) => {
+    //         if (!params.isEditable) {
+    //             return;
+    //         }
 
-            // Ignore portal
-            if (!event.currentTarget.contains(event.target as Element)) {
-                return;
-            }
+    //         // Ignore portal
+    //         if (!event.currentTarget.contains(event.target as Element)) {
+    //             return;
+    //         }
 
-            setCellModesModel((prevModel) => {
-                return {
-                    // Revert the mode of the other cells from other rows
-                    ...Object.keys(prevModel).reduce(
-                        (acc, id) => ({
-                            ...acc,
-                            [id]: Object.keys(prevModel[id]).reduce(
-                                (acc2, field) => ({
-                                    ...acc2,
-                                    [field]: { mode: GridCellModes.View },
-                                }),
-                                {},
-                            ),
-                        }),
-                        {},
-                    ),
-                    [params.id]: {
-                        // Revert the mode of other cells in the same row
-                        ...Object.keys(prevModel[params.id] || {}).reduce(
-                            (acc, field) => ({ ...acc, [field]: { mode: GridCellModes.View } }),
-                            {},
-                        ),
-                        [params.field]: { mode: GridCellModes.Edit },
-                    },
-                };
-            });
-        },
-        [],
-    );
+    //         setCellModesModel((prevModel) => {
+    //             return {
+    //                 // Revert the mode of the other cells from other rows
+    //                 ...Object.keys(prevModel).reduce(
+    //                     (acc, id) => ({
+    //                         ...acc,
+    //                         [id]: Object.keys(prevModel[id]).reduce(
+    //                             (acc2, field) => ({
+    //                                 ...acc2,
+    //                                 [field]: { mode: GridCellModes.View },
+    //                             }),
+    //                             {},
+    //                         ),
+    //                     }),
+    //                     {},
+    //                 ),
+    //                 [params.id]: {
+    //                     // Revert the mode of other cells in the same row
+    //                     ...Object.keys(prevModel[params.id] || {}).reduce(
+    //                         (acc, field) => ({ ...acc, [field]: { mode: GridCellModes.View } }),
+    //                         {},
+    //                     ),
+    //                     [params.field]: { mode: GridCellModes.Edit },
+    //                 },
+    //             };
+    //         });
+    //     },
+    //     [],
+    // );
 
     const handleCellModesModelChange = useCallback(
         (newModel: GridCellModesModel) => {
@@ -99,6 +99,7 @@ function DataGridViewer({ data }: Props) {
     return (
         <Box sx={{ width: '100%', height: 'calc(100vh - 78px)', overflowY: 'scroll' }}>
             {<DataGrid
+                // onRowEditStop={() => { console.log(event) }}
                 sx={{
                     '& .MuiDataGrid-cell:hover': {
                         color: '#ff4444',
@@ -111,10 +112,13 @@ function DataGridViewer({ data }: Props) {
                     },
                 }}
 
-                apiRef={apiRef} editMode='row' rows={row} columns={Field}
+                apiRef={apiRef} 
+                editMode='row' 
+                rows={row} 
+                columns={Field}
                 processRowUpdate={(updatedRow, originalRow) => callServer(updatedRow)}
                 onCellModesModelChange={handleCellModesModelChange}
-                onCellClick={handleCellClick}
+                // onCellClick={handleCellClick}
                 onProcessRowUpdateError={callServer}
                 slots={{
                     loadingOverlay: LinearProgress,
