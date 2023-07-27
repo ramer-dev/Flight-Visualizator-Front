@@ -11,22 +11,6 @@ const Container = styled.div`
 function CustomTable({ data }: { data: FlightList }) {
     const apiRef = useGridApiRef()
     const rows: GridRowsProp = data.data
-    // .map(t => {
-    //     return { id: t.id, 
-    //         siteName: t.siteName, 
-    //         frequency: t.frequency, 
-    //         testId: t.testId, 
-    //         txmain: t.txmain, 
-    //         rxmain: t.rxmain, 
-    //         txstby: t.txstby, 
-    //         rxstby: t.rxstby, 
-    //         angle: t.angle, 
-    //         distance: t.distance, 
-    //         height: t.height,
-    //         status:t.status,
-    //         updatedAt:t.updatedAt,
-    //         deletedAt:t.deletedAt }
-    // });
 
     const columns: GridColDef[] = [
 
@@ -100,6 +84,7 @@ function CustomTable({ data }: { data: FlightList }) {
                 columnVisibilityModel={columnVisibilityModel}
 
                 rowModesModel={rowModesModel}
+                onRowModesModelChange={handleRowModesModelChange}
                 onRowClick={handleRowClick}
             />
         </Container>
