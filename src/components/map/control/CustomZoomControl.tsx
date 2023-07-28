@@ -40,7 +40,6 @@ function CustomZoomControl({ position, zoom }: ControlOptions & StyleProp) {
         justify-content: center;
         align-items: center;
         background: #FFF;
-        z-index:1200;
     `
 
     const BarWrapper = styled.div`

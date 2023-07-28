@@ -73,9 +73,9 @@ const FlightItem = ({ testName, testType, testDate, id }: FlightList) => {
             <ButtonContainer>
                 <ModifyButton onClick={EditFlightItem}>수정</ModifyButton>
                 <DeleteButton onClick={DeleteFlightItem}>삭제</DeleteButton>
-                <PinButton>
+                {/* <PinButton>
                     <ICMarking />
-                </PinButton>
+                </PinButton> */}
             </ButtonContainer>
         </Container>
     )

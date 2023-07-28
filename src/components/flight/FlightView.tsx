@@ -1,6 +1,6 @@
 import { flightResultData } from 'common/store/atom'
 import { FlightList } from 'common/type/FlightType'
-import CustomTable from 'components/common/CustomTable'
+import CustomTable from 'components/common/dataGrid/CustomTable'
 import LoadingPage from 'components/common/LoadingPage'
 import DataGridViewer from 'components/common/Not use/DataGridViewer'
 import ScreenTitle from 'components/common/ScreenTitle'
