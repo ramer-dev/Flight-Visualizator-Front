@@ -158,7 +158,7 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
                     </>
                 ) : null
             }
-
+            이 페이지는 아직 구현이 완료되지 않았습니다.
 
         </Container>
     )

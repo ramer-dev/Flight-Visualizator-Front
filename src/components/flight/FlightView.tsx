@@ -35,7 +35,6 @@ function FlightView() {
       <ScreenTitle text={"비행검사 조회"} />
       {/* {<TableViewer data={data} />} */}
       {data ? <CustomTable data={data}/> : <LoadingPage/>}
-
       <NavCloseButton format={['MID', 'FULLSCREEN']} />
     </>
   )
