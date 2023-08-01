@@ -37,7 +37,7 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
     const setContentView = useSetRecoilState(contentViewFormat)
 
     const [paginationModel, setPaginationModel] = React.useState({
-        pageSize: 25,
+        pageSize: 100,
         page: 0,
     });
     const [checkboxSelection, setCheckboxSelection] = React.useState<Map<GridRowId, GridValidRowModel>>();
@@ -103,7 +103,9 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
         for (let i in obj) {
             const siteCoords = siteData.data.filter(t => t.siteName === obj[i].siteName)[0]?.siteCoordinate;
             const target = Destination(siteCoords, obj[i].angle, obj[i].distance);
-            layer.push(L.marker(target as LatLngLiteral, { icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby), obj[i].no) }).bindTooltip('text'))
+            layer.push(L.marker(target as LatLngLiteral, {
+                 icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby),
+                 apiRef.current.getRowIndexRelativeToVisibleRows(i)) }).bindTooltip('text'))
         }
         console.log(checkboxSelection)
         layerGroup.current.clearLayers()

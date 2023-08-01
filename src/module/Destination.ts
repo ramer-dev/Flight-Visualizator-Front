@@ -29,7 +29,7 @@ export const Destination = (origin: string | LatLngExpression | null, angle: num
     } else if (typeof origin === 'object') {
         origin = origin as LatLngLiteral
         origin = { lat: convertToWGS(origin['lat']), lng: convertToWGS(origin['lng']) }
-        const target = L.GeometryUtil.destination(origin, angle-8, distance * 1852)
+        const target = L.GeometryUtil.destination(origin, angle, distance * 1852)
         return target
 
 
