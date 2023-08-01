@@ -1,7 +1,7 @@
 import { StyledInputBox } from "components/common/InputText";
 import Title from "components/common/Title";
 import styled from "@emotion/styled";
-import { Divider, FormControl, MenuItem, Radio, Select } from "@mui/material";
+import { Divider, FormControl, ListSubheader, MenuItem, Radio, Select } from "@mui/material";
 import { Button } from "@mui/material";
 import { MarkingCardProps } from "./MarkingCard";
 import MarkingDragDrop from "./MarkingDragDrop";
@@ -11,8 +11,8 @@ import { Destination } from "module/Destination";
 import { LatLngExpression } from "leaflet";
 import { useMap } from "react-leaflet";
 import React from "react";
-import { useRecoilState } from "recoil";
-import { markingCards } from "common/store/atom";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { contentViewFormat, markingCards } from "common/store/atom";
 import divicon from "module/NumberIcon";
 import L from "leaflet";
 import { blue, green, orange, red, yellow } from "@mui/material/colors";
@@ -159,11 +159,20 @@ export default function Marking() {
                 <FormControl>
                     <InputWrapper>
                         <h6>기준점</h6>
-                        <Select MenuProps={{ sx: { maxHeight: '400px' } }} open={siteMenuOpen} value={site} fullWidth size='small'
+                        <Select MenuProps={{ sx: { maxHeight: '450px' } }} open={siteMenuOpen} value={site} fullWidth size='small'
                             onClick={handleSiteClickOpen}
                             onClose={handleSiteClickClose}
                             onChange={handleSiteChange}>
-                            {data?.map(t => {
+                            <ListSubheader>표지소</ListSubheader>
+                            {data.filter(t => t.siteType === 'SITE')?.map(t => {
+                                return <MenuItem onClick={handleSiteClickClose} key={t.siteId} value={t.siteName}>{t.siteName}</MenuItem>
+                            })}
+                            <ListSubheader>저고도</ListSubheader>
+                            {data.filter(t => t.siteType === 'LOWSITE')?.map(t => {
+                                return <MenuItem onClick={handleSiteClickClose} key={t.siteId} value={t.siteName}>{t.siteName}</MenuItem>
+                            })}
+                            <ListSubheader>VORTAC</ListSubheader>
+                            {data.filter(t => t.siteType === 'VORTAC')?.map(t => {
                                 return <MenuItem onClick={handleSiteClickClose} key={t.siteId} value={t.siteName}>{t.siteName}</MenuItem>
                             })}
                         </Select>
