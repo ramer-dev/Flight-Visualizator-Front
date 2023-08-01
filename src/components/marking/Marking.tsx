@@ -128,7 +128,7 @@ export default function Marking() {
                 angle: +angle.current.value,
                 index: list.length,
                 level: +color,
-                coord: Destination(map, origin_, +angle.current.value, +distance.current.value)
+                coord: Destination(origin_, +angle.current.value, +distance.current.value)
             }
             const arr = [...list, item]
             setList(arr);

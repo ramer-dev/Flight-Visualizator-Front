@@ -7,11 +7,10 @@ import { convertToWGS } from 'module/DMS'
 // }
 
 
-export const Destination = (map: L.Map, origin: string | LatLngExpression | null, angle: number | null, distance: number | null) => {
+export const Destination = (origin: string | LatLngExpression | null, angle: number | null, distance: number | null) => {
     if (!origin) return;
     if (angle === null) return;
     if (distance === null) return;
-    if (!map) return;
 
     
 
@@ -30,7 +29,7 @@ export const Destination = (map: L.Map, origin: string | LatLngExpression | null
     } else if (typeof origin === 'object') {
         origin = origin as LatLngLiteral
         origin = { lat: convertToWGS(origin['lat']), lng: convertToWGS(origin['lng']) }
-        const target = L.GeometryUtil.destination(origin, angle, distance * 1852)
+        const target = L.GeometryUtil.destination(origin, angle-8, distance * 1852)
         return target
 
 

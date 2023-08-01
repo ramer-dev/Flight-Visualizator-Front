@@ -5,7 +5,7 @@ function FlightAdd() {
     return (
         <>
             <div>FlightAdd</div>
-            <NavCloseButton format={['FULLSCREEN']} />
+            <NavCloseButton contentSize={['FULLSCREEN']} />
         </>
     )
 }

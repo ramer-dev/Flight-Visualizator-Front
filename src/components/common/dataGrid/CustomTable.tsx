@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { DataGrid, GridColDef, GridRowId, GridRowModes, GridRowModesModel, GridRowParams, GridRowsProp, GridSortApi, useGridApiRef } from '@mui/x-data-grid'
+import { DataGrid, GridColDef, GridRowId, GridRowModes, GridRowModesModel, GridRowParams, GridRowsProp, GridSortApi, GridValidRowModel, useGridApiRef } from '@mui/x-data-grid'
 import { FlightList } from 'common/type/FlightType'
 import styled from '@emotion/styled'
 import { Button } from '@mui/material'
@@ -8,6 +8,14 @@ import CustomPagination from './CustomPagination'
 import CustomNoRowsOverlay from './CustomNoRowsOverlay'
 import LoadingPage from '../LoadingPage'
 import CustomEditCell from './CustomEditCell'
+import { useSetRecoilState } from 'recoil'
+import { contentViewFormat } from 'common/store/atom'
+import L, { LatLngLiteral } from 'leaflet'
+import { useGetSite } from 'components/hooks/useSite'
+import divicon from 'module/NumberIcon'
+import { useMap } from 'react-leaflet'
+import { Destination } from 'module/Destination'
+import { FindMinimumScore } from 'module/ScoreCalculate'
 
 const Container = styled.div`
     height:100vh;
@@ -26,16 +34,20 @@ interface Props {
 
 
 function CustomTable({ data, edit }: { data: FlightList } & Props) {
+    const setContentView = useSetRecoilState(contentViewFormat)
 
     const [paginationModel, setPaginationModel] = React.useState({
         pageSize: 25,
         page: 0,
     });
-
+    const [checkboxSelection, setCheckboxSelection] = React.useState<Map<GridRowId, GridValidRowModel>>();
     const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
+    const map = useMap();
     const id = useRef(1);
     const apiRef = useGridApiRef()
+    const siteData = useGetSite();
     const rows = useRef(data.data.map((t, i) => ({ ...t, no: i })));
+    const layerGroup = useRef(L.layerGroup([], { pane: 'marking' }))
     const columns: GridColDef[] = [
         { field: 'id', editable: false, flex: 1 },
         { field: 'no', editable: false, flex: 1, valueGetter: (params) => ((params.api.getRowIndexRelativeToVisibleRows(params.id) + 1) ? (paginationModel.page * paginationModel.pageSize) + params.api.getRowIndexRelativeToVisibleRows(params.id) + 1 : ''), headerName: 'No' },
@@ -52,11 +64,13 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
         { field: 'status', editable: false, flex: 1 },
         { field: 'updatedAt', flex: 1 },
         { field: 'deletedAt', flex: 1 },
-        { field: 'edit', editable: false, flex: 1, headerName: '', renderCell: (params) => (
-            params.api.getAllRowIds().at(-1) === params.id 
-                ? <CustomEditCell addFunction={handleAddRow} delFunction={handleDeleteRow} idx={params.id} isLast={params.api.getAllRowIds().at(-1) === params.id}/>
-                : <span onClick={(e:React.MouseEvent) => handleDeleteRow(params.id, e)}>-</span>
-        )}
+        {
+            field: 'edit', editable: false, flex: 1, headerName: '', renderCell: (params) => (
+                params.api.getAllRowIds().at(-1) === params.id
+                    ? <CustomEditCell addFunction={handleAddRow} delFunction={handleDeleteRow} idx={params.id} isLast={params.api.getAllRowIds().at(-1) === params.id} />
+                    : <span onClick={(e: React.MouseEvent) => handleDeleteRow(params.id, e)}>-</span>
+            )
+        }
     ]
 
     // const RenderEditCell = React.useMemo(() => , [])
@@ -81,11 +95,35 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
 
 
     useEffect(() => {
-        return () => setRowModesModel({});
-    }, [data])
+        const obj: { [key: string]: GridValidRowModel } = {};
+        checkboxSelection?.forEach((value, key) => {
+            obj[String(key)] = value;
+        }) 
+        const layer = []
+        for (let i in obj) {
+            const siteCoords = siteData.data.filter(t => t.siteName === obj[i].siteName)[0]?.siteCoordinate;
+            const target = Destination(siteCoords, obj[i].angle, obj[i].distance);
+            layer.push(L.marker(target as LatLngLiteral, { icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby), obj[i].no) }).bindTooltip('text'))
+        }
+        console.log(checkboxSelection)
+        layerGroup.current.clearLayers()
+        for (let i of layer) {
+            layerGroup.current.addLayer(i)
+        }
+        layerGroup.current.addTo(map);
+
+        return () => {
+            setRowModesModel({});
+            layerGroup.current.clearLayers();
+        }
+
+    }, [data, checkboxSelection])
+
+
+
 
     const handleRowClick = (params: GridRowParams, event: React.MouseEvent) => {
-        
+
         setRowModesModel((prevModel) => {
             return {
                 ...Object.keys(prevModel).reduce(
@@ -108,7 +146,7 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
         [],
     );
 
-    const handleAddRow = (e:React.MouseEvent) => {
+    const handleAddRow = (e: React.MouseEvent) => {
         e.stopPropagation()
         const newRow = { id: `add-${id.current++}` }
         apiRef.current.updateRows([newRow]);
@@ -134,9 +172,19 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
         //         ...rows.slice(idx + 1),
         //     ];
         // });
-        apiRef.current.updateRows([{id:idx, _action:'delete'}])
+        apiRef.current.updateRows([{ id: idx, _action: 'delete' }])
     };
 
+    const testMarking = () => {
+        // for (const [rowId, rowData] of apiRef.current.getSelectedRows()) {
+        //     console.log(rowId, rowData);
+        // }
+        setCheckboxSelection(apiRef.current.getSelectedRows());
+    }
+
+    const shrinkWindow = () => {
+        setContentView('MID');
+    }
     return (
         <Container>
             <Wrapper>
@@ -148,6 +196,9 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
                     onRowClick={handleRowClick}
                     paginationModel={paginationModel}
                     onPaginationModelChange={setPaginationModel}
+                    checkboxSelection
+                    onRowSelectionModelChange={testMarking}
+                    disableRowSelectionOnClick
                 />
             </Wrapper>
             {
@@ -155,6 +206,8 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
                     <>
                         <Button onClick={handleAddRow}>add Row</Button>
                         <Button onClick={handleSubmit}>submit</Button>
+                        <Button onClick={testMarking}>마킹 테슽으</Button>
+
                     </>
                 ) : null
             }

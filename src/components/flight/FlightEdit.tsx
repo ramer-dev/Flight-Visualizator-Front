@@ -27,7 +27,7 @@ function FlightEdit() {
             {/* {<TableViewer data={data} />} */}
             {data ? <CustomTable data={data} edit/> : <LoadingPage />}
 
-            <NavCloseButton format={['MID', 'FULLSCREEN']} />
+            <NavCloseButton contentSize={['MID', 'FULLSCREEN']} />
         </>
     )
 }
