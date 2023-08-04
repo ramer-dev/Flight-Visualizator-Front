@@ -28,8 +28,10 @@ export const Destination = (origin: string | LatLngExpression | null, angle: num
         // 표지소 방식
     } else if (typeof origin === 'object') {
         origin = origin as LatLngLiteral
+        // origin = { lat: origin['lat'], lng: origin['lng'] }
         origin = { lat: convertToWGS(origin['lat']), lng: convertToWGS(origin['lng']) }
-        const target = L.GeometryUtil.destination(origin, angle, distance * 1852)
+        const target = L.GeometryUtil.destination(origin, angle - 8, distance * 1852)
+        console.log(target)
         return target
 
 
