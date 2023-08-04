@@ -32,6 +32,8 @@ export const Destination = (origin: string | LatLngExpression | null, angle: num
         origin = { lat: convertToWGS(origin['lat']), lng: convertToWGS(origin['lng']) }
         const target = L.GeometryUtil.destination(origin, angle - 8, distance * 1852)
         console.log(target)
+        // target.lat = convertToWGS(target.lat)
+        // target.lng = convertToWGS(target.lng)
         return target
 
 

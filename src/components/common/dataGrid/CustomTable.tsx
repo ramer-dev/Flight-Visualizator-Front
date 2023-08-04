@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react'
-import { DataGrid, GridColDef, GridRowId, GridRowModes, GridRowModesModel, GridRowParams, GridRowsProp, GridSortApi, GridValidRowModel, useGridApiRef } from '@mui/x-data-grid'
+import { DataGrid, GridCellEditStartParams, GridCellEditStopParams, GridCellModes, GridCellModesModel, GridCellParams, GridColDef, GridEventListener, GridPreProcessEditCellProps, GridRowId, GridRowModes, GridRowModesModel, GridRowParams, GridRowsProp, GridSortApi, GridValidRowModel, MuiEvent, useGridApiRef } from '@mui/x-data-grid'
 import { FlightList } from 'common/type/FlightType'
 import styled from '@emotion/styled'
-import { Button } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import CustomToolbar from './CustomToolbar'
 import CustomPagination from './CustomPagination'
 import CustomNoRowsOverlay from './CustomNoRowsOverlay'
@@ -16,16 +16,21 @@ import divicon from 'module/NumberIcon'
 import { useMap } from 'react-leaflet'
 import { Destination } from 'module/Destination'
 import { FindMinimumScore } from 'module/ScoreCalculate'
+import { frequencyRegex } from 'common/regex/regex'
 
 const Container = styled.div`
     height:100vh;
     width:100%;
 `
 
-const Wrapper = styled.div`
-    width:100%;
-    height:80vh;
-`
+const Wrapper = styled(Box)(({ theme }) => ({
+    width: '100%',
+    height: '80vh',
+    '& .Mui-error': {
+        color: 'red'
+    }
+}))
+
 
 interface Props {
     edit?: boolean,
@@ -41,7 +46,7 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
         page: 0,
     });
     const [checkboxSelection, setCheckboxSelection] = React.useState<Map<GridRowId, GridValidRowModel>>();
-    const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
+    const [rowModesModel, setRowModesModel] = React.useState<GridCellModesModel>({});
     const map = useMap();
     const id = useRef(1);
     const apiRef = useGridApiRef()
@@ -51,8 +56,30 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
     const columns: GridColDef[] = [
         { field: 'id', editable: false, flex: 1 },
         { field: 'no', editable: false, flex: 1, valueGetter: (params) => ((params.api.getRowIndexRelativeToVisibleRows(params.id) + 1) ? (paginationModel.page * paginationModel.pageSize) + params.api.getRowIndexRelativeToVisibleRows(params.id) + 1 : ''), headerName: 'No' },
-        { field: 'siteName', editable: !!edit, flex: 1, headerName: '표지소' },
-        { field: 'frequency', editable: !!edit, flex: 1, headerName: '주파수' },
+        {
+            field: 'siteName', editable: !!edit, flex: 1, headerName: '표지소', type: 'singleSelect',
+            preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+                if(params.hasChanged){
+                    const hasError = !siteData.data.map(t => t.siteName).includes(params.props.value)
+                    return { ...params.props, error: hasError }    
+                }
+                return {...params.props}
+            }
+        },
+        {
+            field: 'frequency', editable: !!edit, flex: 1, headerName: '주파수', type: 'number',
+            preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+                if (params.hasChanged) {
+                    const hasError = String(params.props.value).match(frequencyRegex)
+                    const lengthError = String(params.props.value).length > 7
+
+                    console.log(hasError, lengthError)
+                    return { ...params.props, error: !hasError || lengthError }
+
+                }
+                return {...params.props}
+            }
+        },
         { field: 'testId', editable: false, flex: 1 },
         { field: 'txmain', editable: !!edit, flex: 1, headerName: 'TX-M' },
         { field: 'rxmain', editable: !!edit, flex: 1, headerName: 'RX-M' },
@@ -98,16 +125,16 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
         const obj: { [key: string]: GridValidRowModel } = {};
         checkboxSelection?.forEach((value, key) => {
             obj[String(key)] = value;
-        }) 
+        })
         const layer = []
         for (let i in obj) {
             const siteCoords = siteData.data.filter(t => t.siteName === obj[i].siteName)[0]?.siteCoordinate;
             const target = Destination(siteCoords, obj[i].angle, obj[i].distance);
             layer.push(L.marker(target as LatLngLiteral, {
-                 icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby),
-                 apiRef.current.getRowIndexRelativeToVisibleRows(i)) }).bindTooltip('text'))
+                icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby),
+                    apiRef.current.getRowIndexRelativeToVisibleRows(i))
+            }).bindTooltip('text'))
         }
-        console.log(checkboxSelection)
         layerGroup.current.clearLayers()
         for (let i of layer) {
             layerGroup.current.addLayer(i)
@@ -124,25 +151,57 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
 
 
 
-    const handleRowClick = (params: GridRowParams, event: React.MouseEvent) => {
+    const handleRowClick = (params: GridCellParams, event: React.MouseEvent) => {
+        if (!params.isEditable) {
+            return;
+        }
 
+        // Ignore portal
+        if (!event.currentTarget.contains(event.target as Element)) {
+            return;
+        }
         setRowModesModel((prevModel) => {
+            // return {
+            //     ...Object.keys(prevModel).reduce(
+            //         (acc, id) => ({
+            //             ...acc,
+            //             [id]: { mode: GridRowModes.View },
+            //         }),
+            //         {},
+            //     ),
+            //     [params.id]: { mode: GridRowModes.Edit }
+            // }
+
             return {
+                // Revert the mode of the other cells from other rows
                 ...Object.keys(prevModel).reduce(
                     (acc, id) => ({
                         ...acc,
-                        [id]: { mode: GridRowModes.View },
+                        [id]: Object.keys(prevModel[id]).reduce(
+                            (acc2, field) => ({
+                                ...acc2,
+                                [field]: { mode: GridCellModes.View },
+                            }),
+                            {},
+                        ),
                     }),
                     {},
                 ),
-                [params.id]: { mode: GridRowModes.Edit }
-            }
-        })
+                [params.id]: {
+                    // Revert the mode of other cells in the same row
+                    ...Object.keys(prevModel[params.id] || {}).reduce(
+                        (acc, field) => ({ ...acc, [field]: { mode: GridCellModes.View } }),
+                        {},
+                    ),
+                    // [params.field]: { mode: GridCellModes.Edit },
+                },
+            };
+        });
     }
 
 
     const handleRowModesModelChange = React.useCallback(
-        (newModel: GridRowModesModel) => {
+        (newModel: GridCellModesModel) => {
             setRowModesModel(newModel);
         },
         [],
@@ -187,20 +246,36 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
     const shrinkWindow = () => {
         setContentView('MID');
     }
+
+    const handlerCellEditStart = (params: GridCellEditStartParams, event: MuiEvent) => {
+        // console.log('start', params)
+    }
+
+    const handlerCellEditEnd = (params: GridCellEditStopParams, event: MuiEvent) => {
+        // const edit = apiRef.current.getCellValue(params.id, params.field)
+        // console.log('end', params.value, edit)
+
+
+    }
     return (
         <Container>
             <Wrapper>
-                <DataGrid apiRef={apiRef} editMode='row' rows={rows.current} columns={columns}
+                <DataGrid apiRef={apiRef} editMode='cell' rows={rows.current} columns={columns}
                     columnVisibilityModel={columnVisibilityModel}
                     slots={{ toolbar: CustomToolbar, pagination: CustomPagination, noRowsOverlay: CustomNoRowsOverlay, loadingOverlay: LoadingPage }}
-                    rowModesModel={rowModesModel}
-                    onRowModesModelChange={handleRowModesModelChange}
-                    onRowClick={handleRowClick}
+                    cellModesModel={rowModesModel}
+                    // onRowModesModelChange={handleRowModesModelChange}
+                    onCellModesModelChange={handleRowModesModelChange}
+                    // onCellClick={handleRowClick}
                     paginationModel={paginationModel}
                     onPaginationModelChange={setPaginationModel}
                     checkboxSelection
                     onRowSelectionModelChange={testMarking}
                     disableRowSelectionOnClick
+                    onCellEditStart={(params: GridCellEditStartParams, event: MuiEvent) => { handlerCellEditStart(params, event) }}
+                    onCellEditStop={(params: GridCellEditStopParams, event: MuiEvent) => { handlerCellEditEnd(params, event) }}
+                // onRowEditStart={(params:GridCellEditStopParams, event: MuiEvent) => handlerCellEditStart(params, event)}
+                // onRowEditStop={handlerCellEditEnd}
                 />
             </Wrapper>
             {
