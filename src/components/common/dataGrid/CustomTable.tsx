@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
-import { DataGrid, GridCellEditStartParams, GridCellEditStopParams, GridCellModes, GridCellModesModel, GridCellParams, GridColDef, GridEventListener, GridPreProcessEditCellProps, GridRowId, GridRowModes, GridRowModesModel, GridRowParams, GridRowsProp, GridSortApi, GridValidRowModel, MuiEvent, useGridApiRef } from '@mui/x-data-grid'
-import { FlightList } from 'common/type/FlightType'
+import { DataGrid, GridCellEditStartParams, GridCellEditStopParams, GridCellModes, GridCellModesModel, GridCellParams, GridColDef, GridEventListener, GridPreProcessEditCellProps, GridRowId, GridRowModes, GridRowModesModel, GridRowParams, GridRowsProp, GridSortApi, GridValidRowModel, GridValueOptionsParams, MuiEvent, useGridApiRef } from '@mui/x-data-grid'
+import { FlightList, FlightResult } from 'common/type/FlightType'
 import styled from '@emotion/styled'
 import { Box, Button } from '@mui/material'
 import CustomToolbar from './CustomToolbar'
@@ -12,11 +12,13 @@ import { useSetRecoilState } from 'recoil'
 import { contentViewFormat } from 'common/store/atom'
 import L, { LatLngLiteral } from 'leaflet'
 import { useGetSite } from 'components/hooks/useSite'
+import Iterator from 'module/Iterator'
 import divicon from 'module/NumberIcon'
 import { useMap } from 'react-leaflet'
 import { Destination } from 'module/Destination'
 import { FindMinimumScore } from 'module/ScoreCalculate'
 import { frequencyRegex } from 'common/regex/regex'
+import { patchFlightData, postFlightData } from 'common/service/flightService'
 
 const Container = styled.div`
     height:100vh;
@@ -57,13 +59,17 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
         { field: 'id', editable: false, flex: 1 },
         { field: 'no', editable: false, flex: 1, valueGetter: (params) => ((params.api.getRowIndexRelativeToVisibleRows(params.id) + 1) ? (paginationModel.page * paginationModel.pageSize) + params.api.getRowIndexRelativeToVisibleRows(params.id) + 1 : ''), headerName: 'No' },
         {
-            field: 'siteName', editable: !!edit, flex: 1, headerName: '표지소', type: 'singleSelect',
+            field: 'siteName', editable: !!edit, flex: 1, headerName: '표지소', type: 'string',
+            // valueOptions: (params: GridValueOptionsParams) => {
+
+            //     return siteData.data.map(t => {return {value: t.siteId, label:t.siteName}})
+            // }
             preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
-                if(params.hasChanged){
+                if (params.hasChanged) {
                     const hasError = !siteData.data.map(t => t.siteName).includes(params.props.value)
-                    return { ...params.props, error: hasError }    
+                    return { ...params.props, error: hasError }
                 }
-                return {...params.props}
+                return { ...params.props }
             }
         },
         {
@@ -77,7 +83,7 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
                     return { ...params.props, error: !hasError || lengthError }
 
                 }
-                return {...params.props}
+                return { ...params.props }
             }
         },
         { field: 'testId', editable: false, flex: 1 },
@@ -91,13 +97,14 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
         { field: 'status', editable: false, flex: 1 },
         { field: 'updatedAt', flex: 1 },
         { field: 'deletedAt', flex: 1 },
-        {
-            field: 'edit', editable: false, flex: 1, headerName: '', renderCell: (params) => (
-                params.api.getAllRowIds().at(-1) === params.id
-                    ? <CustomEditCell addFunction={handleAddRow} delFunction={handleDeleteRow} idx={params.id} isLast={params.api.getAllRowIds().at(-1) === params.id} />
-                    : <span onClick={(e: React.MouseEvent) => handleDeleteRow(params.id, e)}>-</span>
-            )
-        }
+        // {
+        //     field: 'action', type: 'actions', editable: false, flex: 1, headerName: '',
+
+        //     renderCell: (params) =>
+        //         <CustomEditCell addFunction={handleAddRow} delFunction={handleDeleteRow} idx={params.id} isLast={apiRef.current.getAllRowIds().indexOf(params.id) === apiRef.current.getRowsCount() - 1} />
+        //     ,
+
+        // }
     ]
 
     // const RenderEditCell = React.useMemo(() => , [])
@@ -117,7 +124,7 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
         'status': false,
         'updatedAt': false,
         'deletedAt': false,
-        'edit': !!edit
+        // 'action': !!edit
     }
 
 
@@ -214,9 +221,78 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
         console.log(apiRef.current.getRowsCount())
     }
 
+    const validateInput = (data: FlightResult[]) => {
+        for (let item of data) {
+            if (!item.siteName) {
+                console.log(item, '표지소 입력')
+                return true;
+            }
+
+            if (!item.frequency) {
+                console.log(item, '주파수 입력')
+                return true;
+            }
+
+            if (!item.angle) {
+                console.log(item, '방위각 입력')
+                return true;
+            }
+
+            if (!item.distance) {
+                console.log(item, '거리 입력')
+                return true;
+            }
+
+            if ((!item.txmain || !item.rxmain) && (!item.txstby || !item.rxstby)) {
+                console.log(item, '검사결과 입력')
+                return true;
+            }
+
+        }
+        return false;
+    }
+
     const handleSubmit = () => {
-        apiRef.current.setSortModel([]);
-        console.log(apiRef.current.getSortModel())
+        const rowModel = apiRef.current.getRowModels()
+        const editArray: FlightResult[] = [];
+
+        for (const t of rowModel) {
+            // 현재 Page를 넘어가는 경우 No가 지정이 안되는 에러가 있음.
+            // 에러 하이라이팅시 문제 될 것. 기능에는 지장 없음.
+            const item: any = { no: apiRef.current.getRowIndexRelativeToVisibleRows(t[0]), testId: data.id }
+            for (const key in t[1]) {
+                if (key !== null) {
+                    item[key] = t[1][key];
+                }
+            }
+
+            // 불필요한 속성 명시적으로 삭제
+            if (String(item.id).startsWith('add')) {
+                delete item.id
+                editArray.push(item);
+            } else {
+                // 신규 추가의 경우 임시 입력된 ID key 삭제
+                editArray.push(item)
+            }
+
+
+            if (String(item.id).startsWith('add')) {
+            }
+
+            if (validateInput(editArray)) {
+                return;
+            }
+
+            delete item.no;
+            delete item.status;
+            delete item.deletedAt;
+            delete item.updatedAt;
+
+        }
+        
+        patchFlightData(editArray)
+        console.log(editArray)
+
     }
 
     const handleRowUpdate = () => {
@@ -224,16 +300,18 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
         apiRef.current.setRows(rows.current?.map((t, i) => ({ ...t, no: i })))
     }
 
-    const handleDeleteRow = (idx: GridRowId, e: React.MouseEvent) => {
+    const handleDeleteRow = (e: React.MouseEvent) => {
         e.stopPropagation()
-        // console.log(rows)
-        // setRows(() => {
-        //     return [
-        //         ...rows.slice(0, idx),
-        //         ...rows.slice(idx + 1),
-        //     ];
-        // });
-        apiRef.current.updateRows([{ id: idx, _action: 'delete' }])
+        // console.log(apiRef.current.getAllRowIds().indexOf(lastIndexdata.id),  apiRef.current.getRowsCount() - 2)
+        if (checkboxSelection) {
+            for (const item of checkboxSelection) {
+                console.log(item)
+                apiRef.current.updateRows([{ id: item[0], _action: 'delete' }])
+            }
+
+        }
+        // apiRef.current.updateRows([{ ...lastIndexdata, action: [<CustomEditCell addFunction={handleAddRow} delFunction={handleDeleteRow} idx={lastIndexdata.id} isLast={true} />] }])
+
     };
 
     const testMarking = () => {
@@ -241,6 +319,7 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
         //     console.log(rowId, rowData);
         // }
         setCheckboxSelection(apiRef.current.getSelectedRows());
+        shrinkWindow()
     }
 
     const shrinkWindow = () => {
@@ -282,6 +361,7 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
                 edit ? (
                     <>
                         <Button onClick={handleAddRow}>add Row</Button>
+                        <Button onClick={handleDeleteRow}>삭제 ㅅㄱ</Button>
                         <Button onClick={handleSubmit}>submit</Button>
                         <Button onClick={testMarking}>마킹 테슽으</Button>
 

@@ -1,5 +1,5 @@
 // import { FlightResultService } from "common/service/flightService";
-import { FlightResultService } from "common/service/flightService";
+import { getFlightData } from "common/service/flightService";
 import { FlightList } from "common/type/FlightType";
 import { ContentType, ContentViewType, NavBarType } from "common/type/NavBarType";
 import { NoticeContentType } from "common/type/NoticeType";
@@ -35,7 +35,7 @@ export const flightResultData = selector<FlightList>({
     key: 'flightData',
     get: async ({ get }) => {
         const id = get(flightResultDataID);
-        const response = await FlightResultService.getData(id)
+        const response = await getFlightData(id)
         return response;
     }
 })

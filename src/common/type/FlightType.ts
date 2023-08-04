@@ -13,7 +13,7 @@ export interface FlightResultModel {
 }
 
 export interface FlightResult {
-  id: number,
+  id?: number,
   siteName: string,
   frequency: number,
   testId: number,
