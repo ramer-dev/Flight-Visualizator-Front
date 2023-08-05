@@ -8,6 +8,7 @@ import { contentFormat, flightResultData, flightResultDataID } from 'common/stor
 import { FlightList } from 'common/type/FlightType';
 import { DeleteButton, ModifyButton, PinButton } from 'components/common/CustomButton';
 import dayjs from 'dayjs'
+import { deleteFlightList } from 'common/service/flightService';
 
 const Container = styled.div`
     padding:20px 10px;
@@ -42,8 +43,11 @@ const ButtonContainer = styled.div`
     display:flex;
 `
 
+interface Props {
+    refetch: () => void;
+}
 
-const FlightItem = ({ testName, testType, testDate, id }: FlightList) => {
+const FlightItem = ({ testName, testType, testDate, id, refetch }: FlightList & Props) => {
     const setContent = useSetRecoilState<ContentType>(contentFormat);
     const setFlightData = useSetRecoilState(flightResultDataID);
     const refresh = useRecoilRefresher_UNSTABLE(flightResultData);
@@ -62,11 +66,12 @@ const FlightItem = ({ testName, testType, testDate, id }: FlightList) => {
 
     const DeleteFlightItem = (e: any) => {
         e.stopPropagation();
+        deleteFlightList(id).then(() => refetch())
         console.log('delete');
     }
 
     return (
-        <Container onClick={(e) => {ViewFlightItem(e, id)}}>
+        <Container onClick={(e) => { ViewFlightItem(e, id) }}>
 
             <Title>{testName}</Title>
             <ContentWrapper>
