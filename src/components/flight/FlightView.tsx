@@ -1,39 +1,41 @@
-import { flightResultData } from 'common/store/atom'
+import { flightResultData, flightResultDataID } from 'common/store/atom'
 import { FlightList } from 'common/type/FlightType'
 import CustomTable from 'components/common/dataGrid/CustomTable'
 import LoadingPage from 'components/common/LoadingPage'
 import DataGridViewer from 'components/common/Not use/DataGridViewer'
 import ScreenTitle from 'components/common/ScreenTitle'
-import React, { useTransition } from 'react'
-import { useRecoilValueLoadable } from 'recoil'
+import { useFlightData } from 'components/hooks/useFlightData'
+import React, { useEffect, useTransition } from 'react'
+import { useRecoilRefresher_UNSTABLE, useRecoilValue, useRecoilValueLoadable} from 'recoil'
 import NavCloseButton from '../navbar/NavCloseButton'
 
 function FlightView() {
-  const flightData = useRecoilValueLoadable<FlightList>(flightResultData);
-  let data = null;
+  const flightDataId = useRecoilValue<number>(flightResultDataID);
+  let {data, isLoading, refetch} = useFlightData(flightDataId);
   let error = null;
-  switch (flightData.state) {
-    case 'hasValue':
-      data = flightData.contents;
-      break;
-    case 'hasError':
-      error = flightData.contents;
-      break;
-    case 'loading':
-      break;
-  }
+  // switch (flightData.state) {
+  //   case 'hasValue':
+  //     data = flightData.contents;
+  //     break;
+  //   case 'hasError':
+  //     error = flightData.contents;
+  //     break;
+  //   case 'loading':
+  //     break;
+  // }
 
-  if (flightData.state === 'loading') {
-    return <div>loading</div>
-  } else if(flightData.state === 'hasError'){
-    console.error(error)
-  }
+  useEffect(() => {
+    refetch()
+  }, [flightDataId])
 
+  useEffect(() => {
+    console.log(data)
+  }, [data])
   return (
     <>
       <ScreenTitle text={"비행검사 조회"} />
       {/* {<TableViewer data={data} />} */}
-      {data ? <CustomTable data={data}/> : <LoadingPage/>}
+      <CustomTable data={data}/>
 
       <NavCloseButton contentSize={['MID', 'FULLSCREEN']} />
     </>

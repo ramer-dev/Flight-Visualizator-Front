@@ -46,5 +46,5 @@ export interface FlightList {
 }
 
 export interface TableFlightList extends FlightList {
-  data:TableFlightResult[],
+  data:FlightResult[],
 }

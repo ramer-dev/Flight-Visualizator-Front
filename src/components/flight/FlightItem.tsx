@@ -2,9 +2,9 @@ import React from 'react'
 import { ReactComponent as ICMarking } from 'atom/icon/icon_marking.svg';
 
 import styled from '@emotion/styled'
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilRefresher_UNSTABLE, useRecoilState, useSetRecoilState } from 'recoil';
 import { ContentType } from 'common/type/NavBarType';
-import { contentFormat, flightResultDataID } from 'common/store/atom';
+import { contentFormat, flightResultData, flightResultDataID } from 'common/store/atom';
 import { FlightList } from 'common/type/FlightType';
 import { DeleteButton, ModifyButton, PinButton } from 'components/common/CustomButton';
 import dayjs from 'dayjs'
@@ -46,6 +46,8 @@ const ButtonContainer = styled.div`
 const FlightItem = ({ testName, testType, testDate, id }: FlightList) => {
     const setContent = useSetRecoilState<ContentType>(contentFormat);
     const setFlightData = useSetRecoilState(flightResultDataID);
+    const refresh = useRecoilRefresher_UNSTABLE(flightResultData);
+
     const ViewFlightItem = (e: any, id: number) => {
         e.stopPropagation();
         setFlightData(id)
@@ -54,6 +56,7 @@ const FlightItem = ({ testName, testType, testDate, id }: FlightList) => {
 
     const EditFlightItem = (e: any) => {
         e.stopPropagation();
+        setFlightData(id)
         setContent('EDIT');
     }
 

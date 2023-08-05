@@ -37,6 +37,9 @@ export const flightResultData = selector<FlightList>({
         const id = get(flightResultDataID);
         const response = await getFlightData(id)
         return response;
+    },
+    cachePolicy_UNSTABLE:{
+        eviction:"most-recent"
     }
 })
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { DataGrid, GridCellEditStartParams, GridCellEditStopParams, GridCellModes, GridCellModesModel, GridCellParams, GridColDef, GridEventListener, GridPreProcessEditCellProps, GridRowId, GridRowModes, GridRowModesModel, GridRowParams, GridRowsProp, GridSortApi, GridValidRowModel, GridValueOptionsParams, MuiEvent, useGridApiRef } from '@mui/x-data-grid'
+import { DataGrid, GridCellEditStartParams, GridCellEditStopParams, GridCellModes, GridCellModesModel, GridCellParams, GridColDef, GridEventListener, GridPreProcessEditCellProps, GridRowId, GridRowModes, GridRowModesModel, GridRowParams, GridRowsProp, GridSortApi, GridValidRowModel, GridValueOptionsParams, GridValueSetterParams, MuiEvent, useGridApiRef } from '@mui/x-data-grid'
 import { FlightList, FlightResult } from 'common/type/FlightType'
 import styled from '@emotion/styled'
 import { Box, Button } from '@mui/material'
@@ -16,7 +16,7 @@ import divicon from 'module/NumberIcon'
 import { useMap } from 'react-leaflet'
 import { Destination } from 'module/Destination'
 import { FindMinimumScore } from 'module/ScoreCalculate'
-import { frequencyRegex } from 'common/regex/regex'
+import { frequencyRegex, scoreRegex } from 'common/regex/regex'
 import { patchFlightData, postFlightData } from 'common/service/flightService'
 
 const Container = styled.div`
@@ -24,22 +24,51 @@ const Container = styled.div`
     width:100%;
 `
 
+// const Wrapper = styled(Box)`
+//     width: 100%;
+//     height: 80vh;
+//     .Mui-error: {
+//         color: red;
+//     },
+//     & .MuiDataGrid-cell--editing:has(.Mui-Error): {
+//         background-color : #ddd;
+//     }
+// `
 const Wrapper = styled(Box)(({ theme }) => ({
     width: '100%',
     height: '80vh',
+    '& .MuiDataGrid-cell--editable': {
+        backgroundColor: 'rgba(80,150,255,0.1)',
+    },
+    '& .MuiDataGrid-root .MuiDataGrid-cell--editable:has(.Mui-error)': {
+        backgroundColor: `rgb(126,10,15,0.1)`,
+    },
     '& .Mui-error': {
-        color: 'red'
-    }
+        lineHeight:'52px',
+        // backgroundColor: `rgb(126,10,15,0.1)`,
+        color: '#ff4343',
+    },
 }))
 
 
 interface Props {
     edit?: boolean,
+    id?: number,
 }
 
+const formatInput = (input: string) => {
+    const numericInput = input.replace(/\D/g, ''); // 숫자 이외의 문자 제거
+    const firstDigit = numericInput.charAt(0);
+    const secondDigit = numericInput.charAt(1);
+    if (numericInput.length === 1) {
+        return `${firstDigit}`
+    } else if (numericInput.length >= 2) {
+        return `${firstDigit}/${secondDigit}`; // 형식 변환
+    } else return '';
 
+};
 
-function CustomTable({ data, edit }: { data: FlightList } & Props) {
+function CustomTable({ data, edit }: { data?: FlightList } & Props) {
     const setContentView = useSetRecoilState(contentViewFormat)
 
     const [paginationModel, setPaginationModel] = React.useState({
@@ -47,13 +76,29 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
         page: 0,
     });
     const [checkboxSelection, setCheckboxSelection] = React.useState<Map<GridRowId, GridValidRowModel>>();
-    const [rowModesModel, setRowModesModel] = React.useState<GridCellModesModel>({});
+    const [cellModesModel, setCellModesModel] = React.useState<GridCellModesModel>({});
     const map = useMap();
     const id = useRef(1);
     const apiRef = useGridApiRef()
     const siteData = useGetSite();
-    const rows = useRef(data.data.map((t, i) => ({ ...t, no: i })));
+    // const rows = useRef(data ? data.data.map((t, i) => ({ ...t, no: i })) : []);
+    const [rows, setRows] = React.useState(data ? data.data.map((t, i) => ({...t, no: i})): []);
     const layerGroup = useRef(L.layerGroup([], { pane: 'marking' }))
+
+    const scoreValidate = (params: GridPreProcessEditCellProps) => {
+        // if (params.hasChanged) {
+        // const lengthError = String(params.props.value).length < 3
+        const validated = scoreRegex.test(String(params.props.value));
+        console.log(validated);
+        return { ...params.props, error: !validated }
+
+        // }
+        // return { ...params.props }
+    }
+
+    // const handleEditCellChangeCommitted = React.useCallback(({id, field, props}) => {
+
+    // }, [])
     const columns: GridColDef[] = [
         { field: 'id', editable: false, flex: 1 },
         { field: 'no', editable: false, flex: 1, valueGetter: (params) => ((params.api.getRowIndexRelativeToVisibleRows(params.id) + 1) ? (paginationModel.page * paginationModel.pageSize) + params.api.getRowIndexRelativeToVisibleRows(params.id) + 1 : ''), headerName: 'No' },
@@ -69,7 +114,7 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
                     return { ...params.props, error: hasError }
                 }
                 return { ...params.props }
-            }
+            },
         },
         {
             field: 'frequency', editable: !!edit, flex: 1, headerName: '주파수', type: 'number',
@@ -78,7 +123,6 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
                     const hasError = String(params.props.value).match(frequencyRegex)
                     const lengthError = String(params.props.value).length > 7
 
-                    console.log(hasError, lengthError)
                     return { ...params.props, error: !hasError || lengthError }
 
                 }
@@ -86,13 +130,37 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
             }
         },
         { field: 'testId', editable: false, flex: 1 },
-        { field: 'txmain', editable: !!edit, flex: 1, headerName: 'TX-M' },
-        { field: 'rxmain', editable: !!edit, flex: 1, headerName: 'RX-M' },
-        { field: 'txstby', editable: !!edit, flex: 1, headerName: 'TX-S' },
-        { field: 'rxstby', editable: !!edit, flex: 1, headerName: 'RX-S' },
-        { field: 'angle', editable: !!edit, flex: 1, headerName: '각도' },
-        { field: 'distance', editable: !!edit, flex: 1, headerName: '거리' },
-        { field: 'height', editable: !!edit, flex: 1, headerName: '고도' },
+        {
+            field: 'txmain', editable: !!edit, flex: 1, headerName: 'TX-M',
+            preProcessEditCellProps: scoreValidate,
+            valueParser: (value: any) => {
+                return formatInput(value);
+            }
+        },
+        {
+            field: 'rxmain', editable: !!edit, flex: 1, headerName: 'RX-M',
+            preProcessEditCellProps: scoreValidate,
+            valueParser: (value: any) => {
+                return formatInput(value);
+            }
+        },
+        {
+            field: 'txstby', editable: !!edit, flex: 1, headerName: 'TX-S',
+            preProcessEditCellProps: scoreValidate,
+            valueParser: (value: any) => {
+                return formatInput(value);
+            }
+        },
+        {
+            field: 'rxstby', editable: !!edit, flex: 1, headerName: 'RX-S',
+            preProcessEditCellProps: scoreValidate,
+            valueParser: (value: any) => {
+                return formatInput(value);
+            }
+        },
+        { field: 'angle', editable: !!edit, flex: 1, type: 'number', headerName: '각도' },
+        { field: 'distance', editable: !!edit, flex: 1, type: 'number', headerName: '거리' },
+        { field: 'height', editable: !!edit, flex: 1, type: 'number', headerName: '고도' },
         { field: 'status', editable: false, flex: 1 },
         { field: 'updatedAt', flex: 1 },
         { field: 'deletedAt', flex: 1 },
@@ -148,7 +216,7 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
         layerGroup.current.addTo(map);
 
         return () => {
-            setRowModesModel({});
+            setCellModesModel({});
             layerGroup.current.clearLayers();
         }
 
@@ -157,7 +225,7 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
 
 
 
-    const handleRowClick = (params: GridCellParams, event: React.MouseEvent) => {
+    const handleCellClick = (params: GridCellParams, event: React.MouseEvent) => {
         if (!params.isEditable) {
             return;
         }
@@ -166,7 +234,9 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
         if (!event.currentTarget.contains(event.target as Element)) {
             return;
         }
-        setRowModesModel((prevModel) => {
+
+        console.log(cellModesModel)
+        setCellModesModel((prevModel) => {
             // return {
             //     ...Object.keys(prevModel).reduce(
             //         (acc, id) => ({
@@ -199,7 +269,7 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
                         (acc, field) => ({ ...acc, [field]: { mode: GridCellModes.View } }),
                         {},
                     ),
-                    // [params.field]: { mode: GridCellModes.Edit },
+                    [params.field]: { mode: GridCellModes.Edit },
                 },
             };
         });
@@ -208,7 +278,7 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
 
     const handleRowModesModelChange = React.useCallback(
         (newModel: GridCellModesModel) => {
-            setRowModesModel(newModel);
+            setCellModesModel(newModel);
         },
         [],
     );
@@ -252,9 +322,10 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
     }
 
     const handleSubmit = () => {
+        if(!data) return;
+
         const rowModel = apiRef.current.getRowModels()
         const editArray: FlightResult[] = [];
-
         for (const t of rowModel) {
             // 현재 Page를 넘어가는 경우 No가 지정이 안되는 에러가 있음.
             // 에러 하이라이팅시 문제 될 것. 기능에는 지장 없음.
@@ -288,7 +359,7 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
             delete item.updatedAt;
 
         }
-        
+
         patchFlightData(editArray)
         console.log(editArray)
 
@@ -296,7 +367,7 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
 
     const handleRowUpdate = () => {
         console.log(rows)
-        apiRef.current.setRows(rows.current?.map((t, i) => ({ ...t, no: i })))
+        apiRef.current.setRows(rows?.length ? rows?.map((t, i) => ({ ...t, no: i })) : [])
     }
 
     const handleDeleteRow = (e: React.MouseEvent) => {
@@ -330,6 +401,7 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
     }
 
     const handlerCellEditEnd = (params: GridCellEditStopParams, event: MuiEvent) => {
+        console.log(params.value);
         // const edit = apiRef.current.getCellValue(params.id, params.field)
         // console.log('end', params.value, edit)
 
@@ -338,13 +410,13 @@ function CustomTable({ data, edit }: { data: FlightList } & Props) {
     return (
         <Container>
             <Wrapper>
-                <DataGrid apiRef={apiRef} editMode='cell' rows={rows.current} columns={columns}
+                <DataGrid apiRef={apiRef} editMode='cell' rows={rows} columns={columns}
                     columnVisibilityModel={columnVisibilityModel}
                     slots={{ toolbar: CustomToolbar, pagination: CustomPagination, noRowsOverlay: CustomNoRowsOverlay, loadingOverlay: LoadingPage }}
-                    cellModesModel={rowModesModel}
+                    cellModesModel={cellModesModel}
                     // onRowModesModelChange={handleRowModesModelChange}
                     onCellModesModelChange={handleRowModesModelChange}
-                    // onCellClick={handleRowClick}
+                    onCellClick={handleCellClick}
                     paginationModel={paginationModel}
                     onPaginationModelChange={setPaginationModel}
                     checkboxSelection
