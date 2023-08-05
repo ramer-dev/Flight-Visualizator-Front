@@ -25,6 +25,7 @@ const Container = styled.div`
 `
 
 const Wrapper = styled(Box)(({ theme }) => ({
+    minWidth: 10,
     width: '100%',
     height: '80vh',
     '& .MuiDataGrid-cell--editable': {
@@ -40,6 +41,10 @@ const Wrapper = styled(Box)(({ theme }) => ({
     },
 }))
 
+
+const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
+    transition: '0.2s all ease',
+}))
 
 interface Props {
     edit?: boolean,
@@ -87,7 +92,9 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
 
     const columns: GridColDef[] = [
         { field: 'id', editable: false, flex: 1 },
-        { field: 'no', editable: false, flex: 1, valueGetter: (params) => ((params.api.getRowIndexRelativeToVisibleRows(params.id) + 1) ? (paginationModel.page * paginationModel.pageSize) + params.api.getRowIndexRelativeToVisibleRows(params.id) + 1 : ''), headerName: 'No' },
+        // { field: 'no', editable: false, flex: 1, valueGetter: (params) => ((params.api.getRowIndexRelativeToVisibleRows(params.id) + 1) ? (paginationModel.page * paginationModel.pageSize) + params.api.getRowIndexRelativeToVisibleRows(params.id) + 1 : ''), headerName: 'No' },
+        { field: 'no', editable: false, flex: 1, valueGetter: (params) => (apiRef.current.getAllRowIds().indexOf(params.id) + 1), headerName: 'No' },
+
         {
             field: 'siteName', editable: !!edit, flex: 1, headerName: '표지소', type: 'string',
             // valueOptions: (params: GridValueOptionsParams) => {
@@ -179,7 +186,7 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
                 const target = Destination(siteCoords, obj[i].angle, obj[i].distance);
                 layer.push(L.marker(target as LatLngLiteral, {
                     icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby),
-                        apiRef.current.getRowIndexRelativeToVisibleRows(i))
+                        obj[i].no)
                 }).bindTooltip('text'))
             }
         }
@@ -364,7 +371,7 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
     return (
         <Container>
             <Wrapper>
-                <DataGrid apiRef={apiRef} editMode='cell' rows={rows} columns={columns}
+                <StyledDataGrid apiRef={apiRef} editMode='cell' rows={rows} columns={columns}
                     loading={isLoading}
                     columnVisibilityModel={columnVisibilityModel}
                     slots={{ toolbar: CustomToolbar, pagination: CustomPagination, noRowsOverlay: CustomNoRowsOverlay, loadingOverlay: LoadingPage }}
