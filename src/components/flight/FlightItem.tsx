@@ -2,9 +2,9 @@ import React from 'react'
 import { ReactComponent as ICMarking } from 'atom/icon/icon_marking.svg';
 
 import styled from '@emotion/styled'
-import { useRecoilRefresher_UNSTABLE, useRecoilState, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { ContentType } from 'common/type/NavBarType';
-import { contentFormat, flightResultData, flightResultDataID } from 'common/store/atom';
+import { contentFormat, flightResultDataID } from 'common/store/atom';
 import { FlightList } from 'common/type/FlightType';
 import { DeleteButton, ModifyButton, PinButton } from 'components/common/CustomButton';
 import dayjs from 'dayjs'
@@ -50,7 +50,6 @@ interface Props {
 const FlightItem = ({ testName, testType, testDate, id, refetch }: FlightList & Props) => {
     const setContent = useSetRecoilState<ContentType>(contentFormat);
     const setFlightData = useSetRecoilState(flightResultDataID);
-    const refresh = useRecoilRefresher_UNSTABLE(flightResultData);
 
     const ViewFlightItem = (e: any, id: number) => {
         e.stopPropagation();

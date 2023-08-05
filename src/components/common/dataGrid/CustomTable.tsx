@@ -202,7 +202,6 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
         return () => {
             setCellModesModel({});
             layerGroup.current.clearLayers();
-            setRows([]);
         }
 
     }, [checkboxSelection])
@@ -308,8 +307,6 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
         const rowModel = apiRef.current.getRowModels()
         const editArray: FlightResult[] = [];
         for (const t of rowModel) {
-            // 현재 Page를 넘어가는 경우 No가 지정이 안되는 에러가 있음.
-            // 에러 하이라이팅시 문제 될 것. 기능에는 지장 없음.
             const item: any = { no: apiRef.current.getRowIndexRelativeToVisibleRows(t[0]), testId: data.id }
             for (const key in t[1]) {
                 if (key !== null) {
