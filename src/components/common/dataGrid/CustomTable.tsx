@@ -24,16 +24,6 @@ const Container = styled.div`
     width:100%;
 `
 
-// const Wrapper = styled(Box)`
-//     width: 100%;
-//     height: 80vh;
-//     .Mui-error: {
-//         color: red;
-//     },
-//     & .MuiDataGrid-cell--editing:has(.Mui-Error): {
-//         background-color : #ddd;
-//     }
-// `
 const Wrapper = styled(Box)(({ theme }) => ({
     width: '100%',
     height: '80vh',
@@ -82,24 +72,15 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
     const id = useRef(1);
     const apiRef = useGridApiRef()
     const siteData = useGetSite();
-    // const rows = useRef(data ? data.data.map((t, i) => ({ ...t, no: i })) : []);
     const [rows, setRows] = React.useState(data?.data ? data.data.map((t, i) => ({ ...t, no: i })) : []);
     const layerGroup = useRef(L.layerGroup([], { pane: 'marking' }))
 
     const scoreValidate = (params: GridPreProcessEditCellProps) => {
-        // if (params.hasChanged) {
-        // const lengthError = String(params.props.value).length < 3
         const validated = scoreRegex.test(String(params.props.value));
         console.log(validated);
         return { ...params.props, error: !validated }
-
-        // }
-        // return { ...params.props }
     }
 
-    // const handleEditCellChangeCommitted = React.useCallback(({id, field, props}) => {
-
-    // }, [])
     const stateRefresh = () => {
         setRows(data?.data ? data.data.map((t, i) => ({ ...t, no: i })) : []);
     }
@@ -169,30 +150,12 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
         { field: 'status', editable: false, flex: 1 },
         { field: 'updatedAt', flex: 1 },
         { field: 'deletedAt', flex: 1 },
-        // {
-        //     field: 'action', type: 'actions', editable: false, flex: 1, headerName: '',
-
-        //     renderCell: (params) =>
-        //         <CustomEditCell addFunction={handleAddRow} delFunction={handleDeleteRow} idx={params.id} isLast={apiRef.current.getAllRowIds().indexOf(params.id) === apiRef.current.getRowsCount() - 1} />
-        //     ,
-
-        // }
     ]
 
-    // const RenderEditCell = React.useMemo(() => , [])
 
     const columnVisibilityModel = {
         'id': false,
-        // 'siteName': false,
-        // 'frequency': false,
         'testId': false,
-        // 'txmain': false,
-        // 'rxmain': false,
-        // 'txstby': false,
-        // 'rxstby': false,
-        // 'angle': false,
-        // 'distance': false,
-        // 'height': false,
         'status': false,
         'updatedAt': false,
         'deletedAt': false,
@@ -235,9 +198,6 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
         }
 
     }, [checkboxSelection])
-
-
-
 
     const handleCellClick = (params: GridCellParams, event: React.MouseEvent) => {
         if (!params.isEditable) {
@@ -378,14 +338,8 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
 
     }
 
-    // const handleRowUpdate = () => {
-    //     console.log(rows)
-    //     apiRef.current.setRows(rows.current?.length ? rows.current?.map((t, i) => ({ ...t, no: i })) : [])
-    // }
-
     const handleDeleteRow = (e: React.MouseEvent) => {
         e.stopPropagation()
-        // console.log(apiRef.current.getAllRowIds().indexOf(lastIndexdata.id),  apiRef.current.getRowsCount() - 2)
         if (checkboxSelection) {
             for (const item of checkboxSelection) {
                 console.log(item)
@@ -393,8 +347,6 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
             }
 
         }
-        // apiRef.current.updateRows([{ ...lastIndexdata, action: [<CustomEditCell addFunction={handleAddRow} delFunction={handleDeleteRow} idx={lastIndexdata.id} isLast={true} />] }])
-
     };
 
     const testMarking = () => {
@@ -409,17 +361,6 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
         setContentView('MID');
     }
 
-    const handlerCellEditStart = (params: GridCellEditStartParams, event: MuiEvent) => {
-        // console.log('start', params)
-    }
-
-    const handlerCellEditEnd = (params: GridCellEditStopParams, event: MuiEvent) => {
-        console.log(params.value);
-        // const edit = apiRef.current.getCellValue(params.id, params.field)
-        // console.log('end', params.value, edit)
-
-
-    }
     return (
         <Container>
             <Wrapper>
@@ -428,7 +369,6 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
                     columnVisibilityModel={columnVisibilityModel}
                     slots={{ toolbar: CustomToolbar, pagination: CustomPagination, noRowsOverlay: CustomNoRowsOverlay, loadingOverlay: LoadingPage }}
                     cellModesModel={cellModesModel}
-                    // onRowModesModelChange={handleRowModesModelChange}
                     onCellModesModelChange={handleRowModesModelChange}
                     onCellClick={handleCellClick}
                     paginationModel={paginationModel}
@@ -436,8 +376,6 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
                     checkboxSelection
                     onRowSelectionModelChange={testMarking}
                     disableRowSelectionOnClick
-                    onCellEditStart={(params: GridCellEditStartParams, event: MuiEvent) => { handlerCellEditStart(params, event) }}
-                    onCellEditStop={(params: GridCellEditStopParams, event: MuiEvent) => { handlerCellEditEnd(params, event) }}
                 // onRowEditStart={(params:GridCellEditStopParams, event: MuiEvent) => handlerCellEditStart(params, event)}
                 // onRowEditStop={handlerCellEditEnd}
                 />
