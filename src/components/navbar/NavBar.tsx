@@ -70,6 +70,11 @@ const NavBar = () => {
             setPage(str);
             setContentView('NONE');
         }
+
+        if(selectedPage === str) {
+            setPage(null);
+            setContentView('NONE');
+        }
     }
 
     useEffect(() => {
