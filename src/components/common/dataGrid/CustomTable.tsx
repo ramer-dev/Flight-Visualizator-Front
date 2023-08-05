@@ -44,7 +44,7 @@ const Wrapper = styled(Box)(({ theme }) => ({
         backgroundColor: `rgb(126,10,15,0.1)`,
     },
     '& .Mui-error': {
-        lineHeight:'52px',
+        lineHeight: '52px',
         // backgroundColor: `rgb(126,10,15,0.1)`,
         color: '#ff4343',
     },
@@ -53,7 +53,8 @@ const Wrapper = styled(Box)(({ theme }) => ({
 
 interface Props {
     edit?: boolean,
-    id?: number,
+    idx?: number,
+    isLoading: boolean,
 }
 
 const formatInput = (input: string) => {
@@ -68,7 +69,7 @@ const formatInput = (input: string) => {
 
 };
 
-function CustomTable({ data, edit }: { data?: FlightList } & Props) {
+function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
     const setContentView = useSetRecoilState(contentViewFormat)
 
     const [paginationModel, setPaginationModel] = React.useState({
@@ -82,7 +83,7 @@ function CustomTable({ data, edit }: { data?: FlightList } & Props) {
     const apiRef = useGridApiRef()
     const siteData = useGetSite();
     // const rows = useRef(data ? data.data.map((t, i) => ({ ...t, no: i })) : []);
-    const [rows, setRows] = React.useState(data ? data.data.map((t, i) => ({...t, no: i})): []);
+    const [rows, setRows] = React.useState(data?.data ? data.data.map((t, i) => ({ ...t, no: i })) : []);
     const layerGroup = useRef(L.layerGroup([], { pane: 'marking' }))
 
     const scoreValidate = (params: GridPreProcessEditCellProps) => {
@@ -99,6 +100,10 @@ function CustomTable({ data, edit }: { data?: FlightList } & Props) {
     // const handleEditCellChangeCommitted = React.useCallback(({id, field, props}) => {
 
     // }, [])
+    const stateRefresh = () => {
+        setRows(data?.data ? data.data.map((t, i) => ({ ...t, no: i })) : []);
+    }
+
     const columns: GridColDef[] = [
         { field: 'id', editable: false, flex: 1 },
         { field: 'no', editable: false, flex: 1, valueGetter: (params) => ((params.api.getRowIndexRelativeToVisibleRows(params.id) + 1) ? (paginationModel.page * paginationModel.pageSize) + params.api.getRowIndexRelativeToVisibleRows(params.id) + 1 : ''), headerName: 'No' },
@@ -193,26 +198,35 @@ function CustomTable({ data, edit }: { data?: FlightList } & Props) {
         'deletedAt': false,
         // 'action': !!edit
     }
-
+    useEffect(() => {
+        stateRefresh()
+    }, [data])
 
     useEffect(() => {
         const obj: { [key: string]: GridValidRowModel } = {};
+        const layer = []
+
         checkboxSelection?.forEach((value, key) => {
             obj[String(key)] = value;
-        })
-        const layer = []
+        });
+
         for (let i in obj) {
-            const siteCoords = siteData.data.filter(t => t.siteName === obj[i].siteName)[0]?.siteCoordinate;
-            const target = Destination(siteCoords, obj[i].angle, obj[i].distance);
-            layer.push(L.marker(target as LatLngLiteral, {
-                icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby),
-                    apiRef.current.getRowIndexRelativeToVisibleRows(i))
-            }).bindTooltip('text'))
+            if (!isNaN(obj[i].angle) || !isNaN(obj[i].distance) || obj[i].siteName) {
+                const siteCoords = siteData.data.filter(t => t.siteName === obj[i].siteName)[0]?.siteCoordinate;
+                const target = Destination(siteCoords, obj[i].angle, obj[i].distance);
+                layer.push(L.marker(target as LatLngLiteral, {
+                    icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby),
+                        apiRef.current.getRowIndexRelativeToVisibleRows(i))
+                }).bindTooltip('text'))
+            }
         }
+
         layerGroup.current.clearLayers()
+
         for (let i of layer) {
             layerGroup.current.addLayer(i)
         }
+
         layerGroup.current.addTo(map);
 
         return () => {
@@ -220,7 +234,7 @@ function CustomTable({ data, edit }: { data?: FlightList } & Props) {
             layerGroup.current.clearLayers();
         }
 
-    }, [data, checkboxSelection])
+    }, [checkboxSelection])
 
 
 
@@ -235,7 +249,6 @@ function CustomTable({ data, edit }: { data?: FlightList } & Props) {
             return;
         }
 
-        console.log(cellModesModel)
         setCellModesModel((prevModel) => {
             // return {
             //     ...Object.keys(prevModel).reduce(
@@ -322,7 +335,7 @@ function CustomTable({ data, edit }: { data?: FlightList } & Props) {
     }
 
     const handleSubmit = () => {
-        if(!data) return;
+        if (!data) return;
 
         const rowModel = apiRef.current.getRowModels()
         const editArray: FlightResult[] = [];
@@ -365,10 +378,10 @@ function CustomTable({ data, edit }: { data?: FlightList } & Props) {
 
     }
 
-    const handleRowUpdate = () => {
-        console.log(rows)
-        apiRef.current.setRows(rows?.length ? rows?.map((t, i) => ({ ...t, no: i })) : [])
-    }
+    // const handleRowUpdate = () => {
+    //     console.log(rows)
+    //     apiRef.current.setRows(rows.current?.length ? rows.current?.map((t, i) => ({ ...t, no: i })) : [])
+    // }
 
     const handleDeleteRow = (e: React.MouseEvent) => {
         e.stopPropagation()
@@ -411,6 +424,7 @@ function CustomTable({ data, edit }: { data?: FlightList } & Props) {
         <Container>
             <Wrapper>
                 <DataGrid apiRef={apiRef} editMode='cell' rows={rows} columns={columns}
+                    loading={isLoading}
                     columnVisibilityModel={columnVisibilityModel}
                     slots={{ toolbar: CustomToolbar, pagination: CustomPagination, noRowsOverlay: CustomNoRowsOverlay, loadingOverlay: LoadingPage }}
                     cellModesModel={cellModesModel}

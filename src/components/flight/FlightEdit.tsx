@@ -5,42 +5,24 @@ import CustomTable from 'components/common/dataGrid/CustomTable';
 import LoadingPage from 'components/common/LoadingPage';
 import TableViewer from 'components/common/Not use/TableViewer'
 import ScreenTitle from 'components/common/ScreenTitle';
+import { useFlightData } from 'components/hooks/useFlightData';
 import React, { useEffect, useState } from 'react'
 import { useRecoilValue, useRecoilValueLoadable } from 'recoil';
 import NavCloseButton from '../navbar/NavCloseButton'
 
 function FlightEdit() {
     // const flightData = useRecoilValueLoadable<FlightList>(flightResultData);
-    const [data, setData] = useState<FlightList>();
     const id = useRecoilValue(flightResultDataID)
-
+    let { data, isLoading, isError, refetch } = useFlightData(id);
     useEffect(() => {
-        getFlightData(id)
-            .then(t => { setData(t) })
+        refetch()
     }, [id])
-
-    useEffect(() => {
-        console.log(data);
-    }, [data])
-    // const [data, setData] = useState();
-
-    // let error = null;
-    // console.log(flightData);
-    // switch (flightData.state) {
-    //     case 'hasValue':
-    //         data = flightData.contents;
-    //         break;
-    //     case 'hasError':
-    //         break;
-    //     case 'loading':
-
-    // }
 
     return (
         <>
             <ScreenTitle text={"비행검사 수정"} />
             {/* {<TableViewer data={data} />} */}
-            <CustomTable data={data} edit id={id} />
+            <CustomTable data={data} edit isLoading={isLoading} />
 
             <NavCloseButton contentSize={['MID', 'FULLSCREEN']} />
         </>
