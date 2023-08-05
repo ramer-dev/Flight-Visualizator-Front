@@ -73,7 +73,6 @@ const NavBar = () => {
 
         if(selectedPage === str) {
             setPage(null);
-            setContentView('NONE');
         }
     }
 
