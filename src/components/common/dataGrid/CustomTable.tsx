@@ -202,6 +202,7 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
         return () => {
             setCellModesModel({});
             layerGroup.current.clearLayers();
+            setRows([]);
         }
 
     }, [checkboxSelection])

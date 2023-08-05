@@ -13,7 +13,7 @@ import NavCloseButton from '../navbar/NavCloseButton'
 function FlightEdit() {
     // const flightData = useRecoilValueLoadable<FlightList>(flightResultData);
     const id = useRecoilValue(flightResultDataID)
-    let { data, isLoading, isError, refetch } = useFlightData(id);
+    let { data = undefined, isLoading, isError, refetch } = useFlightData(id);
     useEffect(() => {
         refetch()
     }, [id])
