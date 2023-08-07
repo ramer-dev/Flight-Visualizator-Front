@@ -54,8 +54,7 @@ interface Props {
 
 const formatInput = (input: string) => {
     const numericInput = input.replace(/\D/g, ''); // 숫자 이외의 문자 제거
-    const firstDigit = numericInput.charAt(0);
-    const secondDigit = numericInput.charAt(1);
+    const [firstDigit, secondDigit] = [numericInput.charAt(0), numericInput.charAt(1)];
     if (numericInput.length === 1) {
         return `${firstDigit}`
     } else if (numericInput.length >= 2) {
