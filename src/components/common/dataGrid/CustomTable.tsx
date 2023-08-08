@@ -19,6 +19,7 @@ import { FindMinimumScore } from 'module/ScoreCalculate'
 import { frequencyRegex, scoreRegex } from 'common/regex/regex'
 import { patchFlightData, postFlightData } from 'common/service/flightService'
 
+
 const Container = styled.div`
     height:100vh;
     width:100%;
@@ -76,7 +77,7 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
     const id = useRef(1);
     const apiRef = useGridApiRef()
     const siteData = useGetSite();
-    const [rows, setRows] = React.useState(data?.data ? data.data.map((t, i) => ({ ...t, no: i })) : []);
+    const [rows, setRows] = React.useState(data?.data?.items ? data.data.items.map((t, i) => ({ ...t, no: i })) : []);
     const layerGroup = useRef(L.layerGroup([], { pane: 'marking' }))
 
     const scoreValidate = (params: GridPreProcessEditCellProps) => {
@@ -86,13 +87,13 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
     }
 
     const stateRefresh = () => {
-        setRows(data?.data ? data.data.map((t, i) => ({ ...t, no: i })) : []);
+        setRows(data?.data ? data.data.items.map((t, i) => ({ ...t, no: i })) : []);
     }
 
     const columns: GridColDef[] = [
-        { field: 'id', editable: false, flex: 1 },
+        { field: 'id', editable: false, flex: .5 },
         // { field: 'no', editable: false, flex: 1, valueGetter: (params) => ((params.api.getRowIndexRelativeToVisibleRows(params.id) + 1) ? (paginationModel.page * paginationModel.pageSize) + params.api.getRowIndexRelativeToVisibleRows(params.id) + 1 : ''), headerName: 'No' },
-        { field: 'no', editable: false, flex: 1, valueGetter: (params) => (apiRef.current.getAllRowIds().indexOf(params.id) + 1), headerName: 'No' },
+        { field: 'no', editable: false, flex: .5, valueGetter: (params) => (apiRef.current.getAllRowIds().indexOf(params.id) + 1), headerName: 'No' },
 
         {
             field: 'siteName', editable: !!edit, flex: 1, headerName: '표지소', type: 'string',
@@ -123,35 +124,35 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
         },
         { field: 'testId', editable: false, flex: 1 },
         {
-            field: 'txmain', editable: !!edit, flex: 1, headerName: 'TX-M',
+            field: 'txmain', editable: !!edit, flex: .75, headerName: 'TX-M',
             preProcessEditCellProps: scoreValidate,
             valueParser: (value: any) => {
                 return formatInput(value);
             }
         },
         {
-            field: 'rxmain', editable: !!edit, flex: 1, headerName: 'RX-M',
+            field: 'rxmain', editable: !!edit, flex: .75, headerName: 'RX-M',
             preProcessEditCellProps: scoreValidate,
             valueParser: (value: any) => {
                 return formatInput(value);
             }
         },
         {
-            field: 'txstby', editable: !!edit, flex: 1, headerName: 'TX-S',
+            field: 'txstby', editable: !!edit, flex: .75, headerName: 'TX-S',
             preProcessEditCellProps: scoreValidate,
             valueParser: (value: any) => {
                 return formatInput(value);
             }
         },
         {
-            field: 'rxstby', editable: !!edit, flex: 1, headerName: 'RX-S',
+            field: 'rxstby', editable: !!edit, flex: .75, headerName: 'RX-S',
             preProcessEditCellProps: scoreValidate,
             valueParser: (value: any) => {
                 return formatInput(value);
             }
         },
-        { field: 'angle', editable: !!edit, flex: 1, type: 'number', headerName: '각도' },
-        { field: 'distance', editable: !!edit, flex: 1, type: 'number', headerName: '거리' },
+        { field: 'angle', editable: !!edit, flex: .5, type: 'number', headerName: '각도' },
+        { field: 'distance', editable: !!edit, flex: .5, type: 'number', headerName: '거리' },
         { field: 'height', editable: !!edit, flex: 1, type: 'number', headerName: '고도' },
         { field: 'status', editable: false, flex: 1 },
         { field: 'updatedAt', flex: 1 },
@@ -266,7 +267,6 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
         e.stopPropagation()
         const newRow = { id: `add-${id.current++}` }
         apiRef.current.updateRows([newRow]);
-        console.log(apiRef.current.getRowsCount())
     }
 
     const validateInput = (data: FlightResult[]) => {
@@ -353,16 +353,24 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
         }
     };
 
-    const testMarking = () => {
+    const handleMarking = () => {
         // for (const [rowId, rowData] of apiRef.current.getSelectedRows()) {
         //     console.log(rowId, rowData);
         // }
+        setCheckboxSelection(apiRef.current.getSelectedRows());
+    }
+
+    const handleMarkingBtnClick = () => {
         setCheckboxSelection(apiRef.current.getSelectedRows());
         shrinkWindow()
     }
 
     const shrinkWindow = () => {
         setContentView('MID');
+    }
+
+    const test = (e:any) => {
+        console.log(e)
     }
 
     return (
@@ -376,9 +384,9 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
                     onCellModesModelChange={handleRowModesModelChange}
                     onCellClick={handleCellClick}
                     paginationModel={paginationModel}
-                    onPaginationModelChange={setPaginationModel}
+                    onPaginationModelChange={test}
                     checkboxSelection
-                    onRowSelectionModelChange={testMarking}
+                    onRowSelectionModelChange={handleMarking}
                     disableRowSelectionOnClick
                 // onRowEditStart={(params:GridCellEditStopParams, event: MuiEvent) => handlerCellEditStart(params, event)}
                 // onRowEditStop={handlerCellEditEnd}
@@ -390,8 +398,8 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
                         <Button onClick={handleAddRow}>add Row</Button>
                         <Button onClick={handleDeleteRow}>삭제 ㅅㄱ</Button>
                         <Button onClick={handleSubmit}>submit</Button>
-                        <Button onClick={testMarking}>마킹 테슽으</Button>
-
+                        <Button onClick={handleMarkingBtnClick}>마킹 테슽으</Button>
+                        <Button onClick={() => {apiRef.current.setPage(2)}}>테스트</Button>
                     </>
                 ) : null
             }

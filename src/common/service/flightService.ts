@@ -1,6 +1,12 @@
 import { FlightList, FlightResult } from "common/type/FlightType"
 import CustomAxios from "module/axios"
 
+export const getEntireFlightData = async (take: number, skip: number) => {
+    const { data } = await CustomAxios.get(`flight/result/`, { params: { take, skip } })
+    return data;
+}
+
+
 export const getFlightData = async (id: number) => {
     const { data } = await CustomAxios.get(`flight/result/${id}`)
     return data;

@@ -3,7 +3,6 @@ import { flightResultData, flightResultDataID } from 'common/store/atom';
 import { FlightList } from 'common/type/FlightType';
 import CustomTable from 'components/common/dataGrid/CustomTable';
 import LoadingPage from 'components/common/LoadingPage';
-import TableViewer from 'components/common/Not use/TableViewer'
 import ScreenTitle from 'components/common/ScreenTitle';
 import { useFlightData } from 'components/hooks/useFlightData';
 import React, { useEffect, useState } from 'react'

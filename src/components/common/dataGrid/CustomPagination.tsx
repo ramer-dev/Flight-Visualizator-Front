@@ -11,17 +11,16 @@ import { TablePaginationProps } from '@mui/material/TablePagination';
 function Pagination({
     page,
     onPageChange,
-    className,
-}: Pick<TablePaginationProps, 'page' | 'onPageChange' | 'className'>) {
+    count
+}: Pick<TablePaginationProps, 'page' | 'onPageChange' | 'count'>) {
     const apiRef = useGridApiContext();
-    const pageCount = useGridSelector(apiRef, gridPageCountSelector);
+    // const pageCount = useGridSelector(apiRef, gridPageCountSelector);
 
     return (
         <MuiPagination
             variant='outlined'
             color="primary"
-            className={className}
-            count={pageCount}
+            count={count}
             page={page + 1}
             onChange={(event, newPage) => {
                 onPageChange(event as any, newPage - 1);
