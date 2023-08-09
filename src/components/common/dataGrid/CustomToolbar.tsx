@@ -28,17 +28,17 @@ const printOptions = { hideToolbar: true, hideFooter: true }
 function CustomToolbar({ count, title, edit, handleAddRow, handleDeleteRow, handleSubmit, handleMarkingBtnClick }: Props) {
   const apiRef = useGridApiContext()
   const disabled = !apiRef.current.getRowsCount();
-  console.log(count, disabled);
+  const selected = apiRef.current.getSelectedRows()
   return (
     <GridToolbarContainer>
       {edit ?
         <>
           <Button variant='outlined' onClick={handleAddRow} startIcon={<PlusIcon />}>행추가</Button>
-          <Button variant='outlined' onClick={handleDeleteRow} disabled={!apiRef.current.getSelectedRows().size} color={'error'} startIcon={<MinusIcon />}>행삭제</Button>
+          <Button variant='outlined' onClick={handleDeleteRow} disabled={!selected.size} color={'error'} startIcon={<MinusIcon />}>행삭제</Button>
         </>
         : null
       }
-      <Button variant='outlined' onClick={handleMarkingBtnClick} disabled={!apiRef.current.getSelectedRows().size} startIcon={<GPSIcon />}>마킹</Button>
+      <Button variant='outlined' onClick={handleMarkingBtnClick} disabled={!selected.size} startIcon={<GPSIcon />}>마킹</Button>
 
       {/* <GridToolbarExport disabled={!apiRef.current.getRowsCount()} sx={{ padding: '5px 15px' }} variant="outlined" csvOptions={{ fileName: title }} printOptions={{ hideToolbar: true, hideFooter: true, }} /> */}
 

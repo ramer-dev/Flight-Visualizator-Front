@@ -22,21 +22,22 @@ import { patchFlightData, postFlightData } from 'common/service/flightService'
 
 declare module '@mui/x-data-grid' {
     interface PaginationPropsOverrides {
-        edit:boolean;
-        count: number;
-        handleAddRow: (e : React.MouseEvent) => void;
-        handleDeleteRow: (e : React.MouseEvent) => void;
-        handleSubmit: (e : React.MouseEvent) => void;
-        handleMarkingBtnClick: (e : React.MouseEvent) => void;
+        edit: boolean;
+        totalCount: number;
+        totalPage: number;
+        handleAddRow: (e: React.MouseEvent) => void;
+        handleDeleteRow: (e: React.MouseEvent) => void;
+        handleSubmit: (e: React.MouseEvent) => void;
+        handleMarkingBtnClick: (e: React.MouseEvent) => void;
         handleCancelEdit: (e: React.MouseEvent) => void;
     }
     interface ToolbarPropsOverrides {
-        title:string;
-        edit:boolean;
-        handleAddRow: (e : React.MouseEvent) => void;
-        handleDeleteRow: (e : React.MouseEvent) => void;
-        handleSubmit: (e : React.MouseEvent) => void;
-        handleMarkingBtnClick: (e : React.MouseEvent) => void;
+        title: string;
+        edit: boolean;
+        handleAddRow: (e: React.MouseEvent) => void;
+        handleDeleteRow: (e: React.MouseEvent) => void;
+        handleSubmit: (e: React.MouseEvent) => void;
+        handleMarkingBtnClick: (e: React.MouseEvent) => void;
     }
 }
 
@@ -61,7 +62,11 @@ const Wrapper = styled(Box)(({ theme }) => ({
     },
 
     '& .MuiDataGrid-footerContainer': {
-        display:'block',
+        display: 'block',
+    },
+
+    '& .MuiDataGrid-footerContainer > div:first-child': {
+        display: 'none',
     }
 }))
 
@@ -89,8 +94,7 @@ const formatInput = (input: string) => {
 
 function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
     const setContentView = useSetRecoilState(contentViewFormat)
-    const setContent = useSetRecoilState(contentFormat)
-    console.log(data)
+    const setContent = useSetRecoilState(contentFormat);
     const [paginationModel, setPaginationModel] = React.useState({
         pageSize: 100,
         page: 0,
@@ -112,7 +116,7 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
 
     const stateRefresh = () => {
         setRows(data?.data ? data.data.items.map((t, i) => ({ ...t, no: i })) : []);
-        setPaginationModel({page:0, pageSize:100})
+        setPaginationModel({ page: 0, pageSize: 100 })
     }
 
     const columns: GridColDef[] = [
@@ -135,7 +139,7 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
             },
         },
         {
-            field: 'frequency', editable: !!edit, flex: 1, headerName: '주파수', type: 'number',
+            field: 'frequency', editable: !!edit, flex: 1, headerName: '주파수', type: 'number', align:'left', headerAlign:'left',
             preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
                 if (params.hasChanged) {
                     const hasError = String(params.props.value).match(frequencyRegex)
@@ -369,7 +373,7 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
 
     const handleDeleteRow = (e: React.MouseEvent) => {
         e.stopPropagation()
-        if (checkboxSelection && window.confirm(`${checkboxSelection.size}개의 행을 삭제할까요?`)) {           
+        if (checkboxSelection && window.confirm(`${checkboxSelection.size}개의 행을 삭제할까요?`)) {
             for (const item of checkboxSelection) {
                 console.log(item)
                 apiRef.current.updateRows([{ id: item[0], _action: 'delete' }])
@@ -390,9 +394,10 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
         shrinkWindow()
     }
 
-    const handlerCancelEdit = (e: React.MouseEvent) => {
-        e.stopPropagation()
+    const handleCancelEdit = (e: React.MouseEvent) => {
+        setContentView('NONE')
         setContent('NONE')
+        console.log(contentViewFormat)
     }
     const shrinkWindow = () => {
         setContentView('MID');
@@ -408,26 +413,28 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
                     slotProps={{
                         pagination: {
                             count: data?.data?.totalPage ? data.data.totalPage : 0,
-                            edit : edit,
-                            page:paginationModel.page + 1,
+                            totalCount: data?.data?.totalCount,
+                            totalPage: data?.data?.totalPage,
+                            edit: edit,
+                            page: paginationModel.page + 1,
                             onPageChange(event, page) {
-                                setPaginationModel({pageSize:100, page:page-1})
-                                apiRef.current.setPage(page-1)
+                                setPaginationModel({ pageSize: 100, page: page - 1 })
+                                apiRef.current.setPage(page - 1)
                             },
                             handleAddRow,
                             handleDeleteRow,
                             handleSubmit,
                             handleMarkingBtnClick,
+                            handleCancelEdit
                         },
                         toolbar: {
                             count: data?.data?.totalCount,
-                            title : data?.testName,
-                            edit : edit,
+                            title: data?.testName,
+                            edit: edit,
                             handleAddRow,
                             handleDeleteRow,
                             handleSubmit,
                             handleMarkingBtnClick,
-                            handlerCancelEdit
                         }
                     }}
                     cellModesModel={cellModesModel}

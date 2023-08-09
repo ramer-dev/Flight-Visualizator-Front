@@ -14,7 +14,8 @@ import SaveIcon from '@mui/icons-material/Save';
 import ClearIcon from '@mui/icons-material/Clear';
 interface Props {
     edit: boolean;
-    count: number;
+    totalPage: number;
+    totalCount: number;
     page: number;
     onPageChange: (e: any, page: number) => void;
     handleAddRow: (e: React.MouseEvent) => void;
@@ -43,10 +44,15 @@ const Dummy = styled.div`
 `
 
 
-export default function CustomPagination({ edit, count, page, onPageChange, handleCancelEdit, handleSubmit }: Props) {
+export default function CustomPagination({ edit, totalCount, totalPage, page, onPageChange, handleCancelEdit, handleSubmit }: Props) {
+    const apiRef = useGridApiContext()
+    const selected = apiRef.current.getSelectedRows()
     return <FooterContainer>
-        <Dummy />
-        <Pagination variant='outlined' count={count} color='primary' page={page} onChange={(e, page) => { onPageChange(e, page) }} />
+        <ButtonWrapper>
+            {selected.size ? <span >{selected.size}개 행 선택</span> : <span>총 {totalCount}행의 데이터</span>}
+        </ButtonWrapper>
+
+        <Pagination variant='outlined' count={totalPage} color='primary' page={page} onChange={(e, page) => { onPageChange(e, page) }} />
         <ButtonWrapper>
             {edit ?
                 <>
@@ -54,7 +60,7 @@ export default function CustomPagination({ edit, count, page, onPageChange, hand
                     <Button variant='outlined' color={'error'} onClick={handleCancelEdit} startIcon={<ClearIcon />}>취소</Button>
                 </>
                 :
-                <Button variant='outlined' onClick={handleCancelEdit} startIcon={<ClearIcon />}>닫기</Button>
+                <Button variant='outlined' onClick={(e:React.MouseEvent) => {handleCancelEdit(e); console.log('close') }} startIcon={<ClearIcon />}>닫기</Button>
             }
 
         </ButtonWrapper>
