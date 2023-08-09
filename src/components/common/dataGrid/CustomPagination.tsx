@@ -35,8 +35,6 @@ const ButtonWrapper = styled.div`
     gap:8px;
 `
 
-
-
 export default function CustomPagination({ edit, totalCount, totalPage, page, onPageChange, handleCancelEdit, handleSubmit, pageSizeChange }: Props) {
     const apiRef = useGridApiContext()
     const selected = apiRef.current.getSelectedRows()
@@ -65,7 +63,7 @@ export default function CustomPagination({ edit, totalCount, totalPage, page, on
 
     return <FooterContainer>
         <ButtonWrapper>
-            {selected.size ? <span >{selected.size}개 행 선택</span> : <span>총 {totalCount}행의 데이터</span>}
+            {selected.size ? <span >{selected.size}개 행 선택</span> : <span>총 {apiRef.current.getRowsCount()}행의 데이터</span>}
         </ButtonWrapper>
         <div>
             <FormControl>

@@ -18,6 +18,7 @@ import { FindMinimumScore } from 'module/ScoreCalculate'
 import { frequencyRegex, scoreRegex } from 'common/regex/regex'
 import { patchFlightData } from 'common/service/flightService'
 import { useFlightData } from 'components/hooks/useFlightData'
+import { EmptyData } from './EmpryData'
 
 
 declare module '@mui/x-data-grid' {
@@ -30,7 +31,7 @@ declare module '@mui/x-data-grid' {
         handleSubmit: (e: React.MouseEvent) => void;
         handleMarkingBtnClick: (e: React.MouseEvent) => void;
         handleCancelEdit: (e: React.MouseEvent) => void;
-        pageSizeChange: (pageSize:number) => void;
+        pageSizeChange: (pageSize: number) => void;
     }
     interface ToolbarPropsOverrides {
         title: string;
@@ -42,14 +43,10 @@ declare module '@mui/x-data-grid' {
     }
 }
 
-const Container = styled.div`
-    width:100%;
-`
-
 const Wrapper = styled(Box)(({ theme }) => ({
     minWidth: 10,
     width: '100%',
-    height: 'calc(100vh - 100px)',
+    height: 'calc(100vh - 230px)',
     '& .MuiDataGrid-cell--editable': {
         backgroundColor: 'rgba(80,150,255,0.1)',
     },
@@ -66,7 +63,7 @@ const Wrapper = styled(Box)(({ theme }) => ({
         display: 'block',
     },
 
-    '& .MuiDataGrid-footerContainer > div:first-child': {
+    '& .MuiDataGrid-footerContainer > div:first-of-type': {
         display: 'none',
     }
 }))
@@ -77,6 +74,7 @@ const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
 }))
 
 interface Props {
+    add?: boolean,
     edit?: boolean,
     search?: boolean,
 }
@@ -92,7 +90,7 @@ const formatInput = (input: string) => {
 
 };
 
-function CustomTable({ edit, search }: Props) {
+function CustomTable({ edit, search, add }: Props) {
     const [flightDataId, setFlightDataId] = useRecoilState(flightResultDataID);
     const setContentView = useSetRecoilState(contentViewFormat)
     const setContent = useSetRecoilState(contentFormat);
@@ -116,11 +114,25 @@ function CustomTable({ edit, search }: Props) {
         return { ...params.props, error: !validated }
     }
 
+
+
     const stateRefresh = () => {
-        if(search){
+        if (search || add) {
             setFlightDataId(undefined)
         }
-        refetch();
+
+        if (add && data?.data) {
+            data.id = -1
+            data.testType = '';
+            data.testDate = '';
+            data.testName = '';
+            data.data = EmptyData(paginationModel.pageSize).data;
+        }
+
+        if (!add) {
+            refetch();
+        }
+        setPaginationModel({ page: 0, pageSize: paginationModel.pageSize })
         setRows(data?.data ? data.data.items.map((t, i) => ({ ...t, no: i })) : []);
     }
 
@@ -206,7 +218,7 @@ function CustomTable({ edit, search }: Props) {
         stateRefresh()
     }, [data, flightDataId])
 
- 
+
     useEffect(() => {
         const obj: { [key: string]: GridValidRowModel } = {};
         const layer = []
@@ -331,8 +343,9 @@ function CustomTable({ edit, search }: Props) {
 
         const rowModel = apiRef.current.getRowModels()
         const editArray: FlightResult[] = [];
+
         for (const t of rowModel) {
-            const item: any = { no: apiRef.current.getRowIndexRelativeToVisibleRows(t[0]), testId: data.id }
+            const item: any = { no: apiRef.current.getRowIndexRelativeToVisibleRows(t[0]), testId: add ? null : data.id }
             for (const key in t[1]) {
                 if (key !== null) {
                     item[key] = t[1][key];
@@ -346,10 +359,6 @@ function CustomTable({ edit, search }: Props) {
             } else {
                 // 신규 추가의 경우 임시 입력된 ID key 삭제
                 editArray.push(item)
-            }
-
-
-            if (String(item.id).startsWith('add')) {
             }
 
             if (validateInput(editArray)) {
@@ -399,56 +408,54 @@ function CustomTable({ edit, search }: Props) {
     }
 
     return (
-        <Container>
-            <Wrapper>
-                <StyledDataGrid apiRef={apiRef} editMode='cell' rows={rows} columns={columns}
-                    loading={isLoading}
-                    columnVisibilityModel={columnVisibilityModel}
-                    slots={{ toolbar: CustomToolbar, pagination: CustomPagination, noRowsOverlay: CustomNoRowsOverlay, loadingOverlay: LoadingPage }}
-                    slotProps={{
-                        pagination: {
-                            count: data?.data?.totalPage ? data.data.totalPage : 0,
-                            totalCount: data?.data?.totalCount,
-                            totalPage: data?.data?.totalCount ? Math.ceil(data?.data?.totalCount / paginationModel.pageSize ) : 0 ,
-                            edit: edit,
-                            page: paginationModel.page + 1,
-                            onPageChange(event, page) {
-                                setPaginationModel({ pageSize: paginationModel.pageSize, page: page - 1 })
-                                apiRef.current.setPage(page - 1)
-                            },
-                            pageSizeChange(pageSize) {
-                                setPaginationModel({pageSize, page: 0})
-                                apiRef.current.setPageSize(pageSize);
-                            },
-                            handleAddRow,
-                            handleDeleteRow,
-                            handleSubmit,
-                            handleMarkingBtnClick,
-                            handleCancelEdit
+        <Wrapper>
+            <StyledDataGrid apiRef={apiRef} editMode='cell' rows={rows} columns={columns}
+                loading={isLoading}
+                columnVisibilityModel={columnVisibilityModel}
+                slots={{ toolbar: CustomToolbar, pagination: CustomPagination, noRowsOverlay: CustomNoRowsOverlay, loadingOverlay: LoadingPage }}
+                slotProps={{
+                    pagination: {
+                        count: data?.data?.totalPage ? data.data.totalPage : 0,
+                        totalCount: data?.data?.totalCount,
+                        totalPage: data?.data?.totalCount ? Math.ceil(data?.data?.totalCount / paginationModel.pageSize) : 0,
+                        edit: edit,
+                        page: paginationModel.page + 1,
+                        onPageChange(event, page) {
+                            setPaginationModel({ pageSize: paginationModel.pageSize, page: page - 1 })
+                            apiRef.current.setPage(page - 1)
                         },
-                        toolbar: {
-                            count: data?.data?.totalCount,
-                            title: data?.testName,
-                            edit: edit,
-                            handleAddRow,
-                            handleDeleteRow,
-                            handleSubmit,
-                            handleMarkingBtnClick,
-                        }
-                    }}
-                    cellModesModel={cellModesModel}
-                    onCellModesModelChange={handleRowModesModelChange}
-                    onCellClick={handleCellClick}
-                    paginationModel={paginationModel}
-                    onPaginationModelChange={handlePaginationModelChange}
-                    checkboxSelection
-                    onRowSelectionModelChange={handleMarking}
-                    disableRowSelectionOnClick
-                // onRowEditStart={(params:GridCellEditStopParams, event: MuiEvent) => handlerCellEditStart(params, event)}
-                // onRowEditStop={handlerCellEditEnd}
-                />
-            </Wrapper>
-        </Container>
+                        pageSizeChange(pageSize) {
+                            setPaginationModel({ pageSize, page: 0 })
+                            apiRef.current.setPageSize(pageSize);
+                        },
+                        handleAddRow,
+                        handleDeleteRow,
+                        handleSubmit,
+                        handleMarkingBtnClick,
+                        handleCancelEdit
+                    },
+                    toolbar: {
+                        count: data?.data?.totalCount,
+                        title: data?.testName,
+                        edit: edit,
+                        handleAddRow,
+                        handleDeleteRow,
+                        handleSubmit,
+                        handleMarkingBtnClick,
+                    }
+                }}
+                cellModesModel={cellModesModel}
+                onCellModesModelChange={handleRowModesModelChange}
+                onCellClick={handleCellClick}
+                paginationModel={paginationModel}
+                onPaginationModelChange={handlePaginationModelChange}
+                checkboxSelection
+                onRowSelectionModelChange={handleMarking}
+                disableRowSelectionOnClick
+            // onRowEditStart={(params:GridCellEditStopParams, event: MuiEvent) => handlerCellEditStart(params, event)}
+            // onRowEditStop={handlerCellEditEnd}
+            />
+        </Wrapper>
     )
 }
 
