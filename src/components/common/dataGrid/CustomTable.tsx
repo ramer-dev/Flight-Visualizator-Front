@@ -8,8 +8,8 @@ import CustomPagination from './CustomPagination'
 import CustomNoRowsOverlay from './CustomNoRowsOverlay'
 import LoadingPage from '../LoadingPage'
 import CustomEditCell from './CustomEditCell'
-import { useSetRecoilState } from 'recoil'
-import { contentFormat, contentViewFormat } from 'common/store/atom'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { contentFormat, contentViewFormat, flightResultDataID } from 'common/store/atom'
 import L, { LatLngLiteral } from 'leaflet'
 import { useGetSite } from 'components/hooks/useSite'
 import divicon from 'module/NumberIcon'
@@ -18,6 +18,7 @@ import { Destination } from 'module/Destination'
 import { FindMinimumScore } from 'module/ScoreCalculate'
 import { frequencyRegex, scoreRegex } from 'common/regex/regex'
 import { patchFlightData, postFlightData } from 'common/service/flightService'
+import { useEntireFlightData, useFlightData } from 'components/hooks/useFlightData'
 
 
 declare module '@mui/x-data-grid' {
@@ -77,8 +78,7 @@ const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
 
 interface Props {
     edit?: boolean,
-    idx?: number,
-    isLoading: boolean,
+    search?: boolean,
 }
 
 const formatInput = (input: string) => {
@@ -92,7 +92,8 @@ const formatInput = (input: string) => {
 
 };
 
-function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
+function CustomTable({ edit, search }: Props) {
+    const [flightDataId, setFlightDataId] = useRecoilState(flightResultDataID);
     const setContentView = useSetRecoilState(contentViewFormat)
     const setContent = useSetRecoilState(contentFormat);
     const [paginationModel, setPaginationModel] = React.useState({
@@ -105,6 +106,8 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
     const id = useRef(1);
     const apiRef = useGridApiRef()
     const siteData = useGetSite();
+    const { data, refetch, isLoading } = useFlightData(paginationModel.pageSize, 0, flightDataId)
+
     const [rows, setRows] = React.useState(data?.data?.items ? data.data.items.map((t, i) => ({ ...t, no: i })) : []);
     const layerGroup = useRef(L.layerGroup([], { pane: 'marking' }))
 
@@ -115,8 +118,11 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
     }
 
     const stateRefresh = () => {
+        if(search){
+            setFlightDataId(undefined)
+        }
+        refetch();
         setRows(data?.data ? data.data.items.map((t, i) => ({ ...t, no: i })) : []);
-        setPaginationModel({ page: 0, pageSize: 100 })
     }
 
     const columns: GridColDef[] = [
@@ -139,7 +145,7 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
             },
         },
         {
-            field: 'frequency', editable: !!edit, flex: 1, headerName: '주파수', type: 'number', align:'left', headerAlign:'left',
+            field: 'frequency', editable: !!edit, flex: 1, headerName: '주파수', type: 'number', align: 'left', headerAlign: 'left',
             preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
                 if (params.hasChanged) {
                     const hasError = String(params.props.value).match(frequencyRegex)
@@ -199,8 +205,12 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
     }
     useEffect(() => {
         stateRefresh()
-    }, [data])
+    }, [data, flightDataId])
 
+
+    useEffect(() => {
+        console.log('table Rendered!')
+    })
     useEffect(() => {
         const obj: { [key: string]: GridValidRowModel } = {};
         const layer = []
@@ -236,6 +246,8 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
     }, [checkboxSelection])
 
     const handleCellClick = (params: GridCellParams, event: React.MouseEvent) => {
+        console.log(data)
+
         if (!params.isEditable) {
             return;
         }
@@ -246,16 +258,6 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
         }
 
         setCellModesModel((prevModel) => {
-            // return {
-            //     ...Object.keys(prevModel).reduce(
-            //         (acc, id) => ({
-            //             ...acc,
-            //             [id]: { mode: GridRowModes.View },
-            //         }),
-            //         {},
-            //     ),
-            //     [params.id]: { mode: GridRowModes.Edit }
-            // }
 
             return {
                 // Revert the mode of the other cells from other rows
@@ -383,9 +385,6 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
     };
 
     const handleMarking = () => {
-        // for (const [rowId, rowData] of apiRef.current.getSelectedRows()) {
-        //     console.log(rowId, rowData);
-        // }
         setCheckboxSelection(apiRef.current.getSelectedRows());
     }
 
@@ -401,6 +400,10 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
     }
     const shrinkWindow = () => {
         setContentView('MID');
+    }
+
+    const handlePaginationModelChange = (e: any) => {
+
     }
 
     return (
@@ -441,6 +444,7 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
                     onCellModesModelChange={handleRowModesModelChange}
                     onCellClick={handleCellClick}
                     paginationModel={paginationModel}
+                    onPaginationModelChange={handlePaginationModelChange}
                     checkboxSelection
                     onRowSelectionModelChange={handleMarking}
                     disableRowSelectionOnClick

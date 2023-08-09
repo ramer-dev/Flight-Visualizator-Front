@@ -26,9 +26,9 @@ export const globalMap = atom<L.Map>({
     key: 'map',
 })
 
-export const flightResultDataID = atom({
+export const flightResultDataID = atom<number | undefined>({
     key: 'flightDataID',
-    default: 0
+    default: undefined
 })
 
 export const flightResultData = selector<FlightList>({

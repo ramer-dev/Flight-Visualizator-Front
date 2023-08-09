@@ -5,6 +5,7 @@ import { contentFormat, contentViewFormat, page } from 'common/store/atom';
 import { ContentType, ContentViewType, NavBarType } from 'common/type/NavBarType';
 import { FlightScreen } from '../flight/FlightScreen';
 import { NoticeScreen } from 'components/notice/NoticeScreen';
+import Search from 'components/search/Search';
 
 type styleProp = {
     contentView: string | null;
@@ -23,7 +24,8 @@ const widthMap = {
     "NONE": '0',
     "MID": '730px',
     "MIN": '395px',
-    "FULLSCREEN": 'calc(100vw - 465px)'
+    "FULLSCREEN": 'calc(100vw - 465px)',
+    'ENTIRE':'calc(100vw - 64px)'
 }
 
 const selector = (page_: NavBarType) => {
@@ -35,7 +37,7 @@ const selector = (page_: NavBarType) => {
         case "NOTICE":
             return <NoticeScreen/>;
         case "SEARCH":
-            return null;
+            return <Search/>;
         case "SETTING":
             return null;
         default:
@@ -49,7 +51,7 @@ function NavScreen() {
     const content = useRecoilValue<ContentType>(contentFormat)
     return (
         <div>
-            {content &&
+            {(content || selectedPage === 'SEARCH') &&
                 <Container contentView={widthMap[contentView]}>
                     {selector(selectedPage)}
                 </Container>

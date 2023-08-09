@@ -9,18 +9,17 @@ import { useRecoilRefresher_UNSTABLE, useRecoilValue, useRecoilValueLoadable } f
 import NavCloseButton from '../navbar/NavCloseButton'
 
 function FlightView() {
-  const flightDataId = useRecoilValue<number>(flightResultDataID);
-  let { data = undefined, isLoading, isError, refetch } = useFlightData(flightDataId);
+  // let { data = undefined, isLoading, isError, refetch } = useFlightData(flightDataId);
 
-  useEffect(() => {
-    refetch()
-  }, [flightDataId])
+  // useEffect(() => {
+  //   refetch()
+  // }, [flightDataId])
 
   return (
     <>
       <ScreenTitle text={"비행검사 조회"} />
       {/* {<TableViewer data={data} />} */}
-      <CustomTable data={data} idx={flightDataId} isLoading={isLoading} />
+      <CustomTable />
 
       <NavCloseButton contentSize={['MID', 'FULLSCREEN']} />
     </>

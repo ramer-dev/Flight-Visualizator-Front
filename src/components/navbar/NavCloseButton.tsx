@@ -24,6 +24,7 @@ const CloseButton = styled.div`
   border-color: #DDDDDD;
   cursor: pointer;
   transform: ${({contentSize, fullScreen}: CloseButtonType) => contentSize.indexOf(fullScreen!) === contentSize.length - 1 ? 'rotateZ(180deg)' : 'rotateZ(0deg)'}; 
+  z-index:2300;
   &:hover {
 
   }

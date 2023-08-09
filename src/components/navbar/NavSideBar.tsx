@@ -43,7 +43,7 @@ const NavSideBar = (prop: propType) => {
     <Container>
 
       {/* 더미 텍스트 */}
-      <Wrapper isHidden={contentView === 'MID'}>
+      <Wrapper isHidden={contentView === 'MID' || prop.selectedPage === 'SEARCH'}>
         {(() => {
           switch (prop.selectedPage) {
             case "FLIGHT_RESULT":
@@ -51,7 +51,7 @@ const NavSideBar = (prop: propType) => {
             case "MARKING":
               return <Marking />
             case "SEARCH":
-              return <Search />
+              return null;
             case "SETTING":
               return <Setting />
             case "NOTICE":
