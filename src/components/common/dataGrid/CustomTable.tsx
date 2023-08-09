@@ -9,7 +9,7 @@ import CustomNoRowsOverlay from './CustomNoRowsOverlay'
 import LoadingPage from '../LoadingPage'
 import CustomEditCell from './CustomEditCell'
 import { useSetRecoilState } from 'recoil'
-import { contentViewFormat } from 'common/store/atom'
+import { contentFormat, contentViewFormat } from 'common/store/atom'
 import L, { LatLngLiteral } from 'leaflet'
 import { useGetSite } from 'components/hooks/useSite'
 import divicon from 'module/NumberIcon'
@@ -20,15 +20,34 @@ import { frequencyRegex, scoreRegex } from 'common/regex/regex'
 import { patchFlightData, postFlightData } from 'common/service/flightService'
 
 
+declare module '@mui/x-data-grid' {
+    interface PaginationPropsOverrides {
+        edit:boolean;
+        count: number;
+        handleAddRow: (e : React.MouseEvent) => void;
+        handleDeleteRow: (e : React.MouseEvent) => void;
+        handleSubmit: (e : React.MouseEvent) => void;
+        handleMarkingBtnClick: (e : React.MouseEvent) => void;
+        handleCancelEdit: (e: React.MouseEvent) => void;
+    }
+    interface ToolbarPropsOverrides {
+        title:string;
+        edit:boolean;
+        handleAddRow: (e : React.MouseEvent) => void;
+        handleDeleteRow: (e : React.MouseEvent) => void;
+        handleSubmit: (e : React.MouseEvent) => void;
+        handleMarkingBtnClick: (e : React.MouseEvent) => void;
+    }
+}
+
 const Container = styled.div`
-    height:100vh;
     width:100%;
 `
 
 const Wrapper = styled(Box)(({ theme }) => ({
     minWidth: 10,
     width: '100%',
-    height: '80vh',
+    height: 'calc(100vh - 100px)',
     '& .MuiDataGrid-cell--editable': {
         backgroundColor: 'rgba(80,150,255,0.1)',
     },
@@ -40,6 +59,10 @@ const Wrapper = styled(Box)(({ theme }) => ({
         // backgroundColor: `rgb(126,10,15,0.1)`,
         color: '#ff4343',
     },
+
+    '& .MuiDataGrid-footerContainer': {
+        display:'block',
+    }
 }))
 
 
@@ -66,7 +89,8 @@ const formatInput = (input: string) => {
 
 function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
     const setContentView = useSetRecoilState(contentViewFormat)
-
+    const setContent = useSetRecoilState(contentFormat)
+    console.log(data)
     const [paginationModel, setPaginationModel] = React.useState({
         pageSize: 100,
         page: 0,
@@ -88,6 +112,7 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
 
     const stateRefresh = () => {
         setRows(data?.data ? data.data.items.map((t, i) => ({ ...t, no: i })) : []);
+        setPaginationModel({page:0, pageSize:100})
     }
 
     const columns: GridColDef[] = [
@@ -344,7 +369,7 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
 
     const handleDeleteRow = (e: React.MouseEvent) => {
         e.stopPropagation()
-        if (checkboxSelection) {
+        if (checkboxSelection && window.confirm(`${checkboxSelection.size}개의 행을 삭제할까요?`)) {           
             for (const item of checkboxSelection) {
                 console.log(item)
                 apiRef.current.updateRows([{ id: item[0], _action: 'delete' }])
@@ -365,12 +390,12 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
         shrinkWindow()
     }
 
+    const handlerCancelEdit = (e: React.MouseEvent) => {
+        e.stopPropagation()
+        setContent('NONE')
+    }
     const shrinkWindow = () => {
         setContentView('MID');
-    }
-
-    const test = (e:any) => {
-        console.log(e)
     }
 
     return (
@@ -380,11 +405,35 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
                     loading={isLoading}
                     columnVisibilityModel={columnVisibilityModel}
                     slots={{ toolbar: CustomToolbar, pagination: CustomPagination, noRowsOverlay: CustomNoRowsOverlay, loadingOverlay: LoadingPage }}
+                    slotProps={{
+                        pagination: {
+                            count: data?.data?.totalPage ? data.data.totalPage : 0,
+                            edit : edit,
+                            page:paginationModel.page + 1,
+                            onPageChange(event, page) {
+                                setPaginationModel({pageSize:100, page:page-1})
+                                apiRef.current.setPage(page-1)
+                            },
+                            handleAddRow,
+                            handleDeleteRow,
+                            handleSubmit,
+                            handleMarkingBtnClick,
+                        },
+                        toolbar: {
+                            count: data?.data?.totalCount,
+                            title : data?.testName,
+                            edit : edit,
+                            handleAddRow,
+                            handleDeleteRow,
+                            handleSubmit,
+                            handleMarkingBtnClick,
+                            handlerCancelEdit
+                        }
+                    }}
                     cellModesModel={cellModesModel}
                     onCellModesModelChange={handleRowModesModelChange}
                     onCellClick={handleCellClick}
                     paginationModel={paginationModel}
-                    onPaginationModelChange={test}
                     checkboxSelection
                     onRowSelectionModelChange={handleMarking}
                     disableRowSelectionOnClick
@@ -392,19 +441,6 @@ function CustomTable({ data, edit, isLoading }: { data?: FlightList } & Props) {
                 // onRowEditStop={handlerCellEditEnd}
                 />
             </Wrapper>
-            {
-                edit ? (
-                    <>
-                        <Button onClick={handleAddRow}>add Row</Button>
-                        <Button onClick={handleDeleteRow}>삭제 ㅅㄱ</Button>
-                        <Button onClick={handleSubmit}>submit</Button>
-                        <Button onClick={handleMarkingBtnClick}>마킹 테슽으</Button>
-                        <Button onClick={() => {apiRef.current.setPage(2)}}>테스트</Button>
-                    </>
-                ) : null
-            }
-
-
         </Container>
     )
 }
