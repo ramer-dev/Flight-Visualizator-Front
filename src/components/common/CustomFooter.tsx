@@ -1,6 +1,5 @@
 import { Box, Button, tablePaginationClasses } from "@mui/material";
 import { GridPagination, useGridApiContext } from "@mui/x-data-grid";
-import { Destination } from "module/Destination";
 import { useMap } from "react-leaflet";
 import Pagination from "./Pagination";
 

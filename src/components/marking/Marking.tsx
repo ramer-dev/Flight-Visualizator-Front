@@ -1,21 +1,21 @@
 import { StyledInputBox } from "components/common/InputText";
 import Title from "components/common/Title";
 import styled from "@emotion/styled";
-import { Divider, FormControl, FormHelperText, MenuItem, Radio, RadioGroup, Select } from "@mui/material";
+import { Divider, FormControl, ListSubheader, MenuItem, Radio, Select } from "@mui/material";
 import { Button } from "@mui/material";
-import MarkingCard, { MarkingCardProps } from "./MarkingCard";
+import { MarkingCardProps } from "./MarkingCard";
 import MarkingDragDrop from "./MarkingDragDrop";
 import { useGetSite } from "components/hooks/useSite";
 import { useEffect, useRef, useState } from "react";
 import { Destination } from "module/Destination";
-import { LatLngExpression, LatLngLiteral } from "leaflet";
+import { LatLngExpression } from "leaflet";
 import { useMap } from "react-leaflet";
 import React from "react";
-import { useRecoilState } from "recoil";
-import { markingCards } from "common/store/atom";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { contentViewFormat, markingCards } from "common/store/atom";
 import divicon from "module/NumberIcon";
 import L from "leaflet";
-import { blue, green, orange, pink, red, yellow } from "@mui/material/colors";
+import { blue, green, orange, red, yellow } from "@mui/material/colors";
 import MarkingTooltip from "./MarkingTooltip";
 
 
@@ -27,10 +27,6 @@ const FlexBox = styled.div`
     display:flex;
     justify-content:center;
     align-content:center;
-`
-
-const PinButton = styled(Button)`
-    
 `
 
 const SearchBox = styled.div`
@@ -63,7 +59,6 @@ export default function Marking() {
     const layerGroup = useRef(L.layerGroup([], { pane: 'marking' }))
 
     useEffect(() => {
-        console.log(list);
         const layer = list.map((t: MarkingCardProps, index: number) => L.marker(t.coord!, { icon: divicon(t.level, index), pane: 'marking' })
             .bindTooltip(MarkingTooltip(t)))
 
@@ -73,7 +68,9 @@ export default function Marking() {
             layerGroup.current.addLayer(i)
         }
         layerGroup.current.addTo(map);
-
+        return () => {
+            layerGroup.current.clearLayers()
+        }
     }, [list])
     const handleSiteChange = (e: any) => {
         const it = e.target.value as string
@@ -97,27 +94,27 @@ export default function Marking() {
         origin.current = coordinate;
     }
 
-    const Validation = () => {
-        const arr = [false, false, false];
+    // const Validation = () => {
+    //     const arr = [false, false, false];
 
-        site === ''
-            ? arr[0] = true
-            : arr[0] = false;
+    //     site === ''
+    //         ? arr[0] = true
+    //         : arr[0] = false;
 
-        if (angle.current && distance.current) {
-            angle.current.value === ''
-                ? arr[1] = true
-                : arr[1] = false;
+    //     if (angle.current && distance.current) {
+    //         angle.current.value === ''
+    //             ? arr[1] = true
+    //             : arr[1] = false;
 
-            distance.current.value === ''
-                ? arr[2] = true
-                : arr[2] = false;
-        }
+    //         distance.current.value === ''
+    //             ? arr[2] = true
+    //             : arr[2] = false;
+    //     }
 
-        // setError(arr);
-        if (arr.includes(true)) return true;
-        return false;
-    }
+    //     // setError(arr);
+    //     if (arr.includes(true)) return true;
+    //     return false;
+    // }
 
     const AddElement = (origin_: LatLngExpression, site_: string) => {
         if (angle.current && distance.current) {
@@ -131,7 +128,7 @@ export default function Marking() {
                 angle: +angle.current.value,
                 index: list.length,
                 level: +color,
-                coord: Destination(map, origin_, +angle.current.value, +distance.current.value, +color, list.length)
+                coord: Destination(origin_, +angle.current.value, +distance.current.value)
             }
             const arr = [...list, item]
             setList(arr);
@@ -162,11 +159,20 @@ export default function Marking() {
                 <FormControl>
                     <InputWrapper>
                         <h6>기준점</h6>
-                        <Select MenuProps={{ sx: { maxHeight: '400px' } }} open={siteMenuOpen} value={site} fullWidth size='small'
+                        <Select MenuProps={{ sx: { maxHeight: '450px' } }} open={siteMenuOpen} value={site} fullWidth size='small'
                             onClick={handleSiteClickOpen}
                             onClose={handleSiteClickClose}
                             onChange={handleSiteChange}>
-                            {data?.map(t => {
+                            <ListSubheader>표지소</ListSubheader>
+                            {data.filter(t => t.siteType === 'SITE')?.map(t => {
+                                return <MenuItem onClick={handleSiteClickClose} key={t.siteId} value={t.siteName}>{t.siteName}</MenuItem>
+                            })}
+                            <ListSubheader>저고도</ListSubheader>
+                            {data.filter(t => t.siteType === 'LOWSITE')?.map(t => {
+                                return <MenuItem onClick={handleSiteClickClose} key={t.siteId} value={t.siteName}>{t.siteName}</MenuItem>
+                            })}
+                            <ListSubheader>VORTAC</ListSubheader>
+                            {data.filter(t => t.siteType === 'VORTAC')?.map(t => {
                                 return <MenuItem onClick={handleSiteClickClose} key={t.siteId} value={t.siteName}>{t.siteName}</MenuItem>
                             })}
                         </Select>

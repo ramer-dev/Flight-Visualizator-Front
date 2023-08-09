@@ -1,8 +1,6 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import styled from '@emotion/styled'
-import { DeleteButton, ModifyButton, PinButton } from 'components/common/CustomButton'
-import { ReactComponent as ICMarking } from 'atom/icon/icon_marking.svg';
-import { LatLngExpression, LatLngLiteral } from 'leaflet';
+import { LatLngLiteral } from 'leaflet';
 import { useRecoilState } from 'recoil';
 import { markingCards } from 'common/store/atom';
 import CancelIcon from '@mui/icons-material/Cancel';

@@ -36,13 +36,14 @@ const MapEvents = ({ isOpen, setOpen, setZoom }: Props) => {
         mousemove(e) {
             if (selectedMenu === 'range-bearing') {
                 const angle = L.GeometryUtil.angle(map, position, e.latlng)
-                const distance = map.distance(position, e.latlng) / 1000
+                const distance = map.distance(position, e.latlng) 
 
                 if (currLine.current) currLine.current.remove();
-                console.log(position, e.latlng);
+                // console.log(position, e.latlng);
+                // console.log(L.GeometryUtil.distance(distance))
                 currLine.current = L.polyline([position, e.latlng], { color: 'red', pane: 'range-bearing' }).addTo(map);
 
-                popup.current.setLatLng(e.latlng).setContent(`${angle.toFixed(1)}|${(distance * 0.539957).toFixed(1)}`)
+                popup.current.setLatLng(e.latlng).setContent(`${angle.toFixed(1)}|${(distance * 0.000539957).toFixed(1)}`)
             }
 
             if (marking.selection) {

@@ -1,11 +1,5 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import styled from '@emotion/styled'
-import { DeleteButton, ModifyButton, PinButton } from 'components/common/CustomButton'
-import { ReactComponent as ICMarking } from 'atom/icon/icon_marking.svg';
-import { LatLngExpression, LatLngLiteral } from 'leaflet';
-import { useRecoilState } from 'recoil';
-import { markingCards } from 'common/store/atom';
-import CancelIcon from '@mui/icons-material/Cancel';
 import { MarkingCardProps } from './MarkingCard';
 import { renderToString } from 'react-dom/server'
 
@@ -45,9 +39,7 @@ const Site = styled.div`
   font-size:14px;
   font-weight:700;
 `
-
-const ButtonBox = styled.div`
-`
+ 
 
 const InfoText = styled.div`
   font-size:12px;

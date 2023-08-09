@@ -1,3 +1,5 @@
+import { PageType } from "./PageType"
+
 export interface FlightResultModel {
   id: number,
   siteName: string,
@@ -13,7 +15,7 @@ export interface FlightResultModel {
 }
 
 export interface FlightResult {
-  id: number,
+  id?: number,
   siteName: string,
   frequency: number,
   testId: number,
@@ -42,9 +44,6 @@ export interface FlightList {
   userId: string,
   updatedAt?: Date,
   deletedAt?: Date
-  data?: FlightResult[]
-}
-
-export interface TableFlightList extends FlightList {
-  data:TableFlightResult[],
+  data?: PageType<FlightResult[]>
+  count?:number
 }

@@ -1,12 +1,11 @@
 import styled from '@emotion/styled';
-import { Tab, Tabs, Modal, Fab } from '@mui/material'
-import { useQuery } from '@tanstack/react-query';
-import { deleteNotice, getNotice } from 'common/service/noticeService';
-import { NoticeContentType, NoticeContextType } from 'common/type/NoticeType';
+import { Tab, Tabs, Fab } from '@mui/material'
+import { deleteNotice } from 'common/service/noticeService';
+import { NoticeContextType } from 'common/type/NoticeType';
 import AddIcon from '@mui/icons-material/Add'
 import Title from 'components/common/Title'
 import { useGetNotice } from 'components/hooks/useNotice';
-import React, { createContext, useCallback, useEffect, useRef, useState } from 'react'
+import React, { createContext, useEffect, useRef, useState } from 'react'
 import NoticeItem from './NoticeItem';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { contentFormat, contentViewFormat } from 'common/store/atom';
@@ -68,7 +67,6 @@ function Notice() {
   useEffect(() => {
     if(contentView === "NONE"){
       stateRefresh()
-      console.log('notice refreshed', isError, isLoading)  
     }
   }, [value, contentView])
 
@@ -96,6 +94,7 @@ function Notice() {
     delete: deleteItemFunction,
     openModal: modalOpener,
     closeModal: modalHandleClose,
+    open: open,
     id,
     changeID
   }

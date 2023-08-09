@@ -36,7 +36,7 @@ type NavItemType = {
     icon: React.FunctionComponent<React.SVGProps<SVGSVGElement>>
     isClicked: boolean;
     title: string;
-    onclick?: () => void;
+    onClick: () => void;
 }
 
 
@@ -46,10 +46,10 @@ export default function NavEtcItem(props: NavItemType) {
 
     // const page = props.page;
     return (
-        <Wrapper onClick={props.onclick} isChecked={props.isClicked}>
+        <Wrapper onClick={() => {props.onClick()}} isChecked={props.isClicked}>
             <Icon width={24} height={24}/>
             <SubTitle>{props.title}</SubTitle>
-
+                
         </Wrapper>
     )
 }

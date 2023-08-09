@@ -2,8 +2,7 @@ import styled from '@emotion/styled'
 import CircularProgress from '@mui/material/CircularProgress'
 
 const Wrapper = styled.div`
-    height:100%;
-    display:flex;
+    height:50%;
     flex-direction:column;
     justify-content:center;
     align-items:center;

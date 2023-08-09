@@ -8,18 +8,13 @@ const Wrapper = styled.div`
     flex-direction:column;
     justify-content:center;
     align-items:center;
-`
-interface Props {
-    code?: string;
-    content?: string
-}
+` 
 
-export default function ErrorPage({ code, content }: Props) {
+export default function CustomNoRowsOverlay() {
     return (
         <Wrapper>
             <ErrorOutlineOutlinedIcon color='disabled' sx={{ fontSize: '120px' }} />
-            <Typography>{content ? content : '에러가 발생했습니다.'}</Typography>
-            <Typography>code : {code}</Typography>
+            <Typography>{'데이터가 존재하지 않습니다.'}</Typography>
         </Wrapper>
     )
 }

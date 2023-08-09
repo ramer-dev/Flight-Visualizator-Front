@@ -1,40 +1,28 @@
-import { flightResultData } from 'common/store/atom'
+import { flightResultData, flightResultDataID } from 'common/store/atom'
 import { FlightList } from 'common/type/FlightType'
-import DataGridViewer from 'components/common/Not use/DataGridViewer'
+import CustomTable from 'components/common/dataGrid/CustomTable'
+import LoadingPage from 'components/common/LoadingPage'
 import ScreenTitle from 'components/common/ScreenTitle'
-import TableViewer from 'components/tableView/TableViewer'
-import React, { useTransition } from 'react'
-import { useRecoilValueLoadable } from 'recoil'
+import { useFlightData } from 'components/hooks/useFlightData'
+import React, { useEffect, useTransition } from 'react'
+import { useRecoilRefresher_UNSTABLE, useRecoilValue, useRecoilValueLoadable } from 'recoil'
 import NavCloseButton from '../navbar/NavCloseButton'
 
 function FlightView() {
-  const flightData = useRecoilValueLoadable<FlightList>(flightResultData);
-  let data = null;
-  let error = null;
-  switch (flightData.state) {
-    case 'hasValue':
-      data = flightData.contents;
-      break;
-    case 'hasError':
-      error = flightData.contents;
-      break;
-    case 'loading':
-      break;
-  }
+  const flightDataId = useRecoilValue<number>(flightResultDataID);
+  let { data = undefined, isLoading, isError, refetch } = useFlightData(flightDataId);
 
-  if (flightData.state === 'loading') {
-    return <div>loading</div>
-  } else if(flightData.state === 'hasError'){
-    console.error(error)
-  }
+  useEffect(() => {
+    refetch()
+  }, [flightDataId])
 
   return (
     <>
       <ScreenTitle text={"비행검사 조회"} />
       {/* {<TableViewer data={data} />} */}
-      {data ? <DataGridViewer data={data.data}/> : null}
+      <CustomTable data={data} idx={flightDataId} isLoading={isLoading} />
 
-      <NavCloseButton format={['MID', 'FULLSCREEN']} />
+      <NavCloseButton contentSize={['MID', 'FULLSCREEN']} />
     </>
   )
 

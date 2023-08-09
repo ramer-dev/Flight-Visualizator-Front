@@ -7,7 +7,7 @@ import { useRecoilState } from 'recoil';
 
 type CloseButtonType = {
     fullScreen?: ContentViewType;
-    format: ContentViewType[];
+    contentSize: ContentViewType[];
     children?: ReactNode;
 }
 
@@ -15,7 +15,7 @@ const CloseButton = styled.div`
   border-radius: 0 5px 5px 0;
   background-color: #fff;
   position: absolute;
-  right: ${(props: CloseButtonType) => props.format.indexOf(props.fullScreen!) === props.format.length - 1 ? '0' : '-25px'};
+  right: ${({contentSize, fullScreen}: CloseButtonType) => contentSize.indexOf(fullScreen!) === contentSize.length - 1 ? '0' : '-25px'};
   top: calc(50% - 25px);
   width: 25px;
   height: 50px;
@@ -23,7 +23,7 @@ const CloseButton = styled.div`
   border-style: solid;
   border-color: #DDDDDD;
   cursor: pointer;
-  transform: ${(props: CloseButtonType) => props.format.indexOf(props.fullScreen!) === props.format.length - 1 ? 'rotateZ(180deg)' : 'rotateZ(0deg)'}; 
+  transform: ${({contentSize, fullScreen}: CloseButtonType) => contentSize.indexOf(fullScreen!) === contentSize.length - 1 ? 'rotateZ(180deg)' : 'rotateZ(0deg)'}; 
   &:hover {
 
   }
@@ -34,27 +34,27 @@ const CloseArrow = styled.div`
       margin: 13px 7px;
 `
 
-const NavCloseButton = (prop: CloseButtonType) => {
+const NavCloseButton = ({fullScreen, contentSize, children}: CloseButtonType) => {
     const [contentView, setContentView] = useRecoilState<ContentViewType>(contentViewFormat)
     const switchView = () => {
-        if (prop.format?.length) {
-            const idx = prop.format.indexOf(contentView);
-            if (prop.format.length - 1 >= idx + 1) {
-                setContentView(prop.format[idx + 1])
+        if (contentSize.length) {
+            const idx = contentSize.indexOf(contentView);
+            if (contentSize.length - 1 >= idx + 1) {
+                setContentView(contentSize[idx + 1])
             } else {
-                setContentView(prop.format[0])
+                setContentView(contentSize[0])
             }
         }
     }
 
     useEffect(() => {
-        setContentView(prop.format.length ? prop.format.at(-1)! : 'NONE')
+        setContentView(contentSize.length ? contentSize.at(-1)! : 'NONE')
     }, [])
     
     return (
         <>
-            {prop.format.length <= 1 ? null :
-                <CloseButton format={prop.format} onClick={switchView}
+            {contentSize.length <= 1 ? null :
+                <CloseButton contentSize={contentSize} onClick={switchView}
                     fullScreen={contentView}>
                     <CloseArrow>
                         <ICArrowLeft />
