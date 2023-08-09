@@ -12,6 +12,7 @@ type styleProp = {
 
 const Container = styled.div`
     width:${(props: styleProp) => (props.contentView)};
+    height:100vh;
     transition:all 0.3s ease; 
     overflow:hidden;
     user-select: auto;
