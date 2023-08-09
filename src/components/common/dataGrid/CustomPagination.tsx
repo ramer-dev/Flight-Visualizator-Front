@@ -1,12 +1,7 @@
 import React from 'react';
 import {
-    gridPageCountSelector,
-    GridPagination,
     useGridApiContext,
-    useGridSelector,
 } from '@mui/x-data-grid';
-import MuiPagination from '@mui/material/Pagination';
-import { TablePaginationProps } from '@mui/material/TablePagination';
 import Pagination from '@mui/material/Pagination';
 import styled from '@emotion/styled';
 import { Button } from '@mui/material';
@@ -39,9 +34,6 @@ const ButtonWrapper = styled.div`
     gap:8px;
 `
 
-const Dummy = styled.div`
-    width:200px;
-`
 
 
 export default function CustomPagination({ edit, totalCount, totalPage, page, onPageChange, handleCancelEdit, handleSubmit }: Props) {

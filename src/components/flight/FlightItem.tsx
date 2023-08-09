@@ -1,12 +1,11 @@
 import React from 'react'
-import { ReactComponent as ICMarking } from 'atom/icon/icon_marking.svg';
 
 import styled from '@emotion/styled'
 import { useSetRecoilState } from 'recoil';
 import { ContentType } from 'common/type/NavBarType';
 import { contentFormat, flightResultDataID } from 'common/store/atom';
 import { FlightList } from 'common/type/FlightType';
-import { DeleteButton, ModifyButton, PinButton } from 'components/common/CustomButton';
+import { DeleteButton, ModifyButton } from 'components/common/CustomButton';
 import dayjs from 'dayjs'
 import { deleteFlightList } from 'common/service/flightService';
 

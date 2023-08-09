@@ -7,7 +7,6 @@ import { useRecoilValue } from 'recoil';
 import {  contentViewFormat } from 'common/store/atom';
 import NavScreen from './NavScreen';
 import Marking from 'components/marking/Marking';
-import Search from 'components/search/Search';
 import Setting from 'components/setting/Setting';
 import Notice from 'components/notice/Notice';
 
