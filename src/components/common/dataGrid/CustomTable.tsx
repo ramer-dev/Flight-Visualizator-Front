@@ -113,7 +113,6 @@ function CustomTable({ edit, search }: Props) {
 
     const scoreValidate = (params: GridPreProcessEditCellProps) => {
         const validated = scoreRegex.test(String(params.props.value));
-        console.log(validated);
         return { ...params.props, error: !validated }
     }
 
@@ -207,10 +206,7 @@ function CustomTable({ edit, search }: Props) {
         stateRefresh()
     }, [data, flightDataId])
 
-
-    useEffect(() => {
-        console.log('table Rendered!')
-    })
+ 
     useEffect(() => {
         const obj: { [key: string]: GridValidRowModel } = {};
         const layer = []
@@ -246,7 +242,6 @@ function CustomTable({ edit, search }: Props) {
     }, [checkboxSelection])
 
     const handleCellClick = (params: GridCellParams, event: React.MouseEvent) => {
-        console.log(data)
 
         if (!params.isEditable) {
             return;
@@ -369,7 +364,6 @@ function CustomTable({ edit, search }: Props) {
         }
 
         patchFlightData(editArray)
-        console.log(editArray)
 
     }
 
@@ -377,7 +371,6 @@ function CustomTable({ edit, search }: Props) {
         e.stopPropagation()
         if (checkboxSelection && window.confirm(`${checkboxSelection.size}개의 행을 삭제할까요?`)) {
             for (const item of checkboxSelection) {
-                console.log(item)
                 apiRef.current.updateRows([{ id: item[0], _action: 'delete' }])
             }
 
@@ -396,7 +389,6 @@ function CustomTable({ edit, search }: Props) {
     const handleCancelEdit = (e: React.MouseEvent) => {
         setContentView('NONE')
         setContent('NONE')
-        console.log(contentViewFormat)
     }
     const shrinkWindow = () => {
         setContentView('MID');
