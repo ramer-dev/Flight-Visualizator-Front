@@ -30,6 +30,7 @@ declare module '@mui/x-data-grid' {
         handleSubmit: (e: React.MouseEvent) => void;
         handleMarkingBtnClick: (e: React.MouseEvent) => void;
         handleCancelEdit: (e: React.MouseEvent) => void;
+        pageSizeChange: (pageSize:number) => void;
     }
     interface ToolbarPropsOverrides {
         title: string;
@@ -402,7 +403,7 @@ function CustomTable({ edit, search }: Props) {
     }
 
     const handlePaginationModelChange = (e: any) => {
-
+        console.log(e)
     }
 
     return (
@@ -416,12 +417,16 @@ function CustomTable({ edit, search }: Props) {
                         pagination: {
                             count: data?.data?.totalPage ? data.data.totalPage : 0,
                             totalCount: data?.data?.totalCount,
-                            totalPage: data?.data?.totalPage,
+                            totalPage: data?.data?.totalCount ? Math.ceil(data?.data?.totalCount / paginationModel.pageSize ) : 0 ,
                             edit: edit,
                             page: paginationModel.page + 1,
                             onPageChange(event, page) {
-                                setPaginationModel({ pageSize: 100, page: page - 1 })
+                                setPaginationModel({ pageSize: paginationModel.pageSize, page: page - 1 })
                                 apiRef.current.setPage(page - 1)
+                            },
+                            pageSizeChange(pageSize) {
+                                setPaginationModel({pageSize, page: 0})
+                                apiRef.current.setPageSize(pageSize);
                             },
                             handleAddRow,
                             handleDeleteRow,
