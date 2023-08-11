@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, LayersControl, LayerGroup, useMap, Pane, ZoomControl } from 'react-leaflet'
+import { MapContainer, TileLayer, Pane } from 'react-leaflet'
 // import 'leaflet/dist/leaflet.css';
 import NavBar from 'components/navbar/NavBar';
 
@@ -63,13 +63,14 @@ const Map = () => {
             <Pane name="lowsite" />
             <Pane name="vortac" />
             <Pane name="point" />
+            <Pane name="range-bearing" />
 
             <EditControlFC geojson={geojson} setGeojson={setGeojson} />
             <CustomLayerControl position="topright" />
             <CustomZoomControl position="bottomright" zoom={zoom} />
 
         </StyledMapContainer>
-    ), [zoom, contextMenuOpened])
+    ), [zoom, contextMenuOpened, geojson])
 
     return MapFunction;
 

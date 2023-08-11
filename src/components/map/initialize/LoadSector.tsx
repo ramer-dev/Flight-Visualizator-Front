@@ -1,20 +1,9 @@
-import { Sector } from 'common/type/SectorType';
+import { SectorType } from 'common/type/SectorType';
+import { useGetSector } from 'components/hooks/useSector';
 import { LatLngLiteral } from 'leaflet';
-import CustomAxios from 'module/axios';
 import { convertToWGS } from 'module/DMS';
 import React, { useEffect, useState } from 'react'
-import { Pane, Polygon, Popup, Tooltip } from 'react-leaflet';
-
-
-const LoadEntireSector = async () => {
-    try {
-        const sector = await CustomAxios.get<Sector[]>('sector');
-        return sector.data;
-    } catch (e) {
-        console.log('sector load failed')
-        return [];
-    }
-}
+import { Polygon, Popup, Tooltip } from 'react-leaflet';
 
 const DashedSector = (st: string) => {
     if (st === '제주중부') return '10, 10';
@@ -22,11 +11,12 @@ const DashedSector = (st: string) => {
 }
 
 function LoadSector() {
-    const [sector, setSector] = useState<Sector[]>([])
-    const result = LoadEntireSector();
+    const [sector, setSector] = useState<SectorType[]>([])
+    const { data } = useGetSector();
+
     useEffect(() => {
-        result.then(t => { setSector(t) }).catch(e => console.error(e))
-    }, [])
+        setSector(data)
+    }, [data, setSector])
 
     return (
         <>
@@ -43,7 +33,7 @@ function LoadSector() {
                     <Popup closeButton={false} >{t.sectorName}</Popup>
                 </Polygon>
             })}
-            </>
+        </>
     )
 }
 

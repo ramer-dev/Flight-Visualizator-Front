@@ -1,26 +1,16 @@
 import { FixPointType } from 'common/type/FixPointType';
-import CustomAxios from 'module/axios';
+import { useGetPoint } from 'components/hooks/useFixPoint';
 import { convertToWGS } from 'module/DMS';
 import React from 'react'
-import { CircleMarker, Pane, Popup, Tooltip, useMap } from 'react-leaflet';
-
-const LoadEntireSector = async () => {
-    try {
-        const point = await CustomAxios.get<FixPointType[]>('point');
-        return point.data;
-    } catch (e) {
-        console.log('point load failed')
-        return [];
-    }
-}
+import { CircleMarker, Popup, Tooltip } from 'react-leaflet';
 
 function LoadFixPoint() {
     const [point, setPoint] = React.useState<FixPointType[]>([])
-    const result = LoadEntireSector();
-    React.useEffect(() => {
-        result.then(t => { setPoint(t) }).catch(e => console.error(e))
-    }, [])
+    const { data } = useGetPoint();
 
+    React.useEffect(() => {
+        setPoint(data)
+    }, [data, setPoint])
 
     return (
         <>

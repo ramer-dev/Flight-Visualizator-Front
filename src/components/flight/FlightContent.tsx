@@ -1,17 +1,13 @@
-import { ContentType, ContentViewType, NavBarType } from "common/type/NavBarType";
 import HorizontalLine from "components/common/HorizontalLine";
 import { StyledInputBox } from "components/common/InputText";
 import FlightItem from "./FlightItem";
-import NavSideBar from "../navbar/NavSideBar";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Title from "components/common/Title";
-import { Box, Fab } from '@mui/material';
+import { Fab } from '@mui/material';
 import styled from "@emotion/styled";
 import AddIcon from '@mui/icons-material/Add'
 import { contentFormat } from "common/store/atom";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import NavCloseButton from "../navbar/NavCloseButton";
-import CustomAxios from "module/axios";
+import { useSetRecoilState } from "recoil";
 import { FlightList } from "common/type/FlightType";
 import { useEntireFlightList } from "components/hooks/useFlightList";
 
@@ -52,10 +48,6 @@ const FlightContent = () => {
     //         .then(t => setList(t))
     //         .catch(e => console.error(e))
     // }, [])
-
-    useEffect(() => {
-        console.log(data)
-    },[data])
 
     const AddFlightResultEvent = (e: any) => {
         e.stopPropagation();

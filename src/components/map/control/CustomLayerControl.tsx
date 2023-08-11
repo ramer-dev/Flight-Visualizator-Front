@@ -86,7 +86,7 @@ function CustomLayerControl({ position }: ControlOptions) {
       L.DomEvent.disableClickPropagation(containerRef.current);
       L.DomEvent.disableScrollPropagation(containerRef.current);
     }
-  }, [containerRef.current])
+  }, [])
 
   const handlerButtonClick = (e: React.MouseEvent, it: keyof LayerControlType) => {
     const newLayer: LayerControlType = { ...layers };
@@ -107,7 +107,7 @@ function CustomLayerControl({ position }: ControlOptions) {
         }
       }
     })
-  }, [layers])
+  }, [layers, map])
 
   // const positionClass = (position && POSITION_CLASSES[position]) || POSITION_CLASSES.topright
   return (

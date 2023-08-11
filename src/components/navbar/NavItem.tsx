@@ -7,7 +7,7 @@ import { NavBarType } from 'common/type/NavBarType';
 // import ButtonBase from '@mui/material/ButtonBase';
 
 type WrapperStyleType = {
-  isChecked: boolean;
+  check?: boolean;
 }
 
 const Wrapper = styled(motion.div)`
@@ -20,20 +20,20 @@ const Wrapper = styled(motion.div)`
   gap: 5px;
   transition: 0.2s all ease;
   cursor: pointer;
-  padding: ${(props: WrapperStyleType) => props.isChecked ? '15px 0' : '0'};
-  background: ${(props: WrapperStyleType) => props.isChecked
+  padding: ${(props: WrapperStyleType) => props.check ? '15px 0' : '0'};
+  background: ${(props: WrapperStyleType) => props.check
     ? 'linear-gradient(90deg, rgb(43, 111, 214) 0%, rgb(43, 111, 214) 4.9%,rgba(43, 111, 214, 0.28) 5%, rgba(255, 255, 255, 0) 50%)'
     : null};
 
   &:hover {
-    background: ${(props: WrapperStyleType) => props.isChecked ? null : 'linear-gradient(90deg, rgba(43, 111, 214, 0.13) 5%, rgba(255, 255, 255, 0) 50%)'};
+    background: ${(props: WrapperStyleType) => props.check ? null : 'linear-gradient(90deg, rgba(43, 111, 214, 0.13) 5%, rgba(255, 255, 255, 0) 50%)'};
     & svg path {
-    fill: ${(props: WrapperStyleType) => (props.isChecked ? 'black' : '#9b9b9b')};
+    fill: ${(props: WrapperStyleType) => (props.check ? 'black' : '#9b9b9b')};
     } 
   };
 
   & svg path {
-    fill: ${(props: WrapperStyleType) => (props.isChecked ? 'black' : '#9b9b9b')};
+    fill: ${(props: WrapperStyleType) => (props.check ? 'black' : '#9b9b9b')};
   }
 `
 
@@ -60,7 +60,7 @@ const NavItem = (props: NavItemType) => {
   const isClicked = props.title === useRecoilValue<NavBarType>(page)
   // const page = props.page;
   return (
-    <Wrapper onClick={props.onclick} isChecked={isClicked}>
+    <Wrapper onClick={props.onclick} check={isClicked ? true : undefined}>
       {isClicked ?
         <>
           <IconWrapper
