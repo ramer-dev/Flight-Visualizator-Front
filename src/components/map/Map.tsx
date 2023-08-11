@@ -15,6 +15,7 @@ import MapEvents from './MapEvents';
 import React from 'react';
 import Initializer from './initialize/Initializer';
 import CustomZoomControl from './control/CustomZoomControl';
+import CustomLayerControl from './control/CustomLayerControl';
 
 const StyledMapContainer = styled(MapContainer)`
     width:100%;
@@ -54,48 +55,17 @@ const Map = () => {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <LayersControl position="topright">
-                <LayersControl.Overlay name='range-bearing' checked>
-                    <LayerGroup pane='range-bearing'>
-                        <Pane name='range-bearing'>
+            {/* <LayersControl position="topright"> */}
 
-                        </Pane>
-                    </LayerGroup>
-                </LayersControl.Overlay>
+            <Pane name="sector" />
+            <Pane name="route" />
+            <Pane name="site" />
+            <Pane name="lowsite" />
+            <Pane name="vortac" />
+            <Pane name="point" />
 
-
-                <LayersControl.Overlay name='site' checked>
-                    <LayerGroup pane='site'>
-                        <Pane name='site' style={{ zIndex: 600 }}>
-
-                        </Pane>
-                    </LayerGroup>
-                </LayersControl.Overlay>
-
-                <LayersControl.Overlay name='sector' checked>
-                    <LayerGroup pane='sector'>
-                        <Pane name='hover' style={{ zIndex: 999 }}></Pane>
-                        <Pane name='sector' style={{ zIndex: 200 }}>
-                        </Pane>
-                    </LayerGroup>
-                </LayersControl.Overlay>
-
-
-                <LayersControl.Overlay name='draw2' checked>
-                    <LayerGroup >
-
-                    </LayerGroup>
-                </LayersControl.Overlay>
-
-                <LayersControl.Overlay name='marking' checked>
-                    <LayerGroup pane='marking'>
-                        <Pane name='marking'>
-
-                        </Pane>
-                    </LayerGroup>
-                </LayersControl.Overlay>
-            </LayersControl>
             <EditControlFC geojson={geojson} setGeojson={setGeojson} />
+            <CustomLayerControl position="topright" />
             <CustomZoomControl position="bottomright" zoom={zoom} />
 
         </StyledMapContainer>

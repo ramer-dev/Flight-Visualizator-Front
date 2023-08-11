@@ -1,22 +1,23 @@
-import {createTheme} from "@mui/material/styles"
+import { createTheme } from "@mui/material/styles"
 
 export const theme = createTheme({
     palette: {
-        primary:{
+        primary: {
             main: "#5096FF"
         },
-        secondary:{
+        secondary: {
             main: "#00ff47"
         },
         info: {
             main: "#FFF"
-        }
+        },
+
     },
-    typography:{
-        fontFamily:"Pretendard",
-        fontWeightBold:700,
-        fontWeightLight:200,
-        fontWeightMedium:400,
-        fontWeightRegular:600,
+    typography: {
+        fontFamily: "Pretendard",
+        fontWeightBold: 700,
+        fontWeightLight: 200,
+        fontWeightMedium: 400,
+        fontWeightRegular: 600,
     }
 })

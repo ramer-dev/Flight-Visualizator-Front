@@ -3,7 +3,7 @@ import { LatLngLiteral } from 'leaflet';
 import CustomAxios from 'module/axios';
 import { convertToWGS } from 'module/DMS';
 import React, { useEffect, useState } from 'react'
-import { Marker, Popup, Tooltip } from 'react-leaflet';
+import { Marker, Pane, Popup, Tooltip } from 'react-leaflet';
 import L from 'leaflet';
 import siteIcon from 'atom/icon/ic_site.png'
 import lowSiteIcon from 'atom/icon/ic_lowsite.png'
@@ -16,7 +16,7 @@ const LoadEntireSite = async () => {
         const res = await CustomAxios.get<SiteType[]>('site');
         return res;
     } catch (e) {
-        return {data:[]};
+        return { data: [] };
     }
 
 }
@@ -61,7 +61,8 @@ function LoadSites() {
     const result = LoadEntireSite();
     useEffect(() => {
         result
-            .then(t => { setSite(t.data); 
+            .then(t => {
+                setSite(t.data);
                 siteSetter(t.data)
             })
             .catch(e => { setSite([]) })
@@ -72,12 +73,13 @@ function LoadSites() {
             {site?.map(t => {
                 const { lat, lng } = t.siteCoordinate as LatLngLiteral
                 const icon = iconSelector(t.siteType)
-                return <Marker key={t.siteId} position={{ lat: convertToWGS(lat), lng: convertToWGS(lng) }} pane='site'
-                    icon={icon}>
-                    <Tooltip pane='hover'>{t.siteName}</Tooltip>
-                    <Popup pane='hover' closeButton={false}>{t.siteName}</Popup>
+                return <Marker key={t.siteId}
+                    position={{ lat: convertToWGS(lat), lng: convertToWGS(lng) }} icon={icon} pane={t.siteType.toLowerCase()}>
+                    <Tooltip >{t.siteName}</Tooltip>
+                    <Popup closeButton={false}>{t.siteName}</Popup>
                 </Marker>
             })}
+
         </>
     )
 }

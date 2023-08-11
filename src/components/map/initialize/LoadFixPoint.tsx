@@ -2,7 +2,7 @@ import { FixPointType } from 'common/type/FixPointType';
 import CustomAxios from 'module/axios';
 import { convertToWGS } from 'module/DMS';
 import React from 'react'
-import { CircleMarker, Popup, Tooltip, useMap } from 'react-leaflet';
+import { CircleMarker, Pane, Popup, Tooltip, useMap } from 'react-leaflet';
 
 const LoadEntireSector = async () => {
     try {
@@ -26,9 +26,9 @@ function LoadFixPoint() {
         <>
             {point.map(t => {
                 return (
-                    <CircleMarker center={{ lat: convertToWGS(t.pointCoordinate.lat), lng: convertToWGS(t.pointCoordinate.lng) }} radius={5} key={t.id}>
-                        <Tooltip pane='hover'>{t.pointName}</Tooltip>
-                        <Popup closeButton={false} pane='hover'>{t.pointName}</Popup>
+                    <CircleMarker center={{ lat: convertToWGS(t.pointCoordinate.lat), lng: convertToWGS(t.pointCoordinate.lng) }} radius={4} key={t.id} pane="point">
+                        <Tooltip>{t.pointName}</Tooltip>
+                        <Popup closeButton={false}>{t.pointName}</Popup>
                     </CircleMarker>
                 )
             })}

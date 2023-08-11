@@ -9,10 +9,10 @@ export const getEntireFlightData = async (take: number, skip: number) => {
 
 export const getFlightData = async (take?: number, skip?: number, id?: number) => {
     if (id) {
-        const { data } = await CustomAxios.get(`flight/result/${id}`, { params: { take } })
+        const { data } = await CustomAxios.get(`flight/result/${id}`)
         return data;
     } else {
-        const { data } = await CustomAxios.get(`flight/result`, { params: { take } })
+        const { data } = await CustomAxios.get(`flight/result`)
         return data;
     }
 

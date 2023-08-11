@@ -3,7 +3,7 @@ import { LatLngLiteral } from 'leaflet';
 import CustomAxios from 'module/axios';
 import { convertToWGS } from 'module/DMS';
 import React, { useEffect, useState } from 'react'
-import { Polygon, Popup, Tooltip } from 'react-leaflet';
+import { Pane, Polygon, Popup, Tooltip } from 'react-leaflet';
 
 
 const LoadEntireSector = async () => {
@@ -22,28 +22,28 @@ const DashedSector = (st: string) => {
 }
 
 function LoadSector() {
-    const [site, setSite] = useState<Sector[]>([])
+    const [sector, setSector] = useState<Sector[]>([])
     const result = LoadEntireSector();
     useEffect(() => {
-        result.then(t => { setSite(t) }).catch(e => console.error(e))
+        result.then(t => { setSector(t) }).catch(e => console.error(e))
     }, [])
 
     return (
         <>
-            {site?.map(t => {
+            {sector?.map(t => {
                 const coords = t.sectorData as LatLngLiteral[]
                 const dashedStroke = DashedSector(t.sectorName)
-                return <Polygon key={t.id} dashArray={dashedStroke} positions={coords.map(t => { return { lat: convertToWGS(t.lat), lng: convertToWGS(t.lng) } })} pane='sector'
+                return <Polygon key={t.id} dashArray={dashedStroke} positions={coords.map(t => { return { lat: convertToWGS(t.lat), lng: convertToWGS(t.lng) } })}
                     fillOpacity={0.4}
                     eventHandlers={{
-                        mouseover: (e) => e.target.setStyle({ color: 'rgba(122,122,122,0.6)' }),
-                        mouseout: (e) => e.target.setStyle({ color: 'rgba(122,122,122,1)' })
-                    }}>
-                    <Tooltip pane='hover'>{t.sectorName}</Tooltip>
-                    <Popup closeButton={false} pane='hover'>{t.sectorName}</Popup>
+                        mouseover: (e) => e.target.setStyle({ color: 'rgba(122,122,122,1)' }),
+                        mouseout: (e) => e.target.setStyle({ color: 'rgba(122,122,122,0.5)' })
+                    }} pane="sector">
+                    <Tooltip>{t.sectorName}</Tooltip>
+                    <Popup closeButton={false} >{t.sectorName}</Popup>
                 </Polygon>
             })}
-        </>
+            </>
     )
 }
 

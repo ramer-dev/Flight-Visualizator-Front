@@ -49,7 +49,7 @@ function CustomZoomControl({ position, zoom }: ControlOptions & StyleProp) {
         flex-direction:column;
         justify-content:center;
         cursor:pointer;
-        align-items:center;A
+        align-items:center;
     `
 
     const EnabledBar = styled.div`
