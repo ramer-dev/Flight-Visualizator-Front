@@ -1,13 +1,14 @@
 import React from 'react'
 
 import styled from '@emotion/styled'
-import { useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { ContentType } from 'common/type/NavBarType';
 import { contentFormat, flightResultDataID } from 'common/store/atom';
 import { FlightList } from 'common/type/FlightType';
 import { DeleteButton, ModifyButton } from 'components/common/CustomButton';
 import dayjs from 'dayjs'
 import { deleteFlightList } from 'common/service/flightService';
+import { authState } from 'common/store/auth';
 
 const Container = styled.div`
     padding:20px 10px;
@@ -49,6 +50,7 @@ interface Props {
 const FlightItem = ({ testName, testType, testDate, id, refetch }: FlightList & Props) => {
     const setContent = useSetRecoilState<ContentType>(contentFormat);
     const setFlightData = useSetRecoilState(flightResultDataID);
+    const authLevel = useRecoilValue(authState);
 
     const ViewFlightItem = (e: any, id: number) => {
         e.stopPropagation();
@@ -66,7 +68,7 @@ const FlightItem = ({ testName, testType, testDate, id, refetch }: FlightList & 
         e.stopPropagation();
         console.log('delete');
 
-        if(window.confirm("진짜로 비행점검 삭제?")) {            
+        if (window.confirm("진짜로 비행점검 삭제?")) {
             deleteFlightList(id).then(() => refetch())
         }
     }
@@ -79,13 +81,12 @@ const FlightItem = ({ testName, testType, testDate, id, refetch }: FlightList & 
                 <FlightType>{testType}</FlightType>
                 <FlightDate>{dayjs(testDate).format('YYYY-MM-DD')}</FlightDate>
             </ContentWrapper>
-            <ButtonContainer>
+            {authLevel.role >= 2 ? <ButtonContainer>
+
                 <ModifyButton onClick={EditFlightItem}>수정</ModifyButton>
                 <DeleteButton onClick={DeleteFlightItem}>삭제</DeleteButton>
-                {/* <PinButton>
-                    <ICMarking />
-                </PinButton> */}
             </ButtonContainer>
+                : null}
         </Container>
     )
 }

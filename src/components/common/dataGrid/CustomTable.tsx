@@ -222,7 +222,7 @@ function CustomTable({ edit, search, add }: Props) {
     useEffect(() => {
         const obj: { [key: string]: GridValidRowModel } = {};
         const layer = []
-
+        const instance = layerGroup.current;
         checkboxSelection?.forEach((value, key) => {
             obj[String(key)] = value;
         });
@@ -238,20 +238,20 @@ function CustomTable({ edit, search, add }: Props) {
             }
         }
 
-        layerGroup.current.clearLayers()
+        instance.clearLayers()
 
         for (let i of layer) {
-            layerGroup.current.addLayer(i)
+            instance.addLayer(i)
         }
 
-        layerGroup.current.addTo(map);
+        instance.addTo(map);
 
         return () => {
             setCellModesModel({});
-            layerGroup.current.clearLayers();
+            instance.clearLayers();
         }
 
-    }, [checkboxSelection])
+    }, [checkboxSelection, map, siteData.data])
 
     const handleCellClick = (params: GridCellParams, event: React.MouseEvent) => {
 

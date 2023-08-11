@@ -4,5 +4,6 @@ import { NoticeContentType } from "common/type/NoticeType";
 
 export function useGetNotice() {
   const fallback : NoticeContentType[] = []
-  return useQuery(['notice'], async () => getNotice(), /*{ suspense: true }*/)
+  const {data = fallback, ...args } = useQuery(['notice'], async () => getNotice(), {staleTime:1000 * 60 * 60})
+  return {data, ...args}
 }

@@ -4,6 +4,6 @@ import { RouteType } from 'common/type/RouteType';
 
 export function useGetRoute() {
     const fallback: RouteType[] = []
-    const { data = fallback, ...args } = useQuery<RouteType[]>(['route'], async () => getRoute(), /*{ suspense: true }*/)
+    const { data = fallback, ...args } = useQuery<RouteType[]>(['route'], async () => getRoute(), {staleTime:1000* 60 * 60})
     return { data, ...args }
 }

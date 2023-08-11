@@ -3,7 +3,7 @@ import { getEntireFlightData, getFlightData } from "common/service/flightService
 import { FlightList } from "common/type/FlightType";
 
 export function useFlightData(take?: number, skip?: number, id?: number,) {
-    return useQuery<FlightList>(['flightData'], async () => getFlightData(take, skip, id), /*{ suspense: true }*/)
+    return useQuery<FlightList>(['flightData'], async () => getFlightData(take, skip, id), {staleTime:1000 * 60 * 10})
 
 }
 

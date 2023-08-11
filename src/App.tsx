@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from 'react';
+import React from 'react';
 import './App.css';
 import Map from 'components/map/Map';
 import styled from '@emotion/styled';

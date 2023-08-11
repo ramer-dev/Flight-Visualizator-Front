@@ -26,12 +26,12 @@ function EditControl(props) {
   const drawRef = useRef();
   const propsRef = useRef(props);
 
-  const onDrawCreate = (e) => {
+  const onDrawCreate = React.useCallback((e) => {
     const { onCreated } = props;
     const container = context.layerContainer || context.map;
     container.addLayer(e.layer);
     onCreated && onCreated(e);
-  };
+  }, [context.layerContainer, context.map, props]);
 
   React.useEffect(() => {
     const { map } = context;
@@ -64,7 +64,7 @@ function EditControl(props) {
 
       drawRef.current.remove(map);
     };
-  }, []);
+  }, [context, onDrawCreate, props]);
 
   React.useEffect(() => {
     if (
@@ -86,7 +86,7 @@ function EditControl(props) {
     return () => {
       drawRef.current.remove(map);
     };
-  }, [props.draw, props.edit, props.position]);
+  }, [props.draw, props.edit, props.position, context, props]);
 
   return null;
 }

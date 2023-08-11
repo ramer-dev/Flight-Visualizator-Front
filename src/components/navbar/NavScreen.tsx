@@ -57,7 +57,7 @@ function NavScreen() {
         } else {
             setContentView('ENTIRE')
         }
-    }, [selectedPage])
+    }, [selectedPage, setContent, setContentView])
     return (
         <div>
             {(content || selectedPage === 'SEARCH') &&

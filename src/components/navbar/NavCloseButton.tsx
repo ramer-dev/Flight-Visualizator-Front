@@ -50,7 +50,7 @@ const NavCloseButton = ({fullScreen, contentSize, children}: CloseButtonType) =>
 
     useEffect(() => {
         setContentView(contentSize.length ? contentSize.at(-1)! : 'NONE')
-    }, [])
+    }, [setContentView])
     
     return (
         <>

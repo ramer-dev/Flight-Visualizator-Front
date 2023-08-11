@@ -67,11 +67,22 @@ interface LayerControlType {
   point: boolean,
 }
 
+const Cover = styled.div`
+  text-align:center;
+  line-height:48px;
+  width:48px;
+  height:48px;
+  background-color:white;
+  border-radius: 5px;
+  box-shadow: 0px 4px 5px 0px rgba(0, 0, 0, 0.25);
+`
+
 const EmptyStyle = { color: grey[200], stroke: grey[400] }
 
 function CustomLayerControl({ position }: ControlOptions) {
   const map = useMap();
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = React.useState(false)
   const [layers, setLayers] = React.useState<{ [key in keyof LayerControlType]: boolean }>({
     site: true,
     lowsite: true,
@@ -112,7 +123,9 @@ function CustomLayerControl({ position }: ControlOptions) {
   // const positionClass = (position && POSITION_CLASSES[position]) || POSITION_CLASSES.topright
   return (
     <Container className={"leaflet-control"}>
-      <Wrapper ref={containerRef}>
+      {
+        isOpen ? 
+        <Wrapper ref={containerRef} onMouseLeave={() =>{setIsOpen(false)}}>
         <Item onClick={(e) => { handlerButtonClick(e, 'site') }}><LayersIcon sx={layers.site ? { color: red[500] } : EmptyStyle} /><Text>표지소</Text></Item>
         <Item onClick={(e) => { handlerButtonClick(e, 'lowsite') }}><LayersIcon sx={layers.lowsite ? { color: green[500] } : EmptyStyle} /><Text>저고도</Text></Item>
         <Item onClick={(e) => { handlerButtonClick(e, 'vortac') }}><LayersIcon sx={layers.vortac ? { color: blue[300] } : EmptyStyle} /><Text>VORTAC</Text></Item>
@@ -120,6 +133,11 @@ function CustomLayerControl({ position }: ControlOptions) {
         <Item onClick={(e) => { handlerButtonClick(e, 'route') }}><PolylineIcon sx={layers.route ? { color: pink[400] } : EmptyStyle} /><Text>항로</Text></Item>
         <Item onClick={(e) => { handlerButtonClick(e, 'point') }}><RadioButtonCheckedIcon sx={layers.point ? { color: blue[600] } : EmptyStyle} /><Text>포인트</Text></Item>
       </Wrapper>
+      : <Cover onMouseEnter={() => {setIsOpen(true)}}>
+        <LayersIcon sx={{...EmptyStyle, width:38, height:38, margin:'5px'}} fontSize="large"/>
+      </Cover>
+      }
+      
     </Container>
   )
 }
