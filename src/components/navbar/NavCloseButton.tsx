@@ -15,7 +15,7 @@ const CloseButton = styled.div`
   border-radius: 0 5px 5px 0;
   background-color: #fff;
   position: absolute;
-  right: ${({contentSize, fullScreen}: CloseButtonType) => contentSize.indexOf(fullScreen!) === contentSize.length - 1 ? '0' : '-25px'};
+  right: ${({ contentSize, fullScreen }: CloseButtonType) => contentSize.indexOf(fullScreen!) === contentSize.length - 1 ? '0' : '-25px'};
   top: calc(50% - 25px);
   width: 25px;
   height: 50px;
@@ -23,7 +23,7 @@ const CloseButton = styled.div`
   border-style: solid;
   border-color: #DDDDDD;
   cursor: pointer;
-  transform: ${({contentSize, fullScreen}: CloseButtonType) => contentSize.indexOf(fullScreen!) === contentSize.length - 1 ? 'rotateZ(180deg)' : 'rotateZ(0deg)'}; 
+  transform: ${({ contentSize, fullScreen }: CloseButtonType) => contentSize.indexOf(fullScreen!) === contentSize.length - 1 ? 'rotateZ(180deg)' : 'rotateZ(0deg)'}; 
   z-index:2300;
   &:hover {
 
@@ -35,7 +35,7 @@ const CloseArrow = styled.div`
       margin: 13px 7px;
 `
 
-const NavCloseButton = ({fullScreen, contentSize, children}: CloseButtonType) => {
+const NavCloseButton = ({ fullScreen, contentSize, children }: CloseButtonType) => {
     const [contentView, setContentView] = useRecoilState<ContentViewType>(contentViewFormat)
     const switchView = () => {
         if (contentSize.length) {
@@ -50,8 +50,9 @@ const NavCloseButton = ({fullScreen, contentSize, children}: CloseButtonType) =>
 
     useEffect(() => {
         setContentView(contentSize.length ? contentSize.at(-1)! : 'NONE')
+        // eslint-disable-next-line
     }, [setContentView])
-    
+
     return (
         <>
             {contentSize.length <= 1 ? null :

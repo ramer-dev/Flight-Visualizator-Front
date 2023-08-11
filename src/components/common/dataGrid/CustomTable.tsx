@@ -216,6 +216,7 @@ function CustomTable({ edit, search, add }: Props) {
     }
     useEffect(() => {
         stateRefresh()
+        // eslint-disable-next-line
     }, [data, flightDataId])
 
 

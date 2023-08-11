@@ -27,7 +27,7 @@ function ScreenTitle(prop: Props) {
     const handler = useSetRecoilState(contentFormat)
     return (
         <TitleWrapper>
-            <ICWrapper onClick={() => handler(null)}>
+            <ICWrapper onClick={() => handler('NONE')}>
                 <ICArrowLeft />
             </ICWrapper>
             <TitleText>{prop.text}</TitleText>

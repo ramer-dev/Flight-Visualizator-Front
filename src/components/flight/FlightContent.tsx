@@ -55,9 +55,6 @@ const FlightContent = () => {
     }
     return (
         <Container>
-            <StyledFab color="info" aria-label="add" onClick={AddFlightResultEvent}>
-                <AddIcon color="primary" />
-            </StyledFab>
             <Wrapper>
                 <Title>비행검사</Title>
                 <StyledInputBox onChange={(e) => setValue(e.target.value)} label="비행검사 이름" fullWidth size='small' color="primary"></StyledInputBox>
@@ -74,7 +71,9 @@ const FlightContent = () => {
                     </Scroll>
                 </Content>
             </Wrapper>
-
+            <StyledFab color="info" aria-label="add" onClick={AddFlightResultEvent}>
+                <AddIcon color="primary" />
+            </StyledFab>
         </Container>
     )
 }
