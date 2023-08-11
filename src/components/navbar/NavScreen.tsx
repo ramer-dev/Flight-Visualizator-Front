@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from '@emotion/styled';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { contentFormat, contentViewFormat, page } from 'common/store/atom';
 import { ContentType, ContentViewType, NavBarType } from 'common/type/NavBarType';
 import { FlightScreen } from '../flight/FlightScreen';
@@ -25,7 +25,7 @@ const widthMap = {
     "MID": '730px',
     "MIN": '395px',
     "FULLSCREEN": 'calc(100vw - 465px)',
-    'ENTIRE':'calc(100vw - 64px)'
+    'ENTIRE': 'calc(100vw - 64px)'
 }
 
 const selector = (page_: NavBarType) => {
@@ -35,9 +35,9 @@ const selector = (page_: NavBarType) => {
         case "MARKING":
             return null;
         case "NOTICE":
-            return <NoticeScreen/>;
+            return <NoticeScreen />;
         case "SEARCH":
-            return <Search/>;
+            return <Search />;
         case "SETTING":
             return null;
         default:
@@ -47,8 +47,17 @@ const selector = (page_: NavBarType) => {
 
 function NavScreen() {
     const selectedPage = useRecoilValue<NavBarType>(page);
-    const contentView = useRecoilValue<ContentViewType>(contentViewFormat);
-    const content = useRecoilValue<ContentType>(contentFormat)
+    const [contentView, setContentView] = useRecoilState<ContentViewType>(contentViewFormat);
+    const [content, setContent] = useRecoilState<ContentType>(contentFormat)
+
+    useEffect(() => {
+        if (selectedPage !== 'SEARCH') {
+            setContentView('NONE')
+            setContent('NONE')
+        } else {
+            setContentView('ENTIRE')
+        }
+    }, [selectedPage])
     return (
         <div>
             {(content || selectedPage === 'SEARCH') &&
