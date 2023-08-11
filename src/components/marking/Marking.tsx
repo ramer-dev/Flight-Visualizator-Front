@@ -11,8 +11,8 @@ import { Destination } from "module/Destination";
 import { LatLngExpression } from "leaflet";
 import { useMap } from "react-leaflet";
 import React from "react";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { contentViewFormat, markingCards } from "common/store/atom";
+import { useRecoilState } from "recoil";
+import { markingCards } from "common/store/atom";
 import divicon from "module/NumberIcon";
 import L from "leaflet";
 import { blue, green, orange, red, yellow } from "@mui/material/colors";
@@ -61,17 +61,17 @@ export default function Marking() {
     useEffect(() => {
         const layer = list.map((t: MarkingCardProps, index: number) => L.marker(t.coord!, { icon: divicon(t.level, index), pane: 'marking' })
             .bindTooltip(MarkingTooltip(t)))
+        const instance = layerGroup.current
 
-
-        layerGroup.current.clearLayers()
+        instance.clearLayers()
         for (let i of layer) {
-            layerGroup.current.addLayer(i)
+            instance.addLayer(i)
         }
-        layerGroup.current.addTo(map);
+        instance.addTo(map);
         return () => {
-            layerGroup.current.clearLayers()
+            instance.clearLayers()
         }
-    }, [list])
+    }, [list, map])
     const handleSiteChange = (e: any) => {
         const it = e.target.value as string
         setSite(it)

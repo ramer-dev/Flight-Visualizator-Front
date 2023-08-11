@@ -7,9 +7,15 @@ export const getEntireFlightData = async (take: number, skip: number) => {
 }
 
 
-export const getFlightData = async (id: number) => {
-    const { data } = await CustomAxios.get(`flight/result/${id}`)
-    return data;
+export const getFlightData = async (take?: number, skip?: number, id?: number) => {
+    if (id) {
+        const { data } = await CustomAxios.get(`flight/result/${id}`)
+        return data;
+    } else {
+        const { data } = await CustomAxios.get(`flight/result`)
+        return data;
+    }
+
 }
 
 export const postFlightData = async (data: FlightResult[]) => {

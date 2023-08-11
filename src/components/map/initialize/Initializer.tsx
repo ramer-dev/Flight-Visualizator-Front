@@ -1,4 +1,6 @@
 import React from 'react'
+import LoadFixPoint from './LoadFixPoint'
+import LoadRoute from './LoadRoute'
 import LoadSector from './LoadSector'
 import LoadSites from './LoadSites'
 
@@ -7,6 +9,8 @@ function Initializer() {
         <>
             <LoadSector />
             <LoadSites />
+            <LoadFixPoint/>
+            <LoadRoute/>
         </>
     )
 }

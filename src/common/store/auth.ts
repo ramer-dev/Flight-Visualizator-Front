@@ -1,11 +1,11 @@
 import { AuthType } from "common/type/AuthType";
-import { atom, selector } from "recoil";
+import { atom } from "recoil";
 
-export const auth = atom<AuthType>({
+export const authState = atom<AuthType>({
     key: 'authLevel',
     default: {
         id: '',
         username: '',
-        auth: 1,
+        role: 0,
     }
 })

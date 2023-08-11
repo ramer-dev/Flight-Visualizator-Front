@@ -1,6 +1,5 @@
 import { SiteType } from 'common/type/SiteType';
 import { LatLngLiteral } from 'leaflet';
-import CustomAxios from 'module/axios';
 import { convertToWGS } from 'module/DMS';
 import React, { useEffect, useState } from 'react'
 import { Marker, Popup, Tooltip } from 'react-leaflet';
@@ -10,16 +9,7 @@ import lowSiteIcon from 'atom/icon/ic_lowsite.png'
 import vortacIcon from 'atom/icon/ic_vortac.png'
 import { useSetRecoilState } from 'recoil';
 import { siteState } from 'common/store/atom';
-
-const LoadEntireSite = async () => {
-    try {
-        const res = await CustomAxios.get<SiteType[]>('site');
-        return res;
-    } catch (e) {
-        return {data:[]};
-    }
-
-}
+import { useGetSite } from 'components/hooks/useSite';
 
 const SiteIcon = L.icon({
     iconUrl: siteIcon,
@@ -58,26 +48,25 @@ const iconSelector = (st: string) => {
 function LoadSites() {
     const [site, setSite] = useState<SiteType[]>([])
     const siteSetter = useSetRecoilState(siteState);
-    const result = LoadEntireSite();
+    const { data } = useGetSite()
+
     useEffect(() => {
-        result
-            .then(t => { setSite(t.data); 
-                siteSetter(t.data)
-            })
-            .catch(e => { setSite([]) })
-    }, [])
+        setSite(data);
+        siteSetter(data)
+    }, [data, siteSetter, setSite])
 
     return (
         <>
             {site?.map(t => {
                 const { lat, lng } = t.siteCoordinate as LatLngLiteral
                 const icon = iconSelector(t.siteType)
-                return <Marker key={t.siteId} position={{ lat: convertToWGS(lat), lng: convertToWGS(lng) }} pane='site'
-                    icon={icon}>
-                    <Tooltip pane='hover'>{t.siteName}</Tooltip>
-                    <Popup pane='hover' closeButton={false}>{t.siteName}</Popup>
+                return <Marker key={t.siteId}
+                    position={{ lat: convertToWGS(lat), lng: convertToWGS(lng) }} icon={icon} pane={t.siteType.toLowerCase()}>
+                    <Tooltip >{t.siteName}</Tooltip>
+                    <Popup closeButton={false}>{t.siteName}</Popup>
                 </Marker>
             })}
+
         </>
     )
 }

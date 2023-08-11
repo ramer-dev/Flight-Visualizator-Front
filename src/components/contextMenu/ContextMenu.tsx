@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from '@emotion/styled'
-import { LatLng, LatLngExpression } from 'leaflet'
+import { LatLng } from 'leaflet'
 import { Divider } from '@mui/material'
 import { useMap } from 'react-leaflet'
 import { motion } from 'framer-motion'

@@ -27,8 +27,7 @@ function CustomZoomControl({ position, zoom }: ControlOptions & StyleProp) {
             L.DomEvent.disableClickPropagation(containerRef.current);
             L.DomEvent.disableScrollPropagation(containerRef.current);
         }
-        console.log(zoom);
-    }, [containerRef.current, zoom])
+    }, [])
 
     const Container = styled.div`
         margin-bottom:15px;
@@ -40,6 +39,8 @@ function CustomZoomControl({ position, zoom }: ControlOptions & StyleProp) {
         justify-content: center;
         align-items: center;
         background: #FFF;
+        border-radius: 5px;
+        box-shadow: 0px 4px 5px 0px rgba(0, 0, 0, 0.25);
     `
 
     const BarWrapper = styled.div`
@@ -49,7 +50,7 @@ function CustomZoomControl({ position, zoom }: ControlOptions & StyleProp) {
         flex-direction:column;
         justify-content:center;
         cursor:pointer;
-        align-items:center;A
+        align-items:center;
     `
 
     const EnabledBar = styled.div`
@@ -89,7 +90,7 @@ function CustomZoomControl({ position, zoom }: ControlOptions & StyleProp) {
         map.zoomOut();
     }
 
-    const onClickHandler = (e: any, ) => {
+    const onClickHandler = (e: any,) => {
         e.stopPropagation();
         const rect = barRef.current?.getBoundingClientRect()
         const { clientY } = e;
@@ -102,7 +103,7 @@ function CustomZoomControl({ position, zoom }: ControlOptions & StyleProp) {
     }
     return (
         <Container ref={containerRef} className={positionClass}>
-            <Wrapper className="leaflet-control leaflet-bar">
+            <Wrapper className="leaflet-control">
                 <IconWrapper onClick={zoomIn}>
                     <ICPlus />
                 </IconWrapper>

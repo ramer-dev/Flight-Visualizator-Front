@@ -1,6 +1,6 @@
 import { contentFormat } from 'common/store/atom'
 import { ContentType } from 'common/type/NavBarType';
-import React, { useCallback } from 'react'
+import React from 'react'
 import { useRecoilValue } from 'recoil'
 import FlightAdd from './FlightAdd';
 import FlightEdit from './FlightEdit';

@@ -1,7 +1,7 @@
 import { LatLngExpression } from "leaflet";
 import { Area } from "./AreaType";
 
-export interface Sector {
+export interface SectorType {
     id: number;
     sectorName: string;
     sectorData: LatLngExpression[];

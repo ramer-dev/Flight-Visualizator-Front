@@ -7,11 +7,10 @@ import { useRecoilValue } from 'recoil';
 import {  contentViewFormat } from 'common/store/atom';
 import NavScreen from './NavScreen';
 import Marking from 'components/marking/Marking';
-import Search from 'components/search/Search';
 import Setting from 'components/setting/Setting';
 import Notice from 'components/notice/Notice';
 
-type StyleProp = { isHidden: boolean }
+type StyleProp = { hide?: 'true' | 'false' }
 
 const Container = styled.div`
   height: 100vh;
@@ -20,16 +19,16 @@ const Container = styled.div`
 `
 
 const Wrapper = styled(motion.div)`
-    transform:${(props: StyleProp) => props.isHidden ? 'translateX(-100%)' : ''};
-    opacity:${(props:StyleProp) => props.isHidden ? '0' : '1'};
+    transform:${(props: StyleProp) => props.hide === 'true' ? 'translateX(-100%)' : ''};
+    opacity:${(props:StyleProp) => props.hide === 'true' ? '0' : '1'};
     width:350px;
-    /* width:${(props: StyleProp) => props.isHidden ? '0' : '350px'}; */
+    /* width:${(props: StyleProp) => props.hide === 'true' ? '0' : '350px'}; */
     overflow:hidden;
     border-right:1px solid #d9d9d9;
     transition: 0.3s ease all;
     padding:10px 25px;
-    position:${(props:StyleProp) => props.isHidden ? 'fixed' : 'relative'};
-    /* padding: ${(props: StyleProp) => props.isHidden ? '0' : '10px 25px'}; */
+    position:${(props:StyleProp) => props.hide === 'true' ? 'fixed' : 'relative'};
+    /* padding: ${(props: StyleProp) => props.hide === 'true' ? '0' : '10px 25px'}; */
 `
 
 type propType = { 
@@ -43,7 +42,7 @@ const NavSideBar = (prop: propType) => {
     <Container>
 
       {/* 더미 텍스트 */}
-      <Wrapper isHidden={contentView === 'MID'}>
+      <Wrapper hide={contentView === 'MID' || prop.selectedPage === 'SEARCH' ? 'true' : 'false'}>
         {(() => {
           switch (prop.selectedPage) {
             case "FLIGHT_RESULT":
@@ -51,7 +50,7 @@ const NavSideBar = (prop: propType) => {
             case "MARKING":
               return <Marking />
             case "SEARCH":
-              return <Search />
+              return null;
             case "SETTING":
               return <Setting />
             case "NOTICE":
