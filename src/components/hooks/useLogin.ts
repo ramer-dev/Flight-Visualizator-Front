@@ -16,6 +16,12 @@ export const getTestCookie = async () => {
     const result = await CustomAxios.get('auth/cookies');
     return result
 } 
-export function useLogin(id: string, pw: string) {
-    return useMutation(['login'], async () => getLogin(id, pw), /*{ suspense: true }*/)
+
+export const getLogout = async () => {
+    try {
+        const result = await CustomAxios.post('auth/logout')
+        return result;
+    } catch (e) {
+        console.log(e)
+    }
 }

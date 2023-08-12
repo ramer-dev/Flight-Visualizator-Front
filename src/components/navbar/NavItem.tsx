@@ -3,6 +3,9 @@ import { motion } from 'framer-motion';
 import { page } from 'common/store/atom';
 import { useRecoilValue } from 'recoil';
 import { NavBarType } from 'common/type/NavBarType';
+import { OverridableComponent } from '@mui/material/OverridableComponent';
+import { SvgIconTypeMap } from '@mui/material';
+import { grey } from '@mui/material/colors';
 // import Box from '@mui/material/Box';
 // import ButtonBase from '@mui/material/ButtonBase';
 
@@ -27,14 +30,13 @@ const Wrapper = styled(motion.div)`
 
   &:hover {
     background: ${(props: WrapperStyleType) => props.check === 'true' ? null : 'linear-gradient(90deg, rgba(43, 111, 214, 0.13) 5%, rgba(255, 255, 255, 0) 50%)'};
-    & svg path {
+    /* & svg path {
     fill: ${(props: WrapperStyleType) => (props.check === 'true' ? 'black' : '#9b9b9b')};
-    } 
+    }  */
   };
-
-  & svg path {
+  /* & svg path {
     fill: ${(props: WrapperStyleType) => (props.check === 'true' ? 'black' : '#9b9b9b')};
-  }
+  } */
 `
 
 const SubTitle = styled(motion.div)`
@@ -46,7 +48,7 @@ const IconWrapper = styled(motion.div)`
 `;
 
 type NavItemType = {
-  icon: React.FunctionComponent<React.SVGProps<SVGSVGElement>>
+  icon: OverridableComponent<SvgIconTypeMap> & { muiName: string };
   title: string;
   content: string;
   onclick?: () => void;
@@ -61,25 +63,17 @@ const NavItem = (props: NavItemType) => {
   // const page = props.page;
   return (
     <Wrapper onClick={props.onclick} check={isClicked ? 'true' : 'false'}>
-      {isClicked ?
-        <>
-          <IconWrapper
-            initial={{ y: 0 }} animate={{ y: 0 }} exit={{ y: -10 }}>
-            <Icon />
-          </IconWrapper>
-          <SubTitle
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 1, y: -10 }}>{props.content}</SubTitle>
-        </>
-        : <>
-          <IconWrapper initial={{ y: 0 }} animate={{ y: 10 }} exit={{ y: -10 }}>
-            <Icon />
-          </IconWrapper>
-
-          <SubTitle initial={{ opacity: 0, y: -5 }}>{props.content}</SubTitle>
-        </>
-      }
+      {/* {isClicked ? */}
+      <>
+        <IconWrapper
+          initial={{ y: 0 }} animate={{ y: 0 }} exit={{ y: -10 }}>
+          <Icon sx={isClicked ? { color: grey[900] } : { color: grey[500] }} />
+        </IconWrapper>
+        {isClicked ? <SubTitle
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 1, y: -10 }}>{props.content}</SubTitle> : null}
+      </>
     </Wrapper>
   )
 }
