@@ -97,7 +97,7 @@ function CustomLayerControl({ position }: ControlOptions) {
       L.DomEvent.disableClickPropagation(containerRef.current);
       L.DomEvent.disableScrollPropagation(containerRef.current);
     }
-  }, [])
+  }, [isOpen])
 
   const handlerButtonClick = (e: React.MouseEvent, it: keyof LayerControlType) => {
     const newLayer: LayerControlType = { ...layers };

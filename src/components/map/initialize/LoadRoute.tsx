@@ -6,11 +6,11 @@ import { Polyline, Tooltip } from 'react-leaflet';
 
 function LoadRoute() {
     const [route, setRoute] = React.useState<RouteType[]>([])
-    const { data } = useGetRoute();
+    const { data , isError} = useGetRoute();
 
     React.useEffect(() => {
-        setRoute(data)
-    }, [data, setRoute])
+        if(!isError) setRoute(data)
+    }, [data, setRoute, isError])
 
     return (
         <>

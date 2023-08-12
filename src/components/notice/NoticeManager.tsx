@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import { Divider } from '@mui/material'
 import { contentFormat, editingNoticeContent } from 'common/store/atom'
-import { NoticeContentType } from 'common/type/NoticeType'
+import { NoticeContentType, NoticeContextType } from 'common/type/NoticeType'
 import { DeleteButton, ModifyButton } from 'components/common/CustomButton'
 import { motion } from 'framer-motion'
 import React from 'react'
@@ -20,20 +20,36 @@ const ButtonWrapper = styled.div`
 
 function NoticeManager({ id, title, date, type, context }: Props) {
     const setContentFormat = useSetRecoilState(contentFormat);
-    const storeNoticeContent = useSetRecoilState(editingNoticeContent); 
+    const storeNoticeContent = useSetRecoilState(editingNoticeContent);
     const hanlderModifyOnClick = async () => {
-        const value : NoticeContentType = {
+        const value: NoticeContentType = {
             id,
-            title, 
-            date, 
-            type, 
+            title,
+            date,
+            type,
             context
         }
         storeNoticeContent(value);
         await setContentFormat('NONE');
         await setContentFormat('EDIT');
-        
-    } 
+
+    }
+
+    const handleClickDelete = async (func: NoticeContextType) => {
+        try {
+            if (window.confirm('정말 삭제?') && id) {
+                await func.delete(id);
+                await func.refresh();
+            }
+        } catch (e:any) {
+            const code = e.response.status;
+            if (+code === 403) {
+                window.alert('권한이 없습니다.')
+            } else {
+                window.alert('네트워크 에러')
+            }
+        }
+    }
     return (
         <NoticeContext.Consumer>
             {(func) =>
@@ -41,12 +57,7 @@ function NoticeManager({ id, title, date, type, context }: Props) {
                     <Divider sx={{ margin: '10px 15px' }} />
                     <ButtonWrapper>
                         <ModifyButton onClick={hanlderModifyOnClick}>수정</ModifyButton>
-                        <DeleteButton onClick={async () => {
-                            if (window.confirm('정말 삭제?') && id) {
-                                await func.delete(id);
-                                await func.refresh();
-                            }
-                        }}>삭제</DeleteButton>
+                        <DeleteButton onClick={() => { handleClickDelete(func) }}>삭제</DeleteButton>
                     </ButtonWrapper>
                 </motion.div>
             }

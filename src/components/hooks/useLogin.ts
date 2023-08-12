@@ -1,13 +1,21 @@
 import { useMutation } from "@tanstack/react-query"
 import CustomAxios from "module/axios"
-import crypto from 'crypto'
 
-const getLogin = async () => {
-    await CustomAxios.post('login', )
+export const getLogin = async (id: string, pw: string) => {
+    try {
+        const result =  await CustomAxios.post('auth/login', { id, pw })
+        
+        return result;
+    } catch (e) {
+        return false;
+    }
 }
 
-export function useGetNotice(id:string, pw:string) {
-    
-    // const fallback: NoticeContentType[] = [] 
-    // return useMutation(['login'], async () => getLogin(), /*{ suspense: true }*/)
+
+export const getTestCookie = async () => {
+    const result = await CustomAxios.get('auth/cookies');
+    return result
+} 
+export function useLogin(id: string, pw: string) {
+    return useMutation(['login'], async () => getLogin(id, pw), /*{ suspense: true }*/)
 }

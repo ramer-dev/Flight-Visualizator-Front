@@ -53,8 +53,16 @@ function NoticeAdd() {
       version: '',
       user: ''
     }
-
-    await postNotice(body)
+    try {
+      await postNotice(body)
+    } catch (e:any) {
+      const code = e.response.status;
+      if (+code === 403) {
+        window.alert('권한이 없습니다.')
+      } else {
+        window.alert('네트워크 에러')
+      }
+    }
     setContentType('NONE');
   }
 

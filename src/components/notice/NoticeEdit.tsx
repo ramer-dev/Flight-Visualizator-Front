@@ -41,11 +41,19 @@ function NoticeEdit() {
       version: '',
       user: ''
     }
-    if (body.id) {
-      await patchNotice(body, body.id)
-      setContentType('NONE');
-    } else {
-      window.alert('error')
+
+    try {
+      if (body.id) {
+        await patchNotice(body, body.id)
+        setContentType('NONE');
+      }
+    } catch (e: any) {
+      const code = e.response.status;
+      if (+code === 403) {
+        window.alert('권한이 없습니다.')
+      } else {
+        window.alert('네트워크 에러')
+      }
     }
   }
 

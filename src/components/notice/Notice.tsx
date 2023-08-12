@@ -45,12 +45,10 @@ export const NoticeContext = createContext<NoticeContextType>({
 
 function Notice() {
 
-  // const data = useGetNotice();
   const [value, setValue] = useState("전체");
   const id = useRef<number>(-1);
   const { data, isLoading, isError, refetch } = useGetNotice();
   const contentView = useRecoilValue(contentViewFormat);
-  // const [list, setList] = useState<NoticeContentType[]>(data);
   const [open, setOpen] = useState(true);
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
