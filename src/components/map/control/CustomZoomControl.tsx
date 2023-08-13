@@ -27,7 +27,7 @@ function CustomZoomControl({ position, zoom }: ControlOptions & StyleProp) {
             L.DomEvent.disableClickPropagation(containerRef.current);
             L.DomEvent.disableScrollPropagation(containerRef.current);
         }
-    }, [])
+    }, [zoom])
 
     const Container = styled.div`
         margin-bottom:15px;

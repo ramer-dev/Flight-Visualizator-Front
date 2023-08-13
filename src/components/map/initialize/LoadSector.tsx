@@ -12,11 +12,13 @@ const DashedSector = (st: string) => {
 
 function LoadSector() {
     const [sector, setSector] = useState<SectorType[]>([])
-    const { data } = useGetSector();
+    const { data, isError } = useGetSector();
 
     useEffect(() => {
-        setSector(data)
-    }, [data, setSector])
+        if (!isError) {
+            setSector(data)
+        }
+    }, [data, setSector, isError])
 
     return (
         <>

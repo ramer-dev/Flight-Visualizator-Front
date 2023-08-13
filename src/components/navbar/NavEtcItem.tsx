@@ -1,5 +1,7 @@
 import React from 'react'
 import styled from '@emotion/styled';
+import { OverridableComponent } from '@mui/material/OverridableComponent';
+import { SvgIconTypeMap } from '@mui/material';
 
 
 type WrapperStyleType = {
@@ -33,7 +35,7 @@ const SubTitle = styled.p`
 `
 
 type NavItemType = {
-    icon: React.FunctionComponent<React.SVGProps<SVGSVGElement>>
+    icon: OverridableComponent<SvgIconTypeMap> & { muiName: string };
     isClicked: boolean;
     title: string;
     onClick: () => void;

@@ -1,43 +1,100 @@
-import { Box, Button, Dialog } from '@mui/material'
-import ErrorPage from 'components/common/ErrorPage'
+import { Box, Button, Dialog, Input, TextField } from '@mui/material'
 import React, { useEffect } from 'react'
-import { useSetRecoilState } from 'recoil'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 import { authState } from 'common/store/auth'
 import { AuthType } from 'common/type/AuthType'
 import sha256 from 'crypto-js/sha256'
+import { getLogin, getTestCookie } from 'components/hooks/useLogin'
+import useModal from 'components/hooks/useModal'
+import Portal from 'module/Portal'
+import styled from '@emotion/styled'
+import CustomModal from 'components/common/CustomModal'
 interface Props {
     open: boolean,
     closeLogin: () => void,
 }
 
-function LoginComponent({ open, closeLogin }: Props) {
-    const setLogin = useSetRecoilState(authState)
-    useEffect(() => {
-        console.log(open)
-    }, [open])
+const TextWrapper = styled.div`
+    display:flex;
+    flex-direction:column;
+    justify-content:space-evenly;
+    align-items:center;
+    margin:110px 430px 10px 80px;
+    width:350px;
+    height:400px;
+    gap:20px;
+`
+const Title = styled.div`
+    margin:20px;
+`
 
-    const loginCheck = () => {
-        const loginValue: AuthType = {
-            id: 'test',
-            username: 'test',
-            role: 2
+function LoginComponent({ open, closeLogin }: Props) {
+    const { isModalOpen, openModal, closeModal } = useModal();
+    const [loginState, setLoginState] = useRecoilState(authState)
+
+    const [payload, setPayload] = React.useState({ id: '', pw: '' })
+
+    const handleInputChange = (e: any, id: "id" | "pw") => {
+        const newItem = { ...payload, [id]: e.target.value }
+        setPayload(newItem)
+    }
+
+    const testCookie = async () => {
+        const result = await getTestCookie();
+        console.log(result);
+    }
+
+    const loginCheck = async () => {
+        // const loginValue: AuthType = {
+        //     id: 'test',
+        //     username: 'test',
+        //     role: 1
+        // }
+        // setLogin(loginValue)
+        const password = payload.pw + 'c0mtr2'
+        const hashedPW = sha256(password).toString();
+        const loginResult = await getLogin(payload.id, hashedPW)
+        // console.log(loginResult)
+        if (loginResult) {
+            console.log(`${payload.id} 로그인 성공`)
+            openModal()
+            const item: AuthType = {
+                id: payload.id,
+                username: payload.id,
+                role: loginResult.data.role
+            }
+            setLoginState(item)
+        } else {
+            openModal()
+            console.log(`${payload.id} 로그인 실패`)
+            setLoginState({ id: '', username: '', role: 0 })
+
         }
-        setLogin(loginValue)
-        const password = 'vccs'
-        // hash.update('admin')
-        const hash = sha256(password).toString();
-        console.log(hash)
-        
-        console.log('로그인 성공')
     }
 
     return (
-        <Dialog maxWidth={'md'} open={open} onClose={closeLogin}>
+        <Dialog sx={{ minWidth: 350, overflow: 'hidden' }} maxWidth={'md'} open={open} onClose={closeLogin} >
+            {isModalOpen ? loginState.role ? (
+                <Portal>
+                    <CustomModal isOpen={isModalOpen} title="로그인 성공" message={`ID:${loginState.id}\n로그인에 성공하였습니다.`} close={() => { closeModal(); closeLogin() }} />
+                </Portal>
+            ) :
+                <Portal>
+                    <CustomModal isOpen={isModalOpen} title="로그인 실패" message='ID/비밀번호를 확인해주세요.' close={closeModal} />
+                </Portal>
+                : null
+            }
             <Box sx={{ width: 900, height: 600 }}>
-                <ErrorPage code="NONE" content='로그인 기능 개발중입니다.' />
+                <TextWrapper>
+                    <Title>로그인</Title>
+                    <TextField label="ID" onChange={(e) => { handleInputChange(e, 'id') }} />
+                    <TextField label="PW" type="password" onChange={(e) => { handleInputChange(e, 'pw') }} />
+                    
+                <Button variant='outlined' onClick={() => { loginCheck() }}>testLogin</Button>
+                <Button onClick={testCookie}>test Cookie</Button>
+                </TextWrapper>
 
             </Box>
-            <Button onClick={() => { loginCheck() }}>testLogin</Button>
 
         </Dialog>
     )
