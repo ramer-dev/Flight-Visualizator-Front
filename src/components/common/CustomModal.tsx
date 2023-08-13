@@ -14,7 +14,7 @@ const CustomModal = ({ isOpen, title, message, close }: Props) => {
         <Wrapper>
             <Modal open={isOpen} onClose={close} slots={{ backdrop: Backdrop }} closeAfterTransition slotProps={{ backdrop: { timeout: 500 } }}>
                 <Fade in={isOpen}>
-                    <Content sx={{ width: 300, height: 300 }}>
+                    <Content>
                         <Top>
                             <Title>{title}</Title>
                             <CloseBtn onClick={close}>&#x2716;</CloseBtn>
@@ -51,6 +51,7 @@ const Content = styled(Box)`
     min-width: 200px;
     max-width: 400px;
     border-radius: 12px;
+    white-space:pre-line;
     overflow: hidden;
     background-color: white;
     transform: translate(-50%, -50%);
