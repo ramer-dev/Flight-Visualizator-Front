@@ -7,9 +7,10 @@ type Props = {
     title?: string;
     message?: string;
     close?: () => void;
+    confirm?: () => void;
 };
 
-const CustomModal = ({ isOpen, title, message, close }: Props) => {
+const CustomConfirm = ({ isOpen, title, message, close, confirm }: Props) => {
     return (
         <Wrapper>
             <Modal open={isOpen} onClose={close} slots={{ backdrop: Backdrop }} closeAfterTransition slotProps={{ backdrop: { timeout: 500 } }}>
@@ -21,9 +22,14 @@ const CustomModal = ({ isOpen, title, message, close }: Props) => {
                         </Top>
                         <Message>{message}</Message>
                         <BtnContainer>
+                            <CancelBtn onClick={close} variant="outlined" size='small'>취소</CancelBtn>
                             <ConfirmBtn variant='contained' size='small'
-                                onClick={close}>
-                                닫기
+                                onClick={() => {
+                                    confirm && confirm();
+                                    close && close();
+                                }}
+                            >
+                                확인
                             </ConfirmBtn>
                         </BtnContainer>
                     </Content>
@@ -34,12 +40,12 @@ const CustomModal = ({ isOpen, title, message, close }: Props) => {
     );
 };
 
-export default CustomModal;
+export default CustomConfirm;
 
 const Wrapper = styled.div`
   transition:0.2s all ease;
   `;
-
+  
 const Content = styled(Box)`
     position: fixed;
     display: flex;

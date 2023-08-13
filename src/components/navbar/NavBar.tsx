@@ -19,8 +19,9 @@ import LoginComponent from "components/login/LoginComponent";
 import { authState } from "common/store/auth";
 import { getLogout } from "components/hooks/useLogin";
 import { AuthType } from "common/type/AuthType";
+import { motion } from "framer-motion";
 
-const Container = styled.div`
+const Container = styled(motion.div)`
     display: inline-flex;
     height:100vh;
     width:64px;
