@@ -15,7 +15,7 @@ const CustomConfirm = ({ isOpen, title, message, close, confirm }: Props) => {
         <Wrapper>
             <Modal open={isOpen} onClose={close} slots={{ backdrop: Backdrop }} closeAfterTransition slotProps={{ backdrop: { timeout: 500 } }}>
                 <Fade in={isOpen}>
-                    <Content sx={{ width: 300, height: 300 }}>
+                    <Content>
                         <Top>
                             <Title>{title}</Title>
                             <CloseBtn onClick={close}>&#x2716;</CloseBtn>
@@ -48,7 +48,6 @@ const Wrapper = styled.div`
   
 const Content = styled(Box)`
     position: fixed;
-    display: flex;
     flex-direction:column;
     gap: 16px;
     top: 50%;
@@ -60,6 +59,7 @@ const Content = styled(Box)`
     overflow: hidden;
     background-color: white;
     transform: translate(-50%, -50%);
+    white-space:pre-line;
     z-index: 5001;
   `;
 const Top = styled.div`

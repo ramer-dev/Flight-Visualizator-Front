@@ -20,6 +20,9 @@ import { authState } from "common/store/auth";
 import { getLogout } from "components/hooks/useLogin";
 import { AuthType } from "common/type/AuthType";
 import { motion } from "framer-motion";
+import useConfirm from "components/hooks/useConfirm";
+import Portal from "module/Portal";
+import CustomConfirm from "components/common/CustomConfirm";
 
 const Container = styled(motion.div)`
     display: inline-flex;
@@ -69,7 +72,7 @@ const NavBar = () => {
     const container = useRef<HTMLDivElement>(null);
     const setContentView = useSetRecoilState<ContentViewType>(contentViewFormat);
     const [dialogOpen, setDialogOpen] = useState(false);
-
+    const { isConfirmOpen, closeConfirm, openConfirm } = useConfirm()
     const onButtonClick = (str: NavBarType) => {
 
         if (selectedPage !== str) {
@@ -77,7 +80,7 @@ const NavBar = () => {
             setContentView('NONE');
         }
 
-        if(selectedPage === str) {
+        if (selectedPage === str) {
             setPage(null);
         }
     }
@@ -100,18 +103,27 @@ const NavBar = () => {
     }
 
     const Logout = () => {
+
         getLogout();
-        const emptyUser : AuthType = {
+        const emptyUser: AuthType = {
             id: "",
             username: "",
             role: 0
         }
+
         setIsLogin(emptyUser)
+    }
+
+    const LogoutConfirm = () => {
+        openConfirm();
     }
 
 
     return (
         <>
+            <Portal>
+                <CustomConfirm isOpen={isConfirmOpen} title="로그아웃" message="로그아웃할까요?" confirm={Logout} close={closeConfirm}/>
+            </Portal>
             <LoginComponent open={dialogOpen} closeLogin={closeLogin} />
 
             <Container ref={container}>
@@ -127,7 +139,7 @@ const NavBar = () => {
                     </MainNavBar>
                     <SubNavBar>
                         <NavEtcItem icon={QuestionIcon} title={"도움말"} onClick={() => { }} isClicked={false} />
-                        <NavEtcItem icon={isLogin.role ? LogoutIcon : LoginIcon} title={isLogin.role ? "로그아웃" : "로그인"} onClick={() => { isLogin.role ? Logout() : openLogin() }} isClicked={false} />
+                        <NavEtcItem icon={isLogin.role ? LogoutIcon : LoginIcon} title={isLogin.role ? "로그아웃" : "로그인"} onClick={() => { isLogin.role ? LogoutConfirm() : openLogin() }} isClicked={false} />
 
                     </SubNavBar>
                 </Wrapper>

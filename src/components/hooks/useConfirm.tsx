@@ -2,14 +2,14 @@
 import { useState } from "react";
 
 const useConfirm = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isConfirmOpen, setIsOpen] = useState<boolean>(false);
   const openConfirm = () => {
     setIsOpen(true);
   };
   const closeConfirm = () => {
     setIsOpen(false)
   };
-  return { isOpen, openConfirm, closeConfirm };
+  return { isConfirmOpen, openConfirm, closeConfirm };
 };
 
 export default useConfirm;

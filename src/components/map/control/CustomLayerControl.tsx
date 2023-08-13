@@ -65,6 +65,8 @@ interface LayerControlType {
   sector: boolean,
   route: boolean,
   point: boolean,
+  marking: boolean,
+  pin: boolean,
 }
 
 const Cover = styled.div`
@@ -90,6 +92,8 @@ function CustomLayerControl({ position }: ControlOptions) {
     sector: true,
     route: true,
     point: true,
+    marking: true,
+    pin:true,
   })
 
   useEffect(() => {
@@ -132,6 +136,9 @@ function CustomLayerControl({ position }: ControlOptions) {
         <Item onClick={(e) => { handlerButtonClick(e, 'sector') }}><LayersIcon sx={layers.sector ? { color: orange[500] } : EmptyStyle} /><Text>섹터</Text></Item>
         <Item onClick={(e) => { handlerButtonClick(e, 'route') }}><PolylineIcon sx={layers.route ? { color: pink[400] } : EmptyStyle} /><Text>항로</Text></Item>
         <Item onClick={(e) => { handlerButtonClick(e, 'point') }}><RadioButtonCheckedIcon sx={layers.point ? { color: blue[600] } : EmptyStyle} /><Text>포인트</Text></Item>
+        <Item onClick={(e) => { handlerButtonClick(e, 'pin') }}><RadioButtonCheckedIcon sx={layers.pin ? { color: blue[600] } : EmptyStyle} /><Text>비행검사</Text></Item>
+        <Item onClick={(e) => { handlerButtonClick(e, 'marking') }}><RadioButtonCheckedIcon sx={layers.marking ? { color: blue[600] } : EmptyStyle} /><Text>마킹</Text></Item>
+
       </Wrapper>
       : <Cover onMouseEnter={() => {setIsOpen(true)}}>
         <LayersIcon sx={{...EmptyStyle, width:38, height:38, margin:'5px'}} fontSize="large"/>
