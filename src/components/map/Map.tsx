@@ -63,6 +63,9 @@ const Map = () => {
             <Pane name="lowsite" />
             <Pane name="vortac" />
             <Pane name="point" />
+            <Pane name="marking" />
+            <Pane name="pin" />
+            <Pane name="flight-record"/>
             <Pane name="range-bearing" />
 
             <EditControlFC geojson={geojson} setGeojson={setGeojson} />

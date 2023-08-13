@@ -107,7 +107,7 @@ function CustomTable({ edit, search, add }: Props) {
     const { data, refetch, isLoading } = useFlightData(paginationModel.pageSize, 0, flightDataId)
 
     const [rows, setRows] = React.useState(data?.data?.items ? data.data.items.map((t, i) => ({ ...t, no: i })) : []);
-    const layerGroup = useRef(L.layerGroup([], { pane: 'marking' }))
+    const layerGroup = useRef(L.layerGroup([]))
 
     const scoreValidate = (params: GridPreProcessEditCellProps) => {
         const validated = scoreRegex.test(String(params.props.value));
@@ -232,7 +232,7 @@ function CustomTable({ edit, search, add }: Props) {
             if (!isNaN(obj[i].angle) || !isNaN(obj[i].distance) || obj[i].siteName) {
                 const siteCoords = siteData.data.filter(t => t.siteName === obj[i].siteName)[0]?.siteCoordinate;
                 const target = Destination(siteCoords, obj[i].angle, obj[i].distance);
-                layer.push(L.marker(target as LatLngLiteral, {
+                layer.push(L.marker(target as LatLngLiteral, { pane:'pin',
                     icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby),
                         obj[i].no)
                 }).bindTooltip('text'))
