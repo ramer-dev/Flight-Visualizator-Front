@@ -1,7 +1,14 @@
 import styled from '@emotion/styled'
 import Title from 'components/common/Title'
 import React from 'react'
-import { SettingStateType } from './SettingStateType'
+import { SettingState, SettingStateType } from './SettingStateType'
+import { Divider } from '@mui/material'
+import Frequency from './frequency/Frequency'
+import Route from './route/Route'
+import FixPoint from './fixPoint/FixPoint'
+import Area from './area/Area'
+import Site from './site/Site'
+import Sector from './sector/Sector'
 
 const GridContainer = styled.div`
   display:grid;
@@ -26,19 +33,48 @@ const Item = styled.div`
 
 function Setting() {
   const SettingContext = React.createContext({})
-  const [settingState, setSettingState] = React.useState<SettingStateType>({})
+  const [settingState, setSettingState] = React.useState<SettingStateType>({ current: null })
+  const changeState = (str: SettingState) => {
+    setSettingState({ current: str });
+  }
+
+  React.useEffect(() => {
+    console.log(settingState.current);
+  }, [settingState])
+  const selector = React.useCallback(() => {
+    switch (settingState.current) {
+      case "frequency":
+        return <Frequency />
+      case "route":
+        return <Route />
+      case "fixPoint":
+        return <FixPoint />
+      case "area":
+        return <Area />
+      case "site":
+        return <Site />
+      case "sector":
+        return <Sector />
+      default:
+        break;
+    }
+  }, [settingState])
   return (
     <SettingContext.Provider value={settingState}>
       <Title>환경설정</Title>
       <GridContainer>
-        <Item>표지소</Item>
-        <Item>항로</Item>
-        <Item>픽스점</Item>
-        <Item>주파수</Item>
-        <Item>섹터</Item>
-        <Item>구역</Item>
+        <Item onClick={() => { changeState("site") }}>표지소</Item>
+        <Item onClick={() => { changeState("route") }}>항로</Item>
+        <Item onClick={() => { changeState("fixPoint") }}>픽스점</Item>
+        <Item onClick={() => { changeState("frequency") }}>주파수</Item>
+        <Item onClick={() => { changeState("sector") }}>섹터</Item>
+        <Item onClick={() => { changeState("area") }}>구역</Item>
       </GridContainer>
-      </SettingContext.Provider>
+      <Divider sx={{ margin: '10px 0' }} />
+      <div>
+        {selector()}
+      </div>
+    </SettingContext.Provider>
   )
 }
 
