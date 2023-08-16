@@ -4,7 +4,7 @@ const CustomAxios = axios.create({
     // headers:{
     //     'Access-Control-Allow-Origin': 'http://localhost:7000'
     // },
-    baseURL: 'http://localhost:7000/v1/api',
+    baseURL: `${process.env.REACT_APP_API_URL}`,
     withCredentials: true
 })
 
