@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { DataGrid, GridCellModes, GridCellModesModel, GridCellParams, GridColDef, GridPreProcessEditCellProps, GridRowId, GridValidRowModel, useGridApiRef } from '@mui/x-data-grid'
-import { FlightResult } from 'common/type/FlightType'
+import { FlightList, FlightResult } from 'common/type/FlightType'
 import styled from '@emotion/styled'
 import { Box } from '@mui/material'
 import CustomToolbar from './CustomToolbar'
@@ -34,8 +34,10 @@ declare module '@mui/x-data-grid' {
         pageSizeChange: (pageSize: number) => void;
     }
     interface ToolbarPropsOverrides {
+        titleData: FlightList;
         title: string;
         edit: boolean;
+        setTitleData : (e:FlightList) => void;
         handleAddRow: (e: React.MouseEvent) => void;
         handleDeleteRow: (e: React.MouseEvent) => void;
         handleSubmit: (e: React.MouseEvent) => void;
@@ -98,6 +100,7 @@ function CustomTable({ edit, search, add }: Props) {
         pageSize: 100,
         page: 0,
     });
+    const [titleData, setTitleData] = React.useState<FlightList>()
     const [checkboxSelection, setCheckboxSelection] = React.useState<Map<GridRowId, GridValidRowModel>>();
     const [cellModesModel, setCellModesModel] = React.useState<GridCellModesModel>({});
     const map = useMap();
@@ -217,6 +220,7 @@ function CustomTable({ edit, search, add }: Props) {
     useEffect(() => {
         stateRefresh()
         // eslint-disable-next-line
+        if(data) setTitleData({...data, data:undefined})
     }, [data, flightDataId])
 
 
@@ -443,6 +447,8 @@ function CustomTable({ edit, search, add }: Props) {
                         handleDeleteRow,
                         handleSubmit,
                         handleMarkingBtnClick,
+                        titleData,
+                        setTitleData,
                     }
                 }}
                 cellModesModel={cellModesModel}
