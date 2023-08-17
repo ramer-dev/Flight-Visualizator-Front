@@ -16,9 +16,13 @@ import { useMap } from 'react-leaflet'
 import { Destination } from 'module/Destination'
 import { FindMinimumScore } from 'module/ScoreCalculate'
 import { frequencyRegex, scoreRegex } from 'common/regex/regex'
-import { patchFlightData } from 'common/service/flightService'
+import { patchFlightData, patchFlightList, postFlightList } from 'common/service/flightService'
 import { useFlightData } from 'components/hooks/useFlightData'
 import { EmptyData } from './EmpryData'
+import useModal from 'components/hooks/useModal'
+import Portal from 'module/Portal'
+import CustomModal from '../CustomModal'
+import { FlightListPost } from 'entity/FlightListPost'
 
 
 declare module '@mui/x-data-grid' {
@@ -36,8 +40,11 @@ declare module '@mui/x-data-grid' {
     interface ToolbarPropsOverrides {
         titleData: FlightList;
         title: string;
-        edit: boolean;
-        setTitleData : (e:FlightList) => void;
+        edit?: boolean;
+        search?: boolean;
+        submitted?: boolean;
+        setSubmitted: (b: boolean) => void;
+        setTitleData: (e: FlightList) => void;
         handleAddRow: (e: React.MouseEvent) => void;
         handleDeleteRow: (e: React.MouseEvent) => void;
         handleSubmit: (e: React.MouseEvent) => void;
@@ -103,6 +110,7 @@ function CustomTable({ edit, search, add }: Props) {
     const [titleData, setTitleData] = React.useState<FlightList>()
     const [checkboxSelection, setCheckboxSelection] = React.useState<Map<GridRowId, GridValidRowModel>>();
     const [cellModesModel, setCellModesModel] = React.useState<GridCellModesModel>({});
+    const [submitted, setSubmitted] = React.useState(false);
     const map = useMap();
     const id = useRef(1);
     const apiRef = useGridApiRef()
@@ -112,12 +120,12 @@ function CustomTable({ edit, search, add }: Props) {
     const [rows, setRows] = React.useState(data?.data?.items ? data.data.items.map((t, i) => ({ ...t, no: i })) : []);
     const layerGroup = useRef(L.layerGroup([]))
 
+    const { isModalOpen, openModal, closeModal } = useModal()
+
     const scoreValidate = (params: GridPreProcessEditCellProps) => {
         const validated = scoreRegex.test(String(params.props.value));
         return { ...params.props, error: !validated }
     }
-
-
 
     const stateRefresh = () => {
         if (search || add) {
@@ -220,7 +228,7 @@ function CustomTable({ edit, search, add }: Props) {
     useEffect(() => {
         stateRefresh()
         // eslint-disable-next-line
-        if(data) setTitleData({...data, data:undefined})
+        if (data) setTitleData({ ...data, data: undefined })
     }, [data, flightDataId])
 
 
@@ -236,7 +244,8 @@ function CustomTable({ edit, search, add }: Props) {
             if (!isNaN(obj[i].angle) || !isNaN(obj[i].distance) || obj[i].siteName) {
                 const siteCoords = siteData.data.filter(t => t.siteName === obj[i].siteName)[0]?.siteCoordinate;
                 const target = Destination(siteCoords, obj[i].angle, obj[i].distance);
-                layer.push(L.marker(target as LatLngLiteral, { pane:'pin',
+                layer.push(L.marker(target as LatLngLiteral, {
+                    pane: 'pin',
                     icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby),
                         obj[i].no)
                 }).bindTooltip('text'))
@@ -298,7 +307,6 @@ function CustomTable({ edit, search, add }: Props) {
         });
     }
 
-
     const handleRowModesModelChange = React.useCallback(
         (newModel: GridCellModesModel) => {
             setCellModesModel(newModel);
@@ -345,6 +353,10 @@ function CustomTable({ edit, search, add }: Props) {
 
     const handleSubmit = () => {
         if (!data) return;
+        if (!submitted) {
+            openModal()
+            return
+        };
 
         const rowModel = apiRef.current.getRowModels()
         const editArray: FlightResult[] = [];
@@ -376,8 +388,23 @@ function CustomTable({ edit, search, add }: Props) {
             delete item.updatedAt;
 
         }
-
-        patchFlightData(editArray)
+        if (titleData) {
+            const fetchData: FlightListPost = { ...titleData, data: editArray }
+            if (add) {
+                delete fetchData.id;
+                delete fetchData.deletedAt;
+                delete fetchData.updatedAt;
+                postFlightList(fetchData);
+            } else {
+                if (titleData && data.id) {
+                    delete titleData.data;
+                    delete titleData.deletedAt;
+                    delete titleData.updatedAt;
+                    patchFlightList(titleData, data.id);
+                }
+                patchFlightData(editArray)
+            }
+        }
 
     }
 
@@ -414,6 +441,9 @@ function CustomTable({ edit, search, add }: Props) {
 
     return (
         <Wrapper>
+            <Portal>
+                <CustomModal isOpen={isModalOpen} title="비행검사 입력 에러" message='비행검사 기본 정보 입력 후 확인버튼을 눌러주세요.' close={closeModal} />
+            </Portal>
             <StyledDataGrid apiRef={apiRef} editMode='cell' rows={rows} columns={columns}
                 loading={isLoading}
                 columnVisibilityModel={columnVisibilityModel}
@@ -443,6 +473,9 @@ function CustomTable({ edit, search, add }: Props) {
                         count: data?.data?.totalCount,
                         title: data?.testName,
                         edit: edit,
+                        search: search,
+                        submitted: submitted,
+                        setSubmitted,
                         handleAddRow,
                         handleDeleteRow,
                         handleSubmit,
@@ -459,8 +492,6 @@ function CustomTable({ edit, search, add }: Props) {
                 checkboxSelection
                 onRowSelectionModelChange={handleMarking}
                 disableRowSelectionOnClick
-            // onRowEditStart={(params:GridCellEditStopParams, event: MuiEvent) => handlerCellEditStart(params, event)}
-            // onRowEditStop={handlerCellEditEnd}
             />
         </Wrapper>
     )

@@ -36,7 +36,7 @@ export interface TableFlightResult extends FlightResult {
 }
 
 export interface FlightList {
-  id: number,
+  id?: number,
   testName: string,
   testDate: Date | string,
   testType: string,
@@ -44,6 +44,6 @@ export interface FlightList {
   userId: string,
   updatedAt?: Date,
   deletedAt?: Date
-  data?: PageType<FlightResult[]>
+  data?: PageType<FlightResult>
   count?:number
 }
