@@ -1,5 +1,5 @@
 import {  markingSelectCursor } from "common/store/atom";
-import ContextMenu from "components/contextMenu/ContextMenu";
+import ContextMenu from "components/map/contextMenu/ContextMenu";
 import L from "leaflet";
 import { LatLng, Polyline } from "leaflet";
 import {  useRef, useState } from "react";
@@ -11,9 +11,9 @@ type Props = {
     setOpen: (a: boolean) => void,
     setZoom: (a:number) => void,
 }
+type MenuType = 'range-bearing' | 'analyze' | null;
 
 const MapEvents = ({ isOpen, setOpen, setZoom }: Props) => {
-    type MenuType = 'range-bearing' | 'analyze' | null;
     const map = useMap()
 
     const popup = useRef(L.popup({
