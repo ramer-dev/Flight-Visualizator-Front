@@ -23,6 +23,8 @@ import { motion } from "framer-motion";
 import useConfirm from "components/hooks/useConfirm";
 import Portal from "module/Portal";
 import CustomConfirm from "components/common/CustomConfirm";
+import { ReactComponent as LogoColor } from 'atom/icon/logo_color.svg';
+import { ReactComponent as LogoGray } from 'atom/icon/logo_grayscale.svg';
 
 const Container = styled(motion.div)`
     display: inline-flex;
@@ -50,8 +52,16 @@ const MainNavBar = styled.div`
     `
 
 const LogoImg = styled.div`
-    line-height:64px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin:15px 7px 5px;
+    width:50px;
     text-align:center;
+    cursor:pointer;
+    & > svg {
+        width:50px;
+    }
 `
 
 const SubNavBar = styled.div`
@@ -63,12 +73,17 @@ const ContentView = styled.div`
     margin-left:64px;
     background-color:#ffffff;   
     z-index:2000;
+`
 
+const TitleText = styled(motion.div)`
+    color:#929292;
+    word-break: keep-all;
 `
 
 const NavBar = () => {
     const [selectedPage, setPage] = useRecoilState<NavBarType>(page);
     const [isLogin, setIsLogin] = useRecoilState(authState);
+    const [logoState, setLogoState] = useState(false);
     const container = useRef<HTMLDivElement>(null);
     const setContentView = useSetRecoilState<ContentViewType>(contentViewFormat);
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -118,18 +133,30 @@ const NavBar = () => {
         openConfirm();
     }
 
+    const handleLogoMouseOver = () => {
+        setLogoState(true);
+    }
+
+    const handleLogoMouseOut = () => {
+        setLogoState(false);
+    }
 
     return (
         <>
             <Portal>
-                <CustomConfirm isOpen={isConfirmOpen} title="로그아웃" message="로그아웃할까요?" confirm={Logout} close={closeConfirm}/>
+                <CustomConfirm isOpen={isConfirmOpen} title="로그아웃" message="로그아웃할까요?" confirm={Logout} close={closeConfirm} />
             </Portal>
             <LoginComponent open={dialogOpen} closeLogin={closeLogin} />
 
             <Container ref={container}>
 
                 <Wrapper>
-                    <LogoImg>LOGO</LogoImg>
+                    <LogoImg onMouseEnter={handleLogoMouseOver} onMouseLeave={handleLogoMouseOut}>
+                        {logoState
+                            ? <LogoColor />
+                            : <LogoGray />}
+                            <TitleText>비행검사 시각화 서비스</TitleText>
+                    </LogoImg>
                     <MainNavBar>
                         <NavItem icon={FlightListIcon} title={"FLIGHT_RESULT"} content={"비행검사"} onclick={() => { onButtonClick("FLIGHT_RESULT") }} />
                         <NavItem icon={SearchIcon} title={"SEARCH"} content={"검색"} onclick={() => { onButtonClick("SEARCH") }} />

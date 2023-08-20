@@ -60,7 +60,7 @@ function NavScreen() {
     }, [selectedPage, setContent, setContentView])
     return (
         <div>
-            {(content || selectedPage === 'SEARCH') &&
+            {(content !== 'NONE' || selectedPage === 'SEARCH' ) &&
                 <Container contentView={widthMap[contentView]}>
                     {selector(selectedPage)}
                 </Container>

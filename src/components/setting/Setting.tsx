@@ -9,6 +9,9 @@ import FixPoint from './fixPoint/FixPoint'
 import Area from './area/Area'
 import Site from './site/Site'
 import Sector from './sector/Sector'
+import { useRecoilValue } from 'recoil'
+import { authState } from 'common/store/auth'
+import ErrorPage from 'components/common/ErrorPage'
 
 const GridContainer = styled.div`
   display:grid;
@@ -34,6 +37,7 @@ const Item = styled.div`
 function Setting() {
   const SettingContext = React.createContext({})
   const [settingState, setSettingState] = React.useState<SettingStateType>({ current: null })
+  const auth = useRecoilValue(authState);
   const changeState = (str: SettingState) => {
     setSettingState({ current: str });
   }
@@ -61,19 +65,24 @@ function Setting() {
   }, [settingState])
   return (
     <SettingContext.Provider value={settingState}>
-      <Title>환경설정</Title>
-      <GridContainer>
-        <Item onClick={() => { changeState("site") }}>표지소</Item>
-        <Item onClick={() => { changeState("route") }}>항로</Item>
-        <Item onClick={() => { changeState("fixPoint") }}>픽스점</Item>
-        <Item onClick={() => { changeState("frequency") }}>주파수</Item>
-        <Item onClick={() => { changeState("sector") }}>섹터</Item>
-        <Item onClick={() => { changeState("area") }}>구역</Item>
-      </GridContainer>
-      <Divider sx={{ margin: '10px 0' }} />
-      <div>
-        {selector()}
-      </div>
+          <Title>환경설정</Title>
+      {auth.role > 1 ?
+        <>
+          <GridContainer>
+            <Item onClick={() => { changeState("site") }}>표지소</Item>
+            <Item onClick={() => { changeState("route") }}>항로</Item>
+            <Item onClick={() => { changeState("fixPoint") }}>픽스점</Item>
+            <Item onClick={() => { changeState("frequency") }}>주파수</Item>
+            <Item onClick={() => { changeState("sector") }}>섹터</Item>
+            <Item onClick={() => { changeState("area") }}>구역</Item>
+          </GridContainer>
+          <Divider sx={{ margin: '10px 0' }} />
+          <div>
+            {selector()}
+          </div>
+        </>
+        : <ErrorPage code='403' content="권한이 필요합니다."/>
+      }
     </SettingContext.Provider>
   )
 }

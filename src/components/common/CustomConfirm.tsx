@@ -11,8 +11,18 @@ type Props = {
 };
 
 const CustomConfirm = ({ isOpen, title, message, close, confirm }: Props) => {
+
+    const onEnterPress = React.useCallback((e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            confirm && confirm();
+            close && close();
+        }
+    }, []
+    )
+
+
     return (
-        <Wrapper>
+        <Wrapper onKeyDown={onEnterPress}>
             <Modal open={isOpen} onClose={close} slots={{ backdrop: Backdrop }} closeAfterTransition slotProps={{ backdrop: { timeout: 500 } }}>
                 <Fade in={isOpen}>
                     <Content>
@@ -45,7 +55,7 @@ export default CustomConfirm;
 const Wrapper = styled.div`
   transition:0.2s all ease;
   `;
-  
+
 const Content = styled(Box)`
     position: fixed;
     flex-direction:column;
