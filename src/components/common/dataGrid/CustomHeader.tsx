@@ -50,20 +50,13 @@ function CustomHeader({ titleData, setTitleData, edit, submitted, setSubmitted }
     const dateRef = React.useRef<HTMLInputElement>(null);
 
     React.useEffect(() => {
-        // if (data) setFlightData(data)
-        if (routeRef.current)
-            console.log(routeRef.current.files)
+
         if (titleData) {
             if (titleRef.current) titleRef.current.value = titleData.testName;
             if (typeRef.current) typeRef.current.value = titleData.testType;
             // if (routeRef.current) routeRef.current.value = 'wtf'
         }
-        console.log(titleData)
     }, [titleData])
-
-    React.useEffect(() => {
-        console.log(routeFile)
-    }, [routeFile])
 
     const handleSubmit = () => {
         if (titleRef.current && typeRef.current && routeRef.current && dateRef.current) {

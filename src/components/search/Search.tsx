@@ -16,7 +16,7 @@ function Search() {
       {/* {<TableViewer data={data} />} */}
       <CustomTable search />
 
-      <NavCloseButton contentSize={['NONE', 'ENTIRE']} />
+      <NavCloseButton contentSize={['MID', 'ENTIRE']} />
     </>
   )
 }

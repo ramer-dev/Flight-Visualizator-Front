@@ -16,7 +16,7 @@ import { useMap } from 'react-leaflet'
 import { Destination } from 'module/Destination'
 import { FindMinimumScore } from 'module/ScoreCalculate'
 import { frequencyRegex, scoreRegex } from 'common/regex/regex'
-import { patchFlightData, patchFlightList, postFlightList } from 'common/service/flightService'
+import { patchFlightData, patchFlightList, patchFlightResult, postFlightList } from 'common/service/flightService'
 import { useFlightData } from 'components/hooks/useFlightData'
 import { EmptyData } from './EmpryData'
 import useModal from 'components/hooks/useModal'
@@ -103,23 +103,25 @@ function CustomTable({ edit, search, add }: Props) {
     const [flightDataId, setFlightDataId] = useRecoilState(flightResultDataID);
     const setContentView = useSetRecoilState(contentViewFormat)
     const setContent = useSetRecoilState(contentFormat);
-    const [paginationModel, setPaginationModel] = React.useState({
-        pageSize: 100,
-        page: 0,
-    });
+
     const [titleData, setTitleData] = React.useState<FlightList>()
     const [checkboxSelection, setCheckboxSelection] = React.useState<Map<GridRowId, GridValidRowModel>>();
     const [cellModesModel, setCellModesModel] = React.useState<GridCellModesModel>({});
     const [submitted, setSubmitted] = React.useState(false);
+    const [paginationModel, setPaginationModel] = React.useState({
+        pageSize: 100,
+        page: 0,
+    });
+
     const map = useMap();
     const id = useRef(1);
+    const layerGroup = useRef(L.layerGroup([]))
     const apiRef = useGridApiRef()
+
     const siteData = useGetSite();
     const { data, refetch, isLoading } = useFlightData(paginationModel.pageSize, 0, flightDataId)
 
     const [rows, setRows] = React.useState(data?.data?.items ? data.data.items.map((t, i) => ({ ...t, no: i })) : []);
-    const layerGroup = useRef(L.layerGroup([]))
-
     const { isModalOpen, openModal, closeModal } = useModal()
 
     const scoreValidate = (params: GridPreProcessEditCellProps) => {
@@ -144,7 +146,22 @@ function CustomTable({ edit, search, add }: Props) {
             refetch();
         }
         setPaginationModel({ page: 0, pageSize: paginationModel.pageSize })
-        setRows(data?.data ? data.data.items.map((t, i) => ({ ...t, no: i })) : []);
+        
+        
+        if(data?.data?.items){
+            setRows(data.data.items.map((t, i) => ({ ...t, no: i })));
+            const layer = data.data.items.filter(t => t.point === null)
+            for (let item of layer) {
+                const it = {...item};
+                const siteCoord = siteData.data.filter(t => t.siteName === it.siteName).map(t => t.siteCoordinate);
+                const coord = Destination(siteCoord[0], it.angle, it.distance)
+                delete it.deletedAt;
+                delete it.updatedAt;
+                delete it.status;
+                patchFlightResult({...it, point:coord}, it.id!)
+            }
+        }
+        
     }
 
     const columns: GridColDef[] = [
@@ -214,6 +231,7 @@ function CustomTable({ edit, search, add }: Props) {
         { field: 'status', editable: false, flex: 1 },
         { field: 'updatedAt', flex: 1 },
         { field: 'deletedAt', flex: 1 },
+        { field: 'point', editable: false}
     ]
 
 
@@ -223,12 +241,16 @@ function CustomTable({ edit, search, add }: Props) {
         'status': false,
         'updatedAt': false,
         'deletedAt': false,
+        'point' : false,
         // 'action': !!edit
     }
     useEffect(() => {
         stateRefresh()
         // eslint-disable-next-line
-        if (data) setTitleData({ ...data, data: undefined })
+        if (data) {
+            const excludesPoint = data.data?.items.filter(t=> !t.point)
+            setTitleData({ ...data, data: undefined })
+        }
     }, [data, flightDataId])
 
 
@@ -236,6 +258,8 @@ function CustomTable({ edit, search, add }: Props) {
         const obj: { [key: string]: GridValidRowModel } = {};
         const layer = []
         const instance = layerGroup.current;
+
+
         checkboxSelection?.forEach((value, key) => {
             obj[String(key)] = value;
         });

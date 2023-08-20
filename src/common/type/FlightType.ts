@@ -1,3 +1,4 @@
+import { LatLngLiteral } from "leaflet"
 import { PageType } from "./PageType"
 
 export interface FlightResultModel {
@@ -27,6 +28,7 @@ export interface FlightResult {
   distance: number,
   height: number,
   status?: boolean,
+  point?: LatLngLiteral,
   updatedAt?: Date,
   deletedAt?: Date,
 }

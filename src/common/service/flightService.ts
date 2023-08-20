@@ -59,3 +59,8 @@ export const deleteFlightList = async (id: number) => {
     const response = await CustomAxios.delete(`flight/list/${id}`);
     return response;
 }
+
+export const patchFlightResult = async (data : FlightResult, id:number) => {
+    const response = await CustomAxios.patch(`flight/result/${id}`, data);
+    return response;
+}
