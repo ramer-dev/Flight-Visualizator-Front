@@ -56,6 +56,7 @@ export default function Marking() {
     const origin = useRef<LatLngExpression>({ lat: 0, lng: 0 });
     const angle = useRef<HTMLInputElement>(null);
     const distance = useRef<HTMLInputElement>(null);
+    const addBtnRef = useRef<HTMLButtonElement>(null);
     const layerGroup = useRef(L.layerGroup([], { pane: 'marking' }))
 
     useEffect(() => {
@@ -94,28 +95,6 @@ export default function Marking() {
         origin.current = coordinate;
     }
 
-    // const Validation = () => {
-    //     const arr = [false, false, false];
-
-    //     site === ''
-    //         ? arr[0] = true
-    //         : arr[0] = false;
-
-    //     if (angle.current && distance.current) {
-    //         angle.current.value === ''
-    //             ? arr[1] = true
-    //             : arr[1] = false;
-
-    //         distance.current.value === ''
-    //             ? arr[2] = true
-    //             : arr[2] = false;
-    //     }
-
-    //     // setError(arr);
-    //     if (arr.includes(true)) return true;
-    //     return false;
-    // }
-
     const AddElement = (origin_: LatLngExpression, site_: string) => {
         if (angle.current && distance.current) {
 
@@ -152,10 +131,20 @@ export default function Marking() {
         inputProps: { 'aria-label': item },
     });
 
+    const handleKeyPress = React.useCallback((e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+          if(addBtnRef.current && angle.current){
+            e.stopPropagation()
+            addBtnRef.current.click()
+            angle.current.focus();
+          }
+        }
+    }, [])
+
     return (
         <div>
             <Title>마킹</Title>
-            <SearchBox>
+            <SearchBox onKeyDown={handleKeyPress}>
                 <FormControl>
                     <InputWrapper>
                         <h6>기준점</h6>
@@ -228,7 +217,7 @@ export default function Marking() {
                             }} />
                         </FlexBox>
                     </InputWrapper>
-                    <AddButton variant='outlined' sx={{ borderRadius: '16px', width: 100 }}
+                    <AddButton variant='outlined' sx={{ borderRadius: '16px', width: 100 }} ref={addBtnRef}
                         onClick={() => {
                             AddElement(origin.current, site)
                         }}
