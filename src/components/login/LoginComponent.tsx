@@ -72,8 +72,14 @@ function LoginComponent({ open, closeLogin }: Props) {
         }
     }
 
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            loginCheck()
+        }
+    }
+
     return (
-        <Dialog sx={{ minWidth: 350, overflow: 'hidden' }} maxWidth={'md'} open={open} onClose={closeLogin} >
+        <Dialog sx={{ minWidth: 350, overflow: 'hidden' }} maxWidth={'md'} open={open} onClose={closeLogin} onKeyDown={(e: React.KeyboardEvent) => handleKeyPress(e)} >
             {isModalOpen ? loginState.role ? (
                 <Portal>
                     <CustomModal isOpen={isModalOpen} title="로그인 성공" message={`ID:${loginState.id}\n로그인에 성공하였습니다.`} close={() => { closeModal(); closeLogin() }} />
@@ -89,9 +95,9 @@ function LoginComponent({ open, closeLogin }: Props) {
                     <Title>로그인</Title>
                     <TextField label="ID" onChange={(e) => { handleInputChange(e, 'id') }} />
                     <TextField label="PW" type="password" onChange={(e) => { handleInputChange(e, 'pw') }} />
-                    
-                <Button variant='outlined' onClick={() => { loginCheck() }}>testLogin</Button>
-                <Button onClick={testCookie}>test Cookie</Button>
+
+                    <Button variant='outlined' onClick={() => { loginCheck() }}>testLogin</Button>
+                    <Button onClick={testCookie}>test Cookie</Button>
                 </TextWrapper>
 
             </Box>
