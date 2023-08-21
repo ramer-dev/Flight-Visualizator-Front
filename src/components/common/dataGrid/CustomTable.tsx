@@ -23,6 +23,9 @@ import useModal from 'components/hooks/useModal'
 import Portal from 'module/Portal'
 import CustomModal from '../CustomModal'
 import { FlightListPost } from 'entity/FlightListPost'
+import CustomTableTooltip from './CustomTableTooltip'
+import { renderToString } from 'react-dom/server'
+import { convertToWGS } from 'module/DMS'
 
 
 declare module '@mui/x-data-grid' {
@@ -115,6 +118,7 @@ function CustomTable({ edit, search, add }: Props) {
 
     const map = useMap();
     const id = useRef(1);
+    const hoverPolyline = useRef<L.Polyline>();
     const layerGroup = useRef(L.layerGroup([]))
     const apiRef = useGridApiRef()
 
@@ -146,22 +150,22 @@ function CustomTable({ edit, search, add }: Props) {
             refetch();
         }
         setPaginationModel({ page: 0, pageSize: paginationModel.pageSize })
-        
-        
-        if(data?.data?.items){
+
+
+        if (data?.data?.items) {
             setRows(data.data.items.map((t, i) => ({ ...t, no: i })));
             const layer = data.data.items.filter(t => t.point === null)
             for (let item of layer) {
-                const it = {...item};
+                const it = { ...item };
                 const siteCoord = siteData.data.filter(t => t.siteName === it.siteName).map(t => t.siteCoordinate);
                 const coord = Destination(siteCoord[0], it.angle, it.distance)
                 delete it.deletedAt;
                 delete it.updatedAt;
                 delete it.status;
-                patchFlightResult({...it, point:coord}, it.id!)
+                patchFlightResult({ ...it, point: coord }, it.id!)
             }
         }
-        
+
     }
 
     const columns: GridColDef[] = [
@@ -231,7 +235,7 @@ function CustomTable({ edit, search, add }: Props) {
         { field: 'status', editable: false, flex: 1 },
         { field: 'updatedAt', flex: 1 },
         { field: 'deletedAt', flex: 1 },
-        { field: 'point', editable: false}
+        { field: 'point', editable: false }
     ]
 
 
@@ -241,14 +245,14 @@ function CustomTable({ edit, search, add }: Props) {
         'status': false,
         'updatedAt': false,
         'deletedAt': false,
-        'point' : false,
+        'point': false,
         // 'action': !!edit
     }
     useEffect(() => {
         stateRefresh()
         // eslint-disable-next-line
         if (data) {
-            const excludesPoint = data.data?.items.filter(t=> !t.point)
+            const excludesPoint = data.data?.items.filter(t => !t.point)
             setTitleData({ ...data, data: undefined })
         }
     }, [data, flightDataId])
@@ -270,9 +274,9 @@ function CustomTable({ edit, search, add }: Props) {
                 const target = Destination(siteCoords, obj[i].angle, obj[i].distance);
                 layer.push(L.marker(target as LatLngLiteral, {
                     pane: 'pin',
-                    icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby),
-                        obj[i].no)
-                }).bindTooltip('text'))
+                    icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby), obj[i].no)
+                }).bindTooltip(CustomTableTooltip({ siteName: obj[i].siteName, distance: obj[i].distance, angle: obj[i].angle, index: obj[i].no }))
+                )
             }
         }
 

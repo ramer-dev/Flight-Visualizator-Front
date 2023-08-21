@@ -69,25 +69,41 @@ export default function MarkingTooltip({ site, coord, distance, angle, index }: 
   // }
 
   return renderToString(
-    <Container >
-      <FlexBox>
+    <Container style={{
+      display: 'flex',
+      userSelect: 'none',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '10px 10px',
+      borderRadius: '4px',
+      marginBottom: '1px',
+    }}>
+      <FlexBox style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '7px'
+      }}>
         {typeof index === 'number' ?
-          <Index>
+          <Index style={{
+            borderRadius: '50%',
+            backgroundColor: '#d9d9d9',
+            width: '24px',
+            height: '24px',
+            lineHeight: '24px',
+            textAlign: 'center',
+            fontWeight: 300,
+            fontSize: '15px'
+          }}>
             {index + 1}
           </Index> : null
         }
-        <Site>{site ? site : coord?.lat.toFixed(4) + ' / ' + coord?.lng.toFixed(4)}</Site>
+        <Site style={{
+          fontSize: "14px",
+          fontWeight: 700
+        }}>{site ? site : coord?.lat.toFixed(4) + ' / ' + coord?.lng.toFixed(4)}</Site>
         <InfoText>{angle}/{distance}</InfoText>
       </FlexBox>
-      <FlexBox>
-        {/* <ButtonBox> */}
-        {/* <ModifyButton>수정</ModifyButton> */}
-        {/* <CancelIcon sx={{cursor:'pointer'}} onClick={handlerDeleteClick}/> */}
-        {/* </ButtonBox> */}
-        {/* <PinButton>
-          <ICMarking />
-        </PinButton> */}
-      </FlexBox>
+      
     </Container>
   )
 }
