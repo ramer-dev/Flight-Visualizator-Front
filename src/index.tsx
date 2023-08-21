@@ -30,7 +30,7 @@ root.render(
           <App />
         </ThemeProvider>
       </RecoilRoot>
-      <ReactQueryDevtools position='top-left'/>
+      <ReactQueryDevtools position='bottom-right'/>
     </QueryClientProvider>
   // </React.StrictMode>
 );

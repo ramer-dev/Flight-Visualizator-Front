@@ -70,7 +70,7 @@ function Analyze({ origin }: Props) {
                 .on('mouseover', () => {
                     if (data) {
                         const {lat, lng} = data.filter(it => it.siteName === t.siteName)[0].siteCoordinate as LatLngLiteral
-                        hoverPolyline.current = L.polyline([[convertToWGS(lat), convertToWGS(lng)], t.point!]).addTo(map);
+                        hoverPolyline.current = L.polyline([[convertToWGS(lat), convertToWGS(lng)], t.point!], {color:'red', weight:3, pane:'analyze'}).addTo(map);
                     }
                 })
                 .on('mouseout', () => {
