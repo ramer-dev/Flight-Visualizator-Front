@@ -24,7 +24,7 @@ function LoadRoute() {
                             mouseover: (e) => e.target.setStyle({ color: 'rgba(122,122,122,0.6)' }),
                             mouseout: (e) => e.target.setStyle({ color: 'rgba(122,122,122,1)' })
                         }} pane="route">
-                    <Tooltip>{al.routeName}</Tooltip>
+                    <Tooltip sticky>{al.routeName}</Tooltip>
                 </Polyline>)
             }
         </>

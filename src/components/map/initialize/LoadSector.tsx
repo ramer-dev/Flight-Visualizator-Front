@@ -31,7 +31,7 @@ function LoadSector() {
                         mouseover: (e) => e.target.setStyle({ color: 'rgba(122,122,122,1)' }),
                         mouseout: (e) => e.target.setStyle({ color: 'rgba(122,122,122,0.5)' })
                     }} pane="sector">
-                    <Tooltip>{t.sectorName}</Tooltip>
+                    <Tooltip sticky>{t.sectorName}</Tooltip>
                     <Popup closeButton={false} >{t.sectorName}</Popup>
                 </Polygon>
             })}
