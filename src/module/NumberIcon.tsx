@@ -9,13 +9,13 @@ import { ReactComponent as MarkerGreen } from 'atom/icon/marker_green.svg';
 import { ReactComponent as MarkerBlue } from 'atom/icon/marker_blue.svg';
 
 interface Props {
-    index: number,
+    index?: number,
     level: number
 }
 
 interface TemplateProps {
     Temp: React.FC,
-    index: number,
+    index?: number,
 }
 
 const MarkerTemplate = ({ Temp, index }: TemplateProps) => {
@@ -32,17 +32,18 @@ const MarkerTemplate = ({ Temp, index }: TemplateProps) => {
     )
 }
 
-export const divicon = (level: number, index: number) => {
+export const divicon = (level: number, index?: number) => {
     return L.divIcon({
         iconSize: [41, 41],
         iconAnchor: [20, 38],
         popupAnchor: [1, -34],
-        tooltipAnchor: [16, -18], className: `custom-marker-${level}`, html: renderToString(<NumberIcon level={level} index={index+1} />)
+        tooltipAnchor: [16, -18], className: `custom-marker-${level}`, html: renderToString(<NumberIcon level={level} index={typeof index === 'number' ? index+1 : undefined} />)
     })
 }
 
 
 function NumberIcon({ level, index }: Props) {
+
     switch (level) {
         case 5:
             return <MarkerTemplate Temp={MarkerBlue} index={index} />

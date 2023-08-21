@@ -56,16 +56,18 @@ type WrapperProps = {
 }
 
 function ContextMenu({ startPosition, setSelectedMenu, popup, setOpen }: WrapperProps) {
-    const [nearBy, setNearBy] = React.useState<FlightResult>()
     const map = useMap();
+    const container = React.useRef(null)
 
     React.useEffect(() => {
-        console.log(nearBy)
-        L.circle(startPosition, {radius:1000 * 10}).addTo(map)
-    }, [nearBy])
-
+        if (container.current) {
+            L.DomEvent.disableClickPropagation(container.current);
+            L.DomEvent.disableScrollPropagation(container.current);
+        }
+    }, [])
+    
     return (
-        <Container >
+        <Container ref={container}>
             <CoordinateView>
                 {startPosition.lat.toFixed(8)} | {startPosition.lng.toFixed(8)}
             </CoordinateView>
@@ -79,7 +81,7 @@ function ContextMenu({ startPosition, setSelectedMenu, popup, setOpen }: Wrapper
                 }}>
                     좌표
                 </MenuItem>
-                <MenuItem onClick={async () => { setSelectedMenu('analyze'); setNearBy(await getNearBy(startPosition, 10)) }}>
+                <MenuItem onClick={async (e) => { setSelectedMenu('analyze')}}>
                     분석
                 </MenuItem>
             </Menu>

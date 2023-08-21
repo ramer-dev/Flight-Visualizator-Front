@@ -52,7 +52,6 @@ export default function Marking() {
     const [siteMenuOpen, setSiteMenuOpen] = useState(false);
     const [list, setList] = useRecoilState<MarkingCardProps[]>(markingCards);
     const [color, setColor] = useState<string>('5');
-    // const [error, setError] = useState<boolean[]>([false, false, false]);
     const origin = useRef<LatLngExpression>({ lat: 0, lng: 0 });
     const angle = useRef<HTMLInputElement>(null);
     const distance = useRef<HTMLInputElement>(null);

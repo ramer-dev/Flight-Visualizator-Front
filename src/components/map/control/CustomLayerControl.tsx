@@ -67,6 +67,7 @@ interface LayerControlType {
   point: boolean,
   marking: boolean,
   pin: boolean,
+  analyze: boolean,
 }
 
 const Cover = styled.div`
@@ -94,6 +95,7 @@ function CustomLayerControl({ position }: ControlOptions) {
     point: true,
     marking: true,
     pin:true,
+    analyze:true,
   })
 
   useEffect(() => {
@@ -138,6 +140,7 @@ function CustomLayerControl({ position }: ControlOptions) {
         <Item onClick={(e) => { handlerButtonClick(e, 'point') }}><RadioButtonCheckedIcon sx={layers.point ? { color: blue[600] } : EmptyStyle} /><Text>포인트</Text></Item>
         <Item onClick={(e) => { handlerButtonClick(e, 'pin') }}><RadioButtonCheckedIcon sx={layers.pin ? { color: blue[600] } : EmptyStyle} /><Text>비행검사</Text></Item>
         <Item onClick={(e) => { handlerButtonClick(e, 'marking') }}><RadioButtonCheckedIcon sx={layers.marking ? { color: blue[600] } : EmptyStyle} /><Text>마킹</Text></Item>
+        <Item onClick={(e) => { handlerButtonClick(e, 'analyze') }}><RadioButtonCheckedIcon sx={layers.marking ? { color: blue[600] } : EmptyStyle} /><Text>주변분석</Text></Item>
 
       </Wrapper>
       : <Cover onMouseEnter={() => {setIsOpen(true)}}>

@@ -1,8 +1,13 @@
 import React from 'react'
 
-function RangeBearing() {
+interface Props {
+  angle: string,
+  distance: string,
+}
+
+function RangeBearing({ angle, distance }: Props) {
   return (
-    <div>RangeBearing</div>
+    <div>{angle}|{distance}</div>
   )
 }
 

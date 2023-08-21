@@ -57,7 +57,7 @@ const Map = () => {
             /> */}
             {/* <LayersControl position="topright"> */}
 
-            <Pane name="sector" />
+            <Pane name="sector"/>
             <Pane name="route" />
             <Pane name="site" />
             <Pane name="lowsite" />
@@ -67,6 +67,7 @@ const Map = () => {
             <Pane name="pin" />
             <Pane name="flight-record"/>
             <Pane name="range-bearing" />
+            <Pane name='analyze'/>
 
             <EditControlFC geojson={geojson} setGeojson={setGeojson} />
             <CustomLayerControl position="topright" />

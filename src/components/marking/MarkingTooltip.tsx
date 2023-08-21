@@ -2,6 +2,7 @@ import React from 'react'
 import styled from '@emotion/styled'
 import { MarkingCardProps } from './MarkingCard';
 import { renderToString } from 'react-dom/server'
+import { LatLngLiteral } from 'leaflet';
 
 interface StyleProps {
   isDragging?: boolean
@@ -39,7 +40,7 @@ const Site = styled.div`
   font-size:14px;
   font-weight:700;
 `
- 
+
 
 const InfoText = styled.div`
   font-size:12px;
@@ -47,20 +48,18 @@ const InfoText = styled.div`
   font-weight:400;
 `
 
-// export interface MarkingCardProps {
-//   id: string,
-//   site: string,
-//   distance: number,
-//   angle: number,
-//   index: number,
-//   isDragging?: boolean,
-//   level: number,
-//   coord?: LatLngLiteral
-// }
+export interface MarkingTooltipProps {
+  site: string,
+  distance: number,
+  angle: number,
+  index?: number,
+  isDragging?: boolean,
+  coord?: LatLngLiteral
+}
 
 
 
-const MarkingTooltip = ({ site, coord, distance, angle, index, isDragging, id }: MarkingCardProps) => {
+export default function MarkingTooltip({ site, coord, distance, angle, index }: MarkingTooltipProps) {
 
   // const [list, setList] = useRecoilState<MarkingCardProps[]>(markingCards);
 
@@ -70,18 +69,20 @@ const MarkingTooltip = ({ site, coord, distance, angle, index, isDragging, id }:
   // }
 
   return renderToString(
-    <Container isDragging={isDragging}>
+    <Container >
       <FlexBox>
-        <Index>
-          {index + 1}
-        </Index>
+        {typeof index === 'number' ?
+          <Index>
+            {index + 1}
+          </Index> : null
+        }
         <Site>{site ? site : coord?.lat.toFixed(4) + ' / ' + coord?.lng.toFixed(4)}</Site>
         <InfoText>{angle}/{distance}</InfoText>
       </FlexBox>
       <FlexBox>
         {/* <ButtonBox> */}
-          {/* <ModifyButton>수정</ModifyButton> */}
-          {/* <CancelIcon sx={{cursor:'pointer'}} onClick={handlerDeleteClick}/> */}
+        {/* <ModifyButton>수정</ModifyButton> */}
+        {/* <CancelIcon sx={{cursor:'pointer'}} onClick={handlerDeleteClick}/> */}
         {/* </ButtonBox> */}
         {/* <PinButton>
           <ICMarking />
@@ -90,5 +91,3 @@ const MarkingTooltip = ({ site, coord, distance, angle, index, isDragging, id }:
     </Container>
   )
 }
-
-export default MarkingTooltip
