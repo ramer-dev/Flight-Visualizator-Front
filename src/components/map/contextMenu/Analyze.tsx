@@ -29,6 +29,7 @@ interface Props {
 
 function Analyze({ origin }: Props) {
     const { data } = useGetSite();
+    
     const map = useMap();
     const [radius, setRadius] = React.useState<number>(0)
     const [nearBy, setNearBy] = React.useState<FlightResult[]>()
@@ -82,8 +83,14 @@ function Analyze({ origin }: Props) {
             layerGroupRef.current = L.layerGroup(markers).addTo(map)
         }
     }
+
+    const handleEnterPress = (e : React.KeyboardEvent) => {
+        if(e.key === 'Enter') {
+            handleSubmit()
+        }
+    }
     return (
-        <Container>
+        <Container onKeyDown={handleEnterPress}>
             <InputWrapper>
                 <TextField onChange={handleRadiusChange} label='분석 반경(km)' type={'number'} size="small" />
                 <Button onClick={handleSubmit}>분석</Button>

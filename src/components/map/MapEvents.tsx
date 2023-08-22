@@ -3,7 +3,7 @@ import ContextMenu from "components/map/contextMenu/ContextMenu";
 import L from "leaflet";
 import { LatLng, Polyline } from "leaflet";
 import { useRef, useState } from "react";
-import { Popup, useMap, useMapEvents } from "react-leaflet";
+import { Popup, PopupProps, useMap, useMapEvents } from "react-leaflet";
 import { useRecoilState } from "recoil";
 import { renderToString } from 'react-dom/server'
 import RangeBearing from "./contextMenu/RangeBearing";
@@ -31,10 +31,10 @@ const MapEvents = ({ isOpen, setOpen, setZoom }: Props) => {
     const currLine = useRef<Polyline | null>(null);
 
     React.useEffect(() => {
-      console.log(isOpen)
+        console.log(isOpen)
 
     }, [isOpen])
-    
+
     useMapEvents({
         contextmenu(e) {
             setPosition(e.latlng)
@@ -64,7 +64,6 @@ const MapEvents = ({ isOpen, setOpen, setZoom }: Props) => {
             if (selectedMenu === 'range-bearing') {
                 setSelectedMenu(null)
             } else {
-                setSelectedMenu(null)
             }
 
             if (marking.selection) {
@@ -79,11 +78,18 @@ const MapEvents = ({ isOpen, setOpen, setZoom }: Props) => {
             setZoom(e.target._animateToZoom)
         },
 
+        add(e) {
+            console.log(e)
+        },
+        popupclose(e: L.PopupEvent) {
+            if (e.popup.options.className === 'test') setTimeout(() => {setSelectedMenu(null)}, 200)
+        }
+
     })
 
-    return isOpen ? <Popup closeButton={true} keepInView={false} closeOnClick={false} position={position} offset={[0, 0]}>
+    return isOpen ? <Popup className="test" closeButton={true} keepInView={false} closeOnClick={false} position={position} offset={[0, 0]} closeOnEscapeKey>
         {selectedMenu === 'analyze' ?
-            <Analyze origin={position}/>
+            <Analyze origin={position} />
             : <ContextMenu setOpen={setOpen} startPosition={position} setSelectedMenu={setSelectedMenu} popup={popup.current} />}
     </Popup> : null
 
