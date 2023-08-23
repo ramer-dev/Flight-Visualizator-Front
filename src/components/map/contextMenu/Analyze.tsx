@@ -60,7 +60,10 @@ function Analyze({ origin }: Props) {
         }
 
         if (radius > 0) {
-            circle.current = L.circle(origin, { radius: radius * 1000, pane: 'analyze' }).addTo(map);
+            circle.current = L.circle(origin, { radius: radius * 1000, pane: 'analyze' })
+            .bindTooltip('클릭하여 지도에서 삭제')
+            .on('click', clearLayer)
+            .addTo(map);
         }
     }
 
@@ -86,7 +89,14 @@ function Analyze({ origin }: Props) {
 
     const handleEnterPress = (e : React.KeyboardEvent) => {
         if(e.key === 'Enter') {
-            handleSubmit()
+            handleSubmit();
+        }
+    }
+
+    const clearLayer = () => {
+        if(layerGroupRef.current && circle.current) {
+            layerGroupRef.current.remove();
+            circle.current.remove();   
         }
     }
     return (
