@@ -21,6 +21,7 @@ const StyledMapContainer = styled(MapContainer)`
     width:100%;
     height:100vh;
     z-index:0;
+    font-family: 'Pretendard';
 `
 
 L.Marker.prototype.options.icon = L.icon({
@@ -43,7 +44,7 @@ const Map = () => {
         features: [
         ],
     });
-
+ 
     const MapFunction = useMemo(() => (
         <StyledMapContainer center={[36.0, 128.09]} zoom={zoom} minZoom={4} maxZoom={10} id='enroute' zoomControl={false}>
             <NavBar />
