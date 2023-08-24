@@ -27,6 +27,7 @@ function LoadSector() {
                 const dashedStroke = DashedSector(t.sectorName)
                 return <Polygon key={t.id} dashArray={dashedStroke} positions={coords.map(t => { return { lat: convertToWGS(t.lat), lng: convertToWGS(t.lng) } })}
                     fillOpacity={0.4}
+                    color={'rgba(122,122,122,0.5)'}
                     eventHandlers={{
                         mouseover: (e) => e.target.setStyle({ color: 'rgba(122,122,122,1)' }),
                         mouseout: (e) => e.target.setStyle({ color: 'rgba(122,122,122,0.5)' })
