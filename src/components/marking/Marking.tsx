@@ -17,6 +17,9 @@ import divicon from "module/NumberIcon";
 import L from "leaflet";
 import { blue, green, orange, red, yellow } from "@mui/material/colors";
 import MarkingTooltip from "./MarkingTooltip";
+import useModal from "components/hooks/useModal";
+import Portal from "module/Portal";
+import CustomModal from "components/common/CustomModal";
 
 
 const InputWrapper = styled.div`
@@ -57,7 +60,7 @@ export default function Marking() {
     const distance = useRef<HTMLInputElement>(null);
     const addBtnRef = useRef<HTMLButtonElement>(null);
     const layerGroup = useRef(L.layerGroup([], { pane: 'marking' }))
-
+    const { isModalOpen, openModal, closeModal } = useModal()
     useEffect(() => {
         const layer = list.map((t: MarkingCardProps, index: number) => L.marker(t.coord!, { icon: divicon(t.level, index), pane: 'marking' })
             .bindTooltip(MarkingTooltip(t)))
@@ -95,7 +98,7 @@ export default function Marking() {
     }
 
     const AddElement = (origin_: LatLngExpression, site_: string) => {
-        if (angle.current && distance.current) {
+        if (angle.current?.value && distance.current?.value && site) {
 
             // if (Validation()) return;
 
@@ -114,7 +117,9 @@ export default function Marking() {
             angle.current.value = '';
             distance.current.value = '';
             angle.current.focus();
+            return;
         }
+        openModal();
     }
 
 
@@ -132,11 +137,11 @@ export default function Marking() {
 
     const handleKeyPress = React.useCallback((e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
-          if(addBtnRef.current && angle.current){
-            e.stopPropagation()
-            addBtnRef.current.click()
-            angle.current.focus();
-          }
+            if (addBtnRef.current && angle.current) {
+                e.stopPropagation()
+                addBtnRef.current.click()
+                angle.current.focus();
+            }
         }
     }, [])
 
@@ -229,7 +234,9 @@ export default function Marking() {
                 <MarkingDragDrop />
 
             </DragDropContext>
-
+            <Portal>
+                <CustomModal isOpen={isModalOpen} title="마킹" message="내용을 입력해주세요." close={closeModal}/>
+            </Portal>
         </div >
     )
 } 
