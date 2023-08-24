@@ -26,6 +26,7 @@ import { FlightListPost } from 'entity/FlightListPost'
 import CustomTableTooltip from './CustomTableTooltip'
 import { renderToString } from 'react-dom/server'
 import { convertToWGS } from 'module/DMS'
+import { getRouteFromFile } from 'common/service/fileService'
 
 
 declare module '@mui/x-data-grid' {
@@ -36,7 +37,6 @@ declare module '@mui/x-data-grid' {
         handleAddRow: (e: React.MouseEvent) => void;
         handleDeleteRow: (e: React.MouseEvent) => void;
         handleSubmit: (e: React.MouseEvent) => void;
-        handleMarkingBtnClick: (e: React.MouseEvent) => void;
         handleCancelEdit: (e: React.MouseEvent) => void;
         pageSizeChange: (pageSize: number) => void;
     }
@@ -51,7 +51,7 @@ declare module '@mui/x-data-grid' {
         handleAddRow: (e: React.MouseEvent) => void;
         handleDeleteRow: (e: React.MouseEvent) => void;
         handleSubmit: (e: React.MouseEvent) => void;
-        handleMarkingBtnClick: (e: React.MouseEvent) => void;
+        handleMarkingBtnClick: (e: React.MouseEvent, filename: string) => void;
     }
 }
 
@@ -269,13 +269,20 @@ function CustomTable({ edit, search, add }: Props) {
         });
 
         for (let i in obj) {
-            if (!isNaN(obj[i].angle) || !isNaN(obj[i].distance) || obj[i].siteName) {
-                const siteCoords = siteData.data.filter(t => t.siteName === obj[i].siteName)[0]?.siteCoordinate;
+            if (typeof (obj[i].angle) === 'number' && typeof (obj[i].distance) === 'number' && obj[i].siteName) {
+                const siteCoords = siteData.data.filter(t => t.siteName === obj[i].siteName)[0]?.siteCoordinate as LatLngLiteral;
                 const target = Destination(siteCoords, obj[i].angle, obj[i].distance);
                 layer.push(L.marker(target as LatLngLiteral, {
                     pane: 'pin',
                     icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby), obj[i].no)
-                }).bindTooltip(CustomTableTooltip({ siteName: obj[i].siteName, distance: obj[i].distance, angle: obj[i].angle, index: obj[i].no }))
+                }).on('mouseover', () => {
+                    hoverPolyline.current = L.polyline([[convertToWGS(siteCoords.lat), convertToWGS(siteCoords.lng)], target!], {pane:'pin'}).addTo(map);
+                }).on('mouseout', () => {
+                    if(hoverPolyline.current) {
+                        hoverPolyline.current.remove();
+                    }
+                })
+                .bindTooltip(CustomTableTooltip({ siteName: obj[i].siteName, distance: obj[i].distance, angle: obj[i].angle, index: obj[i].no }))
                 )
             }
         }
@@ -450,8 +457,15 @@ function CustomTable({ edit, search, add }: Props) {
         setCheckboxSelection(apiRef.current.getSelectedRows());
     }
 
-    const handleMarkingBtnClick = () => {
+    const handleMarkingBtnClick = async (filename?: string) => {
         setCheckboxSelection(apiRef.current.getSelectedRows());
+        if (filename) {
+            const result = await getRouteFromFile(filename)
+            console.log(result)
+
+            const coords = result.route.map(t => t.coords)
+            L.polyline(coords, {pane:'pin', color:'red'}).addTo(map);
+        }
         shrinkWindow()
     }
 
@@ -494,7 +508,6 @@ function CustomTable({ edit, search, add }: Props) {
                         handleAddRow,
                         handleDeleteRow,
                         handleSubmit,
-                        handleMarkingBtnClick,
                         handleCancelEdit
                     },
                     toolbar: {
@@ -506,8 +519,8 @@ function CustomTable({ edit, search, add }: Props) {
                         setSubmitted,
                         handleAddRow,
                         handleDeleteRow,
-                        handleSubmit,
-                        handleMarkingBtnClick,
+                        handleSubmit, 
+                        handleMarkingBtnClick: () => handleMarkingBtnClick(titleData?.testRoute),
                         titleData,
                         setTitleData,
                     }

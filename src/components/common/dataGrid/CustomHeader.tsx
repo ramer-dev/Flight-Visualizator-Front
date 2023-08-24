@@ -57,8 +57,6 @@ function CustomHeader({ titleData, setTitleData, edit, submitted, setSubmitted }
             if (typeRef.current) typeRef.current.value = titleData.testType;
             // if (routeRef.current) routeRef.current.value = 'wtf'
         }
-
-        console.log(titleData);
     }, [titleData])
 
     const handleSubmit = async () => {

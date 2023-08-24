@@ -11,14 +11,14 @@ import CustomHeader from './CustomHeader';
 import { FlightList } from 'common/type/FlightType';
 
 interface Props {
-  titleData : FlightList;
+  titleData: FlightList;
   title: string;
   count: number;
   edit?: boolean;
   search?: boolean;
-  submitted:boolean;
+  submitted: boolean;
   setSubmitted: (item: boolean) => void;
-  setTitleData: (item : FlightList) => void;
+  setTitleData: (item: FlightList) => void;
   handleAddRow: (e: React.MouseEvent) => void;
   handleDeleteRow: (e: React.MouseEvent) => void;
   handleSubmit: (e: React.MouseEvent) => void;
@@ -39,7 +39,7 @@ function CustomToolbar({ titleData, count, search, edit, submitted, setTitleData
   return (
     <>
       <GridToolbarContainer>
-      {!search ? <CustomHeader titleData={titleData} setTitleData={setTitleData} submitted={submitted} setSubmitted={setSubmitted} edit={edit}/> : null}
+        {!search ? <CustomHeader titleData={titleData} setTitleData={setTitleData} submitted={submitted} setSubmitted={setSubmitted} edit={edit} /> : null}
 
         {edit ?
           <>
