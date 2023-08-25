@@ -120,6 +120,7 @@ function CustomTable({ edit, search, add }: Props) {
     const id = useRef(1);
     const hoverPolyline = useRef<L.Polyline>();
     const layerGroup = useRef(L.layerGroup([]))
+    const routePolyline = useRef<L.Polyline>();
     const apiRef = useGridApiRef()
 
     const siteData = useGetSite();
@@ -298,6 +299,7 @@ function CustomTable({ edit, search, add }: Props) {
         return () => {
             setCellModesModel({});
             instance.clearLayers();
+            if(routePolyline.current) routePolyline.current.remove();
         }
 
     }, [checkboxSelection, map, siteData.data])
@@ -407,11 +409,8 @@ function CustomTable({ edit, search, add }: Props) {
             // 불필요한 속성 명시적으로 삭제
             if (String(item.id).startsWith('add')) {
                 delete item.id
-                editArray.push(item);
-            } else {
-                // 신규 추가의 경우 임시 입력된 ID key 삭제
-                editArray.push(item)
             }
+            editArray.push(item)
 
             if (validateInput(editArray)) {
                 return;
@@ -461,10 +460,9 @@ function CustomTable({ edit, search, add }: Props) {
         setCheckboxSelection(apiRef.current.getSelectedRows());
         if (filename) {
             const result = await getRouteFromFile(filename)
-            console.log(result)
-
             const coords = result.route.map(t => t.coords)
-            L.polyline(coords, {pane:'pin', color:'red'}).addTo(map);
+
+            routePolyline.current = L.polyline(coords, {pane:'pin', color:'red'}).addTo(map);
         }
         shrinkWindow()
     }

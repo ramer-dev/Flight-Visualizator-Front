@@ -5,11 +5,17 @@ import { ContentType, ContentViewType, NavBarType } from "common/type/NavBarType
 import { NoticeContentType } from "common/type/NoticeType";
 import { SiteType } from "common/type/SiteType";
 import { MarkingCardProps } from "components/marking/MarkingCard";
+import { SettingStateType } from "components/setting/SettingStateType";
 import { atom, selector } from "recoil";
 
 export const page = atom<NavBarType>({
     key: 'page',
     default: null
+})
+
+export const setting = atom<SettingStateType>({
+    key: 'setting',
+    default: { current: null, data: null },
 })
 
 export const contentFormat = atom<ContentType>({
@@ -38,8 +44,8 @@ export const flightResultData = selector<FlightList>({
         const response = await getFlightData(id)
         return response;
     },
-    cachePolicy_UNSTABLE:{
-        eviction:"most-recent"
+    cachePolicy_UNSTABLE: {
+        eviction: "most-recent"
     }
 })
 

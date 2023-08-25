@@ -2,5 +2,5 @@ export type SettingState = "frequency" | "route" | "fixPoint" | "site" | "sector
 
 export interface SettingStateType {
     current: SettingState;
-
+    data : any;
 }   

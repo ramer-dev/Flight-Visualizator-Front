@@ -7,7 +7,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import { motion } from 'framer-motion';
 
 interface StyleProps {
-  isDragging?: boolean
+  drag?: boolean
 }
 
 const Container = styled(motion.div)`
@@ -20,8 +20,8 @@ const Container = styled(motion.div)`
     margin: 5px 0;
     border-radius:4px;
     margin-bottom:1px;
-    background-color: ${({ isDragging }: StyleProps) => (isDragging ? '#eeeeee' : 'white')};
-    opacity: ${({isDragging}: StyleProps) => (isDragging ? 0.5 : 1)};
+    background-color: ${({ drag }: StyleProps) => (drag ? '#eeeeee' : 'white')};
+    opacity: ${({drag}: StyleProps) => (drag ? 0.5 : 1)};
     transition:0.2s all ease;
 `
 
@@ -79,7 +79,7 @@ const MarkingCard = ({ site, coord, distance, angle, index, isDragging, id }: Ma
   }
 
   return (
-    <Container isDragging={isDragging} initial={{opacity:0 ,y:'-100%'}} animate={{opacity:1, y:0}} exit={{opacity:0, y:'-100%'}} transition={{duration:.2}}>
+    <Container drag={isDragging} initial={{opacity:0 ,y:'-100%'}} animate={{opacity:1, y:0}} exit={{opacity:0, y:'-100%'}} transition={{duration:.2}}>
       <FlexBox>
         <Index>
           {index + 1}

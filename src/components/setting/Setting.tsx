@@ -2,16 +2,18 @@ import styled from '@emotion/styled'
 import Title from 'components/common/Title'
 import React from 'react'
 import { SettingState, SettingStateType } from './SettingStateType'
-import { Divider } from '@mui/material'
+import { Divider, Fab } from '@mui/material'
 import Frequency from './frequency/Frequency'
 import Route from './route/Route'
 import FixPoint from './fixPoint/FixPoint'
 import Area from './area/Area'
 import Site from './site/Site'
 import Sector from './sector/Sector'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import { authState } from 'common/store/auth'
 import ErrorPage from 'components/common/ErrorPage'
+import AddIcon from '@mui/icons-material/Add'
+import { contentViewFormat, contentFormat, setting } from 'common/store/atom'
 
 const GridContainer = styled.div`
   display:grid;
@@ -31,24 +33,55 @@ const Item = styled.div`
     color:white;
   }
 `
-
-
+const StyledFab = styled(Fab)`
+    position:absolute;
+    bottom:20px;
+    right:10px;
+`
 
 function Setting() {
   const SettingContext = React.createContext({})
-  const [settingState, setSettingState] = React.useState<SettingStateType>({ current: null })
+  const [settingState, setSettingState] = useRecoilState<SettingStateType>(setting)
+  const [content, setContent] = useRecoilState(contentFormat)
+  const [contentView, setContentView] = useRecoilState(contentViewFormat)
   const auth = useRecoilValue(authState);
+
+  const handlerAddButtnClick = React.useCallback(() => {
+    if (settingState.current !== null) {
+      setContent('ADD')
+      setContentView('MIN')
+    }
+  }, [settingState.current])
+
+  const openEditWindow = () => {
+    if (settingState !== null) {
+      setContentView('MIN')
+      setContent('EDIT')
+    }
+  }
+
+  const closeWindow = () => {
+    setContent('NONE')
+  }
+
   const changeState = (str: SettingState) => {
-    setSettingState({ current: str });
+    setSettingState({...settingState, current:str});
+  }
+  
+  const changeData = (data: any) => {
+    setSettingState({...settingState, data:data})
   }
 
   React.useEffect(() => {
     console.log(settingState.current);
-  }, [settingState])
+    closeWindow();
+    changeData(null)
+  }, [settingState.current])
+
   const selector = React.useCallback(() => {
     switch (settingState.current) {
       case "frequency":
-        return <Frequency />
+        return <Frequency openEditWindow={openEditWindow} changeData={changeData}/>
       case "route":
         return <Route />
       case "fixPoint":
@@ -62,10 +95,11 @@ function Setting() {
       default:
         break;
     }
-  }, [settingState])
+  }, [settingState.current])
+
   return (
-    <SettingContext.Provider value={settingState}>
-          <Title>환경설정</Title>
+    <>
+      <Title>환경설정</Title>
       {auth.role > 1 ?
         <>
           <GridContainer>
@@ -80,10 +114,13 @@ function Setting() {
           <div>
             {selector()}
           </div>
+          <StyledFab color="info" aria-label="add" onClick={handlerAddButtnClick}>
+            <AddIcon color="primary" />
+          </StyledFab>
         </>
-        : <ErrorPage code='403' content="권한이 필요합니다."/>
+        : <ErrorPage code='403' content="권한이 필요합니다." />
       }
-    </SettingContext.Provider>
+    </>
   )
 }
 

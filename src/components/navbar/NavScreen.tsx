@@ -6,6 +6,7 @@ import { ContentType, ContentViewType, NavBarType } from 'common/type/NavBarType
 import { FlightScreen } from '../flight/FlightScreen';
 import { NoticeScreen } from 'components/notice/NoticeScreen';
 import Search from 'components/search/Search';
+import {SettingScreen} from 'components/setting/SettingScreen';
 
 type styleProp = {
     contentView: string | null;
@@ -39,7 +40,7 @@ const selector = (page_: NavBarType) => {
         case "SEARCH":
             return <Search />;
         case "SETTING":
-            return null;
+            return <SettingScreen/>
         default:
             return null;
     }
