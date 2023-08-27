@@ -79,7 +79,7 @@ function CustomHeader({ titleData, setTitleData, edit, submitted, setSubmitted }
                 <InputWrapper>
                     <TextField inputRef={titleRef} helperText="비행검사명" size='small' disabled={!edit || submitted}></TextField>
                     <TextField inputRef={typeRef} sx={{ width: 128 }} helperText="검사유형" size='small' disabled={!edit || submitted}></TextField>
-                    <MuiFileInput label="항적 파일" value={routeFile} onChange={handleFileChange} disabled={!edit || submitted} size='small' helperText='항적 파일' sx={{ width: 256 }} inputRef={routeRef} hideSizeText getInputText={(value) => { return value?.size && value.name ? value.name : titleData?.testRoute ? '경로 입력됨' : '' }} />
+                    <MuiFileInput label="항적 파일" value={routeFile} onChange={handleFileChange} disabled={!edit || submitted} size='small' helperText='항적 파일' sx={{ width: 256 }} inputRef={routeRef} hideSizeText getInputText={(value:any) => { return value?.size && value.name ? value.name : titleData?.testRoute ? '경로 입력됨' : '' }} />
                     {/* <MuiFileInput value={resultFile} onChange={resultFileChange} size='small' placeholder='결과지 파일' sx={{ width: 256 }} inputRef={resultRef} hideSizeText multiple  /> */}
                     {/* <CustomFileInput id={1}/> */}
                     <DatePicker format="YYYY-MM-DD" inputRef={dateRef} slotProps={{ textField: { size: 'small', helperText: '검사일자' } }} value={titleData?.testDate ? dayjs(titleData.testDate) : null} sx={{ width: 156 }} disabled={!edit || submitted} />

@@ -1,17 +1,22 @@
-import { TextField } from '@mui/material'
+import { Button, TextField } from '@mui/material'
 import { frequencyRegex } from 'common/regex/regex'
-import { setting } from 'common/store/atom'
+import { patchFrequnecy } from 'common/service/frequencyService'
+import { contentFormat, contentViewFormat, setting } from 'common/store/atom'
 import ScreenTitle from 'components/common/ScreenTitle'
 import { useGetSite } from 'components/hooks/useSite'
+import { frequencyDTO } from 'dto/frequencyDTO'
 import React from 'react'
-import { useRecoilValue } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { SettingStateType } from '../SettingStateType'
 
 function FrequencyEdit() {
     const settingState = useRecoilValue<SettingStateType>(setting)
+    const setContentView = useSetRecoilState(contentViewFormat)
+    const setContent = useSetRecoilState(contentFormat)
+
     const { data } = useGetSite();
 
-    const siteData = data.map(t => t.siteName);
+    const siteData = data.map(t => { return { siteName: t.siteName, siteID: t.siteId } });
     const freq = React.useRef<HTMLInputElement>(null)
     const site = React.useRef<HTMLInputElement>(null)
     const [siteError, setSiteError] = React.useState(false);
@@ -19,15 +24,34 @@ function FrequencyEdit() {
 
 
     const frequencyErrorHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if(!e.target.value.match(frequencyRegex)) setFreqError(true)
+        if (!e.target.value.match(frequencyRegex)) setFreqError(true)
         else setFreqError(false)
     }
 
     const siteErrorHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!siteData.includes(e.target.value)) {
+        if (!siteData.map(t => t.siteName).includes(e.target.value)) {
             setSiteError(true);
         } else {
             setSiteError(false);
+        }
+    }
+
+    const closeWindow = () => {
+        setContent('NONE')
+        setContentView('NONE')
+    }
+
+    const patchData = async () => {
+        if (freq.current?.value && site.current?.value && !siteError) {
+            const updatedSiteId = siteData.filter(t => t.siteName === site.current!.value)[0].siteID!
+            const body: frequencyDTO = {
+                frequency: +freq.current.value,
+                frequencySiteName: site.current.value,
+                frequencySiteId: +updatedSiteId
+            }
+            console.log(body)
+            await patchFrequnecy(body, settingState.data.id)
+            closeWindow();
         }
     }
     React.useEffect(() => {
@@ -40,11 +64,15 @@ function FrequencyEdit() {
     }, [settingState])
 
 
+
+
     return (
         <>
             <ScreenTitle text={'주파수'} />
-            <TextField label="주파수" onChange={frequencyErrorHandler} inputRef={freq} defaultValue={settingState.data.label} type="number" error={freqError}/>
+            <TextField label="주파수" onChange={frequencyErrorHandler} inputRef={freq} defaultValue={settingState.data.label} type="number" error={freqError} />
             <TextField label="표지소" onChange={siteErrorHandler} inputRef={site} defaultValue={settingState.data.site} error={siteError} />
+            <Button onClick={patchData}>확인</Button>
+            <Button onClick={closeWindow}>취소</Button>
         </>
     )
 }
