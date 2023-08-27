@@ -26,7 +26,7 @@ export default function Frequency({ openEditWindow, changeData }: Props) {
     const content = useRecoilValue(contentFormat)
 
     React.useEffect(() => {
-        if (content === 'NONE') refetch()
+        if (content === 'NONE') {refetch(); console.log('refetched')}
     }, [content])
     // const options = [{label:'test'}, {label:'test2'}]
     const options = data.map(t => { return { label: `${t.frequency}`, site: t.frequencySiteName, id: t.frequencyId, siteId: t.frequencySiteId } }).sort((a, b) => a.site.localeCompare(b.site))

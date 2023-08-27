@@ -1,6 +1,6 @@
 import { Button, TextField } from '@mui/material'
 import { frequencyRegex } from 'common/regex/regex'
-import { patchFrequnecy } from 'common/service/frequencyService'
+import { deleteFrequency, patchFrequnecy } from 'common/service/frequencyService'
 import { contentFormat, contentViewFormat, setting } from 'common/store/atom'
 import ScreenTitle from 'components/common/ScreenTitle'
 import { useGetSite } from 'components/hooks/useSite'
@@ -49,21 +49,23 @@ function FrequencyEdit() {
                 frequencySiteName: site.current.value,
                 frequencySiteId: +updatedSiteId
             }
-            console.log(body)
             await patchFrequnecy(body, settingState.data.id)
             closeWindow();
         }
     }
+
+    const deleteFreq = () => {
+        deleteFrequency(settingState.data.id);
+        closeWindow();
+    }
+    
     React.useEffect(() => {
-        console.log(settingState);
 
         if (site?.current && freq?.current && settingState?.data) {
             freq.current.value = settingState.data.label;
             site.current.value = settingState.data.site;
         }
     }, [settingState])
-
-
 
 
     return (
@@ -73,6 +75,7 @@ function FrequencyEdit() {
             <TextField label="표지소" onChange={siteErrorHandler} inputRef={site} defaultValue={settingState.data.site} error={siteError} />
             <Button onClick={patchData}>확인</Button>
             <Button onClick={closeWindow}>취소</Button>
+            <Button onClick={deleteFreq}>삭제</Button>
         </>
     )
 }

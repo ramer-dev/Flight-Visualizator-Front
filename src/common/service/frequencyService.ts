@@ -7,17 +7,17 @@ export async function getEntireFrequency() {
     return data;
 }
 
-// export async function postNotice(item: NoticeContentType) {
-//     const response = await CustomAxios.post(`notice`, item);
-//     return response;
-// }
+export async function postFrequency(item: frequencyDTO) {
+    const response = await CustomAxios.post(`freq`, item);
+    return response;
+}
 
 export async function patchFrequnecy(item: frequencyDTO, id: number) {
     const response = await CustomAxios.patch(`freq/${id}`, item);
     return response;
 }
 
-// export async function deleteNotice(id: number) {
-//     const response = await CustomAxios.delete(`notice/${id}`,);
-//     return response;
-// }
+export async function deleteFrequency(id: number) {
+    const response = await CustomAxios.delete(`freq/${id}`,);
+    return response;
+}
