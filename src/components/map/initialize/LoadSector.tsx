@@ -25,12 +25,13 @@ function LoadSector() {
             {sector?.map(t => {
                 const coords = t.sectorData as LatLngLiteral[]
                 const dashedStroke = DashedSector(t.sectorName)
-                return <Polygon key={t.id} dashArray={dashedStroke} positions={coords.map(t => { return { lat: convertToWGS(t.lat), lng: convertToWGS(t.lng) } })}
+                return <Polygon key={t.id} dashArray={dashedStroke} positions={coords.map(t => { return { lat: convertToWGS(t.lat), lng: convertToWGS(t.lng) } })
+                }
                     fillOpacity={0.4}
                     color={t.sectorArea.areaColor}
                     eventHandlers={{
-                        mouseover: (e) => e.target.setStyle({ opacity: '1',fillOpacity:'.3' }),
-                        mouseout: (e) => e.target.setStyle({ opacity: '.5', fillOpacity:'.1' })
+                        mouseover: (e) => e.target.setStyle({ opacity: '1', fillOpacity: '.3' }),
+                        mouseout: (e) => e.target.setStyle({ opacity: '.5', fillOpacity: '.1' })
                     }} pane="sector">
                     <Tooltip sticky>{t.sectorName}</Tooltip>
                     <Popup closeButton={false} >{t.sectorName}</Popup>

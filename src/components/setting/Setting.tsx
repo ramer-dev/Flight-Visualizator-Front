@@ -87,7 +87,7 @@ function Setting() {
       case "fixPoint":
         return <FixPoint />
       case "area":
-        return <Area />
+        return <Area openEditWindow={openEditWindow} changeData={changeData}/>
       case "site":
         return <Site />
       case "sector":
