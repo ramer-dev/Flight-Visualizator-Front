@@ -27,10 +27,10 @@ function LoadSector() {
                 const dashedStroke = DashedSector(t.sectorName)
                 return <Polygon key={t.id} dashArray={dashedStroke} positions={coords.map(t => { return { lat: convertToWGS(t.lat), lng: convertToWGS(t.lng) } })}
                     fillOpacity={0.4}
-                    color={'rgba(122,122,122,0.5)'}
+                    color={t.sectorArea.areaColor}
                     eventHandlers={{
-                        mouseover: (e) => e.target.setStyle({ color: 'rgba(122,122,122,1)' }),
-                        mouseout: (e) => e.target.setStyle({ color: 'rgba(122,122,122,0.5)' })
+                        mouseover: (e) => e.target.setStyle({ opacity: '1',fillOpacity:'.3' }),
+                        mouseout: (e) => e.target.setStyle({ opacity: '.5', fillOpacity:'.1' })
                     }} pane="sector">
                     <Tooltip sticky>{t.sectorName}</Tooltip>
                     <Popup closeButton={false} >{t.sectorName}</Popup>
