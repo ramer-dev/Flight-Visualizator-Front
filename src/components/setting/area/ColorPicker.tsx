@@ -58,6 +58,7 @@ const Dot = styled.div`
 
 const Container = styled.div`
     position:absolute;
+    top:0;
     z-index:2500;
     background-color:#fff;
     width:300px;
@@ -71,7 +72,7 @@ const PickerButton = styled.div`
   background-color:${({ color }: StyledProp) => color};
   border-radius:5px;
   width:40px;
-  height:36px;
+  height:20px;
   cursor:pointer;
 `
 
@@ -82,12 +83,12 @@ const ColorPicker = ({ colors, setColor, selectedColor, title, close, open, isOp
             <Grid>
                 {
                     colors.map(t => {
-                        return selectedColor === t ? <SelectedDiv>
-                            <Item color={t} onClick={() => { setColor(t); close && close() }} />
+                        return selectedColor === t ? <SelectedDiv key={t}>
+                            <Item color={t}  onClick={() => { setColor(t); close && close() }} />
                             <SelectedHover><Dot /></SelectedHover>
 
                         </SelectedDiv>
-                            : <Item color={t} onClick={() => { setColor(t); close && close() }} />
+                            : <Item key={t} color={t} onClick={() => { setColor(t); close && close() }} />
                     })
                 }
             </Grid>

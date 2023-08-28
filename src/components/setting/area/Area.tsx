@@ -7,24 +7,24 @@ import React from "react";
 import { useRecoilValue } from "recoil";
 
 const Container = styled.div`
-    display:flex;
     
 `
 interface Props {
     openEditWindow: () => void;
     changeData: (e: any) => void;
 }
-export default function Area({openEditWindow, changeData} : Props) {
+export default function Area({ openEditWindow, changeData }: Props) {
     const { data, refetch, isLoading, isError } = useGetArea();
     const options = data.map(t => { return { label: `${t.areaName}`, color: t.areaColor, id: t.areaId } })
     const content = useRecoilValue(contentFormat)
 
     React.useEffect(() => {
         if (content === 'NONE') refetch()
-    }, [contentFormat])
+    }, [content])
+
     return (
         <Container>
-             <Autocomplete
+            <Autocomplete
                 options={options}
                 autoHighlight
                 onChange={(e, value) => { openEditWindow(); changeData(value) }}
@@ -36,7 +36,7 @@ export default function Area({openEditWindow, changeData} : Props) {
                         {isError ? <ErrorPage /> : null}
                         {
                             <Box component='li' key={option.id + option.label} {...props} value={`${option.label}`}>
-                                {option.label} <span style={{color:option.color}}>■</span>
+                                {option.label} <span style={{ color: option.color }}>■</span>
                             </Box>
                         }
                     </>

@@ -58,10 +58,10 @@ function FrequencyEdit() {
         deleteFrequency(settingState.data.id);
         closeWindow();
     }
-    
-    React.useEffect(() => {
 
-        if (site?.current && freq?.current && settingState?.data) {
+    React.useEffect(() => {
+        console.log(settingState)
+        if (site?.current && freq?.current && settingState?.data?.label) {
             freq.current.value = settingState.data.label;
             site.current.value = settingState.data.site;
         }
@@ -69,14 +69,17 @@ function FrequencyEdit() {
 
 
     return (
-        <>
-            <ScreenTitle text={'주파수'} />
+
+        settingState?.data ? <>
+            < ScreenTitle text={'주파수'} />
             <TextField label="주파수" onChange={frequencyErrorHandler} inputRef={freq} defaultValue={settingState.data.label} type="number" error={freqError} />
             <TextField label="표지소" onChange={siteErrorHandler} inputRef={site} defaultValue={settingState.data.site} error={siteError} />
             <Button onClick={patchData}>확인</Button>
             <Button onClick={closeWindow}>취소</Button>
             <Button onClick={deleteFreq}>삭제</Button>
-        </>
+        </> : <>{closeWindow()}</>
+
+
     )
 }
 
