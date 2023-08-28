@@ -20,6 +20,7 @@ import MarkingTooltip from "./MarkingTooltip";
 import useModal from "components/hooks/useModal";
 import Portal from "module/Portal";
 import CustomModal from "components/common/CustomModal";
+import MarkingPopup from "./MarkingPopup";
 
 
 const InputWrapper = styled.div`
@@ -63,7 +64,7 @@ export default function Marking() {
     const { isModalOpen, openModal, closeModal } = useModal()
     useEffect(() => {
         const layer = list.map((t: MarkingCardProps, index: number) => L.marker(t.coord!, { icon: divicon(t.level, index), pane: 'marking' })
-            .bindTooltip(MarkingTooltip(t)))
+            .bindTooltip(MarkingTooltip(t)).bindPopup(MarkingPopup(t), {closeOnClick:false, autoClose:false}))
         const instance = layerGroup.current
 
         instance.clearLayers()

@@ -1,7 +1,10 @@
 import styled from "@emotion/styled"
 import { Autocomplete, Box, CircularProgress, MenuItem, Select, TextField } from "@mui/material"
+import { contentFormat } from "common/store/atom";
 import ErrorPage from "components/common/ErrorPage";
 import { useGetArea } from "components/hooks/useArea";
+import React from "react";
+import { useRecoilValue } from "recoil";
 
 const Container = styled.div`
     display:flex;
@@ -14,7 +17,11 @@ interface Props {
 export default function Area({openEditWindow, changeData} : Props) {
     const { data, refetch, isLoading, isError } = useGetArea();
     const options = data.map(t => { return { label: `${t.areaName}`, color: t.areaColor, id: t.areaId } })
+    const content = useRecoilValue(contentFormat)
 
+    React.useEffect(() => {
+        if (content === 'NONE') refetch()
+    }, [contentFormat])
     return (
         <Container>
              <Autocomplete
