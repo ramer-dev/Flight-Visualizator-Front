@@ -19,6 +19,7 @@ const Container = styled.div`
 `
 
 const Wrapper = styled(motion.div)`
+  background-color:#fff;
     transform:${(props: StyleProp) => props.hide === 'true' ? 'translateX(-100%)' : ''};
     opacity:${(props:StyleProp) => props.hide === 'true' ? '0' : '1'};
     width:350px;
@@ -29,6 +30,7 @@ const Wrapper = styled(motion.div)`
     padding:10px 25px;
     position:${(props:StyleProp) => props.hide === 'true' ? 'fixed' : 'relative'};
     /* padding: ${(props: StyleProp) => props.hide === 'true' ? '0' : '10px 25px'}; */
+    z-index:2200;
 `
 
 type propType = { 
@@ -61,7 +63,7 @@ const NavSideBar = (prop: propType) => {
         })()}
       </Wrapper>
 
-      <NavScreen />
+      <NavScreen/>
 
     </Container>
   );

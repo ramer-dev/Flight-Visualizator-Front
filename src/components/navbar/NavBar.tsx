@@ -19,7 +19,7 @@ import LoginComponent from "components/login/LoginComponent";
 import { authState } from "common/store/auth";
 import { getLogout } from "components/hooks/useLogin";
 import { AuthType } from "common/type/AuthType";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import useConfirm from "components/hooks/useConfirm";
 import Portal from "module/Portal";
 import CustomConfirm from "components/common/CustomConfirm";
@@ -68,7 +68,7 @@ const SubNavBar = styled.div`
     
 `
 
-const ContentView = styled.div`
+const ContentView = styled(motion.div)`
     position:fixed;
     margin-left:64px;
     background-color:#ffffff;   
@@ -155,7 +155,7 @@ const NavBar = () => {
                         {logoState
                             ? <LogoColor />
                             : <LogoGray />}
-                            <TitleText>비행검사 시각화 서비스</TitleText>
+                        <TitleText>비행검사 시각화 서비스</TitleText>
                     </LogoImg>
                     <MainNavBar>
                         <NavItem icon={FlightListIcon} title={"FLIGHT_RESULT"} content={"비행검사"} onclick={() => { onButtonClick("FLIGHT_RESULT") }} />
@@ -170,10 +170,12 @@ const NavBar = () => {
 
                     </SubNavBar>
                 </Wrapper>
-                {selectedPage &&
-                    <ContentView>
-                        <NavSideBar selectedPage={selectedPage} />
-                    </ContentView>}
+                <AnimatePresence mode='wait'>
+                    {selectedPage &&
+                        <ContentView initial={{x:'-100%'}} animate={{x:0}} exit={{x:'-100%'}} transition={{type:"tween"}}>
+                            <NavSideBar selectedPage={selectedPage} />
+                        </ContentView>}
+                </AnimatePresence>
 
             </Container>
 
