@@ -3,6 +3,7 @@ import { ContentType } from 'common/type/NavBarType';
 import React from 'react'
 import { useRecoilValue } from 'recoil';
 import { AreaScreen } from './area/AreaScreen';
+import { FixPointScreen } from './fixPoint/FixPointScreen';
 import { FrequencyScreen } from './frequency/FrequencyScreen';
 import { SettingState } from './SettingStateType';
 
@@ -12,17 +13,24 @@ const selector = (content: ContentType, settingValue: SettingState) => {
             return <FrequencyScreen content={content} />
         case 'area':
             return <AreaScreen content={content} />
+
+        case 'fixPoint':
+            return <FixPointScreen content={content} />
+            
         default:
             return null;
     }
 }
 
-export const SettingScreen = () => {
+interface SettingType {
+    settings: SettingState
+}
+
+export const SettingScreen = ({ settings }: SettingType) => {
     const content = useRecoilValue(contentFormat);
-    const settingValue = useRecoilValue(setting)
     return (
         <>
-            {selector(content, settingValue.current)}
+            {selector(content, settings)}
         </>
     )
 }

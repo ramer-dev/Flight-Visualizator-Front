@@ -85,7 +85,7 @@ function Setting() {
       case "route":
         return <Route />
       case "fixPoint":
-        return <FixPoint />
+        return <FixPoint openEditWindow={openEditWindow} changeData={changeData}/>
       case "area":
         return <Area openEditWindow={openEditWindow} changeData={changeData}/>
       case "site":

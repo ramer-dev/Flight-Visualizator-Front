@@ -13,12 +13,12 @@ export async function postArea(item: AreaDTO) {
     return response;
 }
 
-export async function patchFrequnecy(item: AreaDTO, id: number) {
+export async function patchArea(item: AreaDTO, id: number) {
     const response = await CustomAxios.patch(`area/${id}`, item);
     return response;
 }
 
-export async function deleteFrequency(id: number) {
+export async function deleteArea(id: number) {
     const response = await CustomAxios.delete(`area/${id}`,);
     return response;
 }
