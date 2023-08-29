@@ -16,3 +16,8 @@ export async function patchFixPoint(body : FixPointDTO, id:number) {
     const { data } = await CustomAxios.patch<FixPointDTO>(`point/${id}`, body)
     return data
 }
+
+export async function deleteFixPoint( id:number) {
+    const { data } = await CustomAxios.delete(`point/${id}`)
+    return data
+}

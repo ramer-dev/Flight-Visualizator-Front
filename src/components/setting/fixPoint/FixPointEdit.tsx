@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import { Button, TextField } from '@mui/material'
-import { patchFixPoint, postFixPoint } from 'common/service/pointService'
+import { deleteFixPoint, patchFixPoint, postFixPoint } from 'common/service/pointService'
 import { contentFormat, contentViewFormat, setting } from 'common/store/atom'
 import ScreenTitle from 'components/common/ScreenTitle'
 import { FixPointDTO } from 'dto/fixPointDTO'
@@ -45,15 +45,20 @@ function FixPointEdit() {
         setContent('NONE')
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (nameRef.current) {
             const body: FixPointDTO = {
                 pointName: nameRef.current.value,
                 pointCoordinate: { lat: coord.lat, lng: coord.lng }
             }
-            patchFixPoint(body, settingState.data.id);
+            await patchFixPoint(body, settingState.data.id);
             closeScreen()
         }
+    }
+
+    const handleDelete = async () => {
+        await deleteFixPoint(settingState.data.id);
+        closeScreen();
     }
 
     const handleCoordChange = (e: React.ChangeEvent<HTMLInputElement>, st: string) => {
@@ -114,6 +119,8 @@ function FixPointEdit() {
             <Content>
                 <Button onClick={handleSubmit}>확인</Button>
                 <Button color='error' onClick={closeScreen}>취소</Button>
+                <Button color='error' variant='outlined' onClick={handleDelete}>삭제</Button>
+
             </Content>
 
         </Container>
