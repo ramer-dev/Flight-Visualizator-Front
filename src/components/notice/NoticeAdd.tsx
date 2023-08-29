@@ -84,7 +84,7 @@ function NoticeAdd() {
         </DivButtonFlex>
       </Wrapper>
       {/* </Container> */}
-      <NavCloseButton contentSize={['MIN']} />
+      <NavCloseButton contentSize={['NONE', 'MIN']} />
     </>
 
   )
