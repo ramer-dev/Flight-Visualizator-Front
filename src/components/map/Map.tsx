@@ -69,6 +69,7 @@ const Map = () => {
             <Pane name="flight-record"/>
             <Pane name="range-bearing" />
             <Pane name='analyze'/>
+            <Pane name='setting' style={{zIndex:1900}}/>
 
             <EditControlFC geojson={geojson} setGeojson={setGeojson} />
             <CustomLayerControl position="topright" />

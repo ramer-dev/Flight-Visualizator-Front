@@ -5,3 +5,7 @@ export interface FixPointDTO {
     pointName: string,
     pointCoordinate : LatLngLiteral,
 }
+
+export interface FixPointAutoCompleteItemType {
+    label: string, coord: LatLngLiteral, id: number
+}

@@ -5,7 +5,6 @@ import { contentFormat, contentViewFormat } from 'common/store/atom'
 import ScreenTitle from 'components/common/ScreenTitle'
 import { AreaDTO } from 'dto/areaDTO'
 import React from 'react'
-import { ChromePicker, Color, CompactPicker } from 'react-color'
 import { useSetRecoilState } from 'recoil'
 import ColorPicker from './ColorPicker'
 interface StyledProp {

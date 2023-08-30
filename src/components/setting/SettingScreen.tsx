@@ -5,6 +5,7 @@ import { useRecoilValue } from 'recoil';
 import { AreaScreen } from './area/AreaScreen';
 import { FixPointScreen } from './fixPoint/FixPointScreen';
 import { FrequencyScreen } from './frequency/FrequencyScreen';
+import { RouteScreen } from './route/RouteScreen';
 import { SettingState } from './SettingStateType';
 
 const selector = (content: ContentType, settingValue: SettingState) => {
@@ -16,7 +17,9 @@ const selector = (content: ContentType, settingValue: SettingState) => {
 
         case 'fixPoint':
             return <FixPointScreen content={content} />
-            
+        case 'route':
+            return <RouteScreen content={content} />
+
         default:
             return null;
     }

@@ -83,7 +83,7 @@ function Setting() {
       case "frequency":
         return <Frequency openEditWindow={openEditWindow} changeData={changeData}/>
       case "route":
-        return <Route />
+        return <Route openEditWindow={openEditWindow} changeData={changeData}/>
       case "fixPoint":
         return <FixPoint openEditWindow={openEditWindow} changeData={changeData}/>
       case "area":
