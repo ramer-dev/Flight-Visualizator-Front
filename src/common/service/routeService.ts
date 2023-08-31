@@ -11,3 +11,13 @@ export async function postRouteData(body: RouteDTO) {
     const { data } = await CustomAxios.post<RouteDTO>(`route`, body)
     return data;
 }
+
+export async function patchRouteData(id:number, body:RouteDTO) {
+    const {data } = await CustomAxios.patch<RouteDTO>(`route/${id}`, body)
+    return data
+}
+
+export async function deleteRouteData(id:number) {
+    const {data} = await CustomAxios.delete(`route/${id}`);
+    return data
+}

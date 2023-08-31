@@ -33,7 +33,10 @@ const Content = styled.div`
 const InputWrapper = styled.div`
   display:flex;
   flex-direction:column;
-    
+  gap:15px;
+  overflow-y:auto;
+  height:calc(100vh - 130px);
+  padding: 5px 0;
 `
 
 

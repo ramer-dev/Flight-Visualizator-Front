@@ -18,6 +18,7 @@ interface Props {
 function FixPointAutoComplete({ openEditWindow, changeData, label, value, options, isLoading, isError }: Props) {
     return (
         <Autocomplete
+        clearOnEscape
             fullWidth
             value={value}
             options={options}

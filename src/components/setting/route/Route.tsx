@@ -15,7 +15,7 @@ const Container = styled.div`
 
 export default function Route({ openEditWindow, changeData } : Props) {
     const { data, refetch, isLoading, isError } = useGetRoute();
-    const options = data.map(t => { return { label: `${t.routeName}`, coords: t.routeData, id: t.routeId } })
+    const options = data.map(t => { return { label: `${t.routeName}`, coords: t.routeData, id: t.routeId} })
     const content = useRecoilValue(contentFormat)
 
     React.useEffect(() => {
