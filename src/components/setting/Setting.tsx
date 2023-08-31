@@ -89,7 +89,7 @@ function Setting() {
       case "area":
         return <Area openEditWindow={openEditWindow} changeData={changeData}/>
       case "site":
-        return <Site />
+        return <Site openEditWindow={openEditWindow} changeData={changeData}/>
       case "sector":
         return <Sector />
       default:

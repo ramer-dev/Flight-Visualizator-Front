@@ -7,6 +7,7 @@ import { FixPointScreen } from './fixPoint/FixPointScreen';
 import { FrequencyScreen } from './frequency/FrequencyScreen';
 import { RouteScreen } from './route/RouteScreen';
 import { SettingState } from './SettingStateType';
+import { SiteScreen } from './site/SiteScreen';
 
 const selector = (content: ContentType, settingValue: SettingState) => {
     switch (settingValue) {
@@ -19,7 +20,8 @@ const selector = (content: ContentType, settingValue: SettingState) => {
             return <FixPointScreen content={content} />
         case 'route':
             return <RouteScreen content={content} />
-
+        case 'site':
+            return <SiteScreen content={content} />
         default:
             return null;
     }
