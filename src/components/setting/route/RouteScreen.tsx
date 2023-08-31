@@ -1,13 +1,14 @@
 import { ContentType } from 'common/type/NavBarType'
 import React from 'react'
 import RouteAdd from './RouteAdd'
+import RouteEdit from './RouteEdit'
 const selector = (content: ContentType) => {
     switch (content) {
         case 'ADD':
             return <RouteAdd />
             
         case 'EDIT':
-            return <RouteAdd />
+            return <RouteEdit />
             
         default:
             return null;

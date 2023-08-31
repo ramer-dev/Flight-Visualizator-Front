@@ -12,9 +12,10 @@ interface Props {
     isLoading: boolean;
     isError: boolean;
     value?: FixPointAutoCompleteItemType;
+    label?: string;
 }
 
-function FixPointAutoComplete({ openEditWindow, changeData, value, options, isLoading, isError }: Props) {
+function FixPointAutoComplete({ openEditWindow, changeData, label, value, options, isLoading, isError }: Props) {
     return (
         <Autocomplete
             fullWidth
@@ -37,7 +38,7 @@ function FixPointAutoComplete({ openEditWindow, changeData, value, options, isLo
             }}
             renderInput={(params) => <TextField {...params} inputProps={{
                 ...params.inputProps,
-            }} label="픽스점" />}
+            }} label={label || '픽스점'} />}
         />
     )
 }
