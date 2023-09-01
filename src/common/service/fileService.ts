@@ -22,7 +22,6 @@ export const postRoute = async (file: File) => {
     //         data.type = '' 
     //         }
     // }
-    console.log(file);
 
     // const {data} = await CustomAxios({headers:{"Content-Type":"multipart/form-data"}}).post(`file/route`, formData)
     const { data } = await CustomAxios.post(`file/route`, formData, {

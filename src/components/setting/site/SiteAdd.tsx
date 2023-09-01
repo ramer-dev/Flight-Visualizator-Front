@@ -94,6 +94,7 @@ function SiteAdd() {
             <Content>
                 <TextField label="표지소 이름" size="small" inputRef={nameRef} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'name') }} />
                 <Autocomplete options={[{ label: '표지소' }, { label: '저고도' }, { label: 'VORTAC' }]}
+                    isOptionEqualToValue={(option, value) => option.label === value.label}
                     renderOption={(props, option) => {
                         return <>
                             {

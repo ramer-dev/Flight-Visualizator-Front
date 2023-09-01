@@ -100,7 +100,6 @@ function SiteEdit() {
 
     React.useEffect(() => {
         if (nameRef.current && coordRef.current[0] && coordRef.current[1] && settingState?.data) {
-            console.log(settingState)
             nameRef.current.value = settingState.data?.label;
             setCoord(settingState?.data?.coord)
         } else {
@@ -129,10 +128,11 @@ function SiteEdit() {
 
     return (
         <Container>
-            <ScreenTitle text={'픽스점 추가'} />
+            <ScreenTitle text={'표지소 수정'} />
             <Content>
-                <TextField label="픽스점 이름" size="small" inputRef={nameRef} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'name') }}></TextField>
+                <TextField label="표지소 이름" size="small" inputRef={nameRef} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'name') }}></TextField>
                 <Autocomplete options={[{ label: '표지소' }, { label: '저고도' }, { label: 'VORTAC' }]}
+                    isOptionEqualToValue={(option, value) => option.label === value.label}
                     renderOption={(props, option) => {
                         return <>
                             {

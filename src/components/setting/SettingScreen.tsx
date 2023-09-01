@@ -6,6 +6,7 @@ import { AreaScreen } from './area/AreaScreen';
 import { FixPointScreen } from './fixPoint/FixPointScreen';
 import { FrequencyScreen } from './frequency/FrequencyScreen';
 import { RouteScreen } from './route/RouteScreen';
+import { SectorScreen } from './sector/SectorScreen';
 import { SettingState } from './SettingStateType';
 import { SiteScreen } from './site/SiteScreen';
 
@@ -15,13 +16,14 @@ const selector = (content: ContentType, settingValue: SettingState) => {
             return <FrequencyScreen content={content} />
         case 'area':
             return <AreaScreen content={content} />
-
         case 'fixPoint':
             return <FixPointScreen content={content} />
         case 'route':
             return <RouteScreen content={content} />
         case 'site':
             return <SiteScreen content={content} />
+        case 'sector':
+            return <SectorScreen content={content} />
         default:
             return null;
     }

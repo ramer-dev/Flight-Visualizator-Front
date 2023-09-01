@@ -108,7 +108,7 @@ function FixPointEdit() {
 
     return (
         <Container>
-            <ScreenTitle text={'픽스점 추가'} />
+            <ScreenTitle text={'픽스점 수정'} />
             <Content>
                 <TextField label="픽스점 이름" size="small" inputRef={nameRef} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'name') }}></TextField>
             </Content>

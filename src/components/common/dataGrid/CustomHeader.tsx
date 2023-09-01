@@ -42,8 +42,6 @@ function CustomHeader({ titleData, setTitleData, edit, submitted, setSubmitted }
 
     const resultFileChange = (newFile: any) => {
         setResultFile(newFile);
-        console.log(newFile)
-
     }
     const titleRef = React.useRef<HTMLInputElement>();
     const typeRef = React.useRef<HTMLInputElement>();

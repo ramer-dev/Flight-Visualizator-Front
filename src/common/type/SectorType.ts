@@ -7,9 +7,9 @@ export interface SectorType {
     sectorData: LatLngExpression[];
 
     // @Column()
-    // sectorAreaId: number;
+    sectorAreaId?: number;
 
-    sectorArea : Area;
+    sectorArea? : Area;
  
     updatedAt: Date;
 

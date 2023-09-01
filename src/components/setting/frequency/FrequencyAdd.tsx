@@ -52,7 +52,7 @@ function FrequencyAdd() {
     }
     return (
         <>
-            <ScreenTitle text={'주파수'} />
+            <ScreenTitle text={'주파수 추가'} />
             <TextField label="주파수" onChange={frequencyErrorHandler} inputRef={freq} type="number" error={freqError}/>
             <TextField label="표지소" onChange={siteErrorHandler} inputRef={site} error={siteError} />
             <Button onClick={patchData}>확인</Button>

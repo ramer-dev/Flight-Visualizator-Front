@@ -62,6 +62,7 @@ function Setting() {
 
   const closeWindow = () => {
     setContent('NONE')
+    setContentView('NONE')
   }
 
   const changeState = (str: SettingState) => {
@@ -91,7 +92,7 @@ function Setting() {
       case "site":
         return <Site openEditWindow={openEditWindow} changeData={changeData}/>
       case "sector":
-        return <Sector />
+        return <Sector openEditWindow={openEditWindow} changeData={changeData}/>
       default:
         break;
     }
