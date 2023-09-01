@@ -90,7 +90,7 @@ function CustomHeader({ titleData, setTitleData, edit, submitted, setSubmitted }
                     {/* <MuiFileInput value={resultFile} onChange={resultFileChange} size='small' placeholder='결과지 파일' sx={{ width: 256 }} inputRef={resultRef} hideSizeText multiple  /> */}
                     {/* <CustomFileInput id={1}/> */}
                     <DatePicker format="YYYY-MM-DD" inputRef={dateRef} slotProps={{ textField: { size: 'small', helperText: '검사일자' } }} value={titleData?.testDate ? dayjs(titleData.testDate) : null} sx={{ width: 156 }} disabled={!edit || submitted} />
-                    {edit && <Tooltip title={'개발중'}><Button sx={{ height: 40 }} onClick={handleOCRClick} startIcon={<PsychologyIcon fontSize={'large'} />}>OCR</Button></Tooltip>}
+                    {edit && <Tooltip title={'(개발중) 입력된 데이터는 꼭 검수 후 저장해주세요.'}><Button sx={{ height: 40 }} onClick={handleOCRClick} startIcon={<PsychologyIcon fontSize={'large'} />}>OCR</Button></Tooltip>}
                     <MuiFileInput value={ocrFile} multiple onChange={HandleOCRFileChange} sx={{ display: 'none' }} inputRef={ocrRef} />
                     {edit &&
                         <>
