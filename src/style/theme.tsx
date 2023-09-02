@@ -18,6 +18,6 @@ export const theme = createTheme({
         fontWeightBold: 700,
         fontWeightLight: 200,
         fontWeightMedium: 400,
-        fontWeightRegular: 600,
+        fontWeightRegular: 500,
     }
 })

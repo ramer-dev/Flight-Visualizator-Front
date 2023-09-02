@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
+import  './style/font.css'
 import reportWebVitals from './reportWebVitals';
 import { RecoilRoot } from 'recoil';
 import { theme } from 'style/theme';
