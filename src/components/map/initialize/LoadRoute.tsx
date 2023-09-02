@@ -5,11 +5,11 @@ import React from 'react'
 import { Polyline, Tooltip } from 'react-leaflet';
 
 function LoadRoute() {
-    const { data, isError } = useGetRoute();
+    const { data, isLoading, isError } = useGetRoute();
     const [route, setRoute] = React.useState<RouteType[]>([])
 
     React.useEffect(() => {
-        if(!isError) setRoute(data)
+        if(!(isError || isLoading )) setRoute(data)
 
     }, [data, isError])
 

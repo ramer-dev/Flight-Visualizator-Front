@@ -6,11 +6,11 @@ import { CircleMarker, Popup, Tooltip } from 'react-leaflet';
 
 function LoadFixPoint() {
     const [point, setPoint] = React.useState<FixPointType[]>([])
-    const { data, isError } = useGetPoint();
+    const { data, isError, isLoading } = useGetPoint();
 
     React.useEffect(() => {
-        if(!isError) setPoint(data)
-    }, [data, setPoint, isError])
+        if (!(isError || isLoading)) setPoint(data)
+    }, [data, isError])
 
     return (
         <>

@@ -117,7 +117,7 @@ export default function SectorEdit() {
     }
 
     function getAreaItem(id?: number) {
-        if (id && data) {
+        if (id && data.length) {
             const { areaName, areaId, areaColor } = data.filter(t => t.areaId === id)[0]
             return { label: areaName, name: areaName, color: areaColor, id: areaId }
         }

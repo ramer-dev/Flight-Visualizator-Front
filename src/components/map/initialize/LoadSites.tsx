@@ -48,14 +48,14 @@ const iconSelector = (st: string) => {
 function LoadSites() {
     const [site, setSite] = useState<SiteType[]>([])
     const siteSetter = useSetRecoilState(siteState);
-    const { data, isError } = useGetSite()
+    const { data, isError, isLoading } = useGetSite()
 
-    useEffect(() => {
-        if (!isError) {
+    React.useEffect(() => {
+        if(!(isError || isLoading )) {
             setSite(data);
             siteSetter(data)
         }
-    }, [data, siteSetter, setSite, isError])
+    }, [data, isError])
 
     return (
         <>
