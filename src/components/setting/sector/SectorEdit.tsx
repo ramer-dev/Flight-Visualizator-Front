@@ -51,7 +51,7 @@ interface AreaLabelType {
     color?: string,
     id: number
 }
-
+const invalidValue: AreaLabelType = { label: 'undefined', name: 'Error', color: '#FFF', id: -1 };
 export default function SectorEdit() {
     const settingState = useRecoilValue<SettingStateType>(setting)
     const setContentView = useSetRecoilState(contentViewFormat)
@@ -91,7 +91,7 @@ export default function SectorEdit() {
 
     const handlePointChange = (field: 'lat' | 'lng', index: number, e: React.ChangeEvent<HTMLInputElement>) => {
         // 2단 깊은 복사
-        const updatedPoints = points.map(t => {return {...t}});
+        const updatedPoints = points.map(t => { return { ...t } });
         updatedPoints[index][field] = +e.target.value;
         setPoints(updatedPoints)
     }
@@ -121,7 +121,7 @@ export default function SectorEdit() {
             const { areaName, areaId, areaColor } = data.filter(t => t.areaId === id)[0]
             return { label: areaName, name: areaName, color: areaColor, id: areaId }
         }
-        else return { label: 'undefined', name: 'Error', color: '#FFF', id: -1 };
+        else return invalidValue;
     }
 
 
@@ -168,9 +168,9 @@ export default function SectorEdit() {
             <ScreenTitle text={'섹터 수정'} />
             <Content>
                 <TextField label="섹터 이름" size="small" inputRef={nameRef} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleNameChange(e) }} />
-                <Autocomplete sx={{ flex: 1 }} options={options} onChange={(event:any, value:any) => {setArea(value)}} value={area}
-                isOptionEqualToValue={(option, value) => option?.id === value?.id}
-                getOptionLabel={(option) => option.label}
+                <Autocomplete sx={{ flex: 1 }} options={options} onChange={(event: any, value: any) => { setArea(value) }} value={area}
+                    isOptionEqualToValue={(option, value) => option?.id === value?.id}
+                    getOptionLabel={(option) => option.label}
                     renderOption={(props, option) => {
                         return <>
                             {isLoading && <CircularProgress size={20} />}
