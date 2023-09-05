@@ -5,12 +5,13 @@ import { MuiFileInput } from 'mui-file-input'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { FlightList } from 'common/type/FlightType';
+import { FlightList, RowType } from 'common/type/FlightType';
 import dayjs from 'dayjs';
 import { title } from 'process';
 import CustomFileInput from '../CustomFileInput';
-import { postRoute } from 'common/service/fileService';
+import { postImage, postRoute } from 'common/service/fileService';
 import PsychologyIcon from '@mui/icons-material/Psychology';
+import { useGridApiContext } from '@mui/x-data-grid';
 const Container = styled.div`
     width:100%;
 `
@@ -27,16 +28,19 @@ interface Props {
     edit?: boolean;
     submitted: boolean;
     setSubmitted: (b: boolean) => void;
+    rows: RowType[];
+    setRows: (rows: RowType[]) => void;
 }
 
 
 
-function CustomHeader({ titleData, setTitleData, edit, submitted, setSubmitted }: Props) {
+function CustomHeader({ rows, setRows, titleData, setTitleData, edit, submitted, setSubmitted }: Props) {
 
     const [routeFile, setRouteFile] = React.useState<File>();
     const [ocrFile, setOCRFile] = React.useState<File[]>();
     // const [resultFile, setResultFile] = React.useState<File[]>([]);
     const [flightData, setFlightData] = React.useState<FlightList>(titleData)
+    const apiRef = useGridApiContext()
     const handleFileChange = (newFile: any) => {
         setRouteFile(newFile);
     }
@@ -59,6 +63,24 @@ function CustomHeader({ titleData, setTitleData, edit, submitted, setSubmitted }
         }
     }, [titleData])
 
+    React.useEffect(() => {
+
+        if (ocrFile) {
+            let idx = apiRef.current.getRowsCount();
+            
+            const response = postImage(ocrFile).then(ocrArray => {
+                console.log(ocrArray)
+                const newRows = ocrArray.map(paper => 
+                    paper.ocr.map(item => {idx++; return {  id:`add-${1000+idx}`, ...item, siteName:paper.site, testId:titleData?.id, no:rows.length+idx}})
+                ).flat()
+                // apiRef.current.updateRows([newRows])
+                setRows([...rows, ...newRows])
+                
+            })
+
+        }
+    }, [ocrFile])
+
     const handleSubmit = async () => {
         if (titleRef.current && typeRef.current && routeRef.current && dateRef.current) {
             if (routeFile) {
@@ -76,7 +98,7 @@ function CustomHeader({ titleData, setTitleData, edit, submitted, setSubmitted }
 
     const handleOCRClick = () => {
         if (ocrRef.current) {
-            ocrRef.current.accept = "image/png, image/jpeg, application/pdf"
+            ocrRef.current.accept = "image/png, image/jpeg"
             ocrRef.current.click();
         }
     }
@@ -90,7 +112,7 @@ function CustomHeader({ titleData, setTitleData, edit, submitted, setSubmitted }
                     {/* <MuiFileInput value={resultFile} onChange={resultFileChange} size='small' placeholder='결과지 파일' sx={{ width: 256 }} inputRef={resultRef} hideSizeText multiple  /> */}
                     {/* <CustomFileInput id={1}/> */}
                     <DatePicker format="YYYY-MM-DD" inputRef={dateRef} slotProps={{ textField: { size: 'small', helperText: '검사일자' } }} value={titleData?.testDate ? dayjs(titleData.testDate) : null} sx={{ width: 156 }} disabled={!edit || submitted} />
-                    {edit && <Tooltip title={'(개발중) 입력된 데이터는 꼭 검수 후 저장해주세요.'}><Button sx={{ height: 40 }} onClick={handleOCRClick} startIcon={<PsychologyIcon fontSize={'large'} />}>OCR</Button></Tooltip>}
+                    {edit && <Tooltip title={<p>반드시 지정 형식으로 스캔한 이미지를 넣어주세요.<br />입력된 데이터는 꼭 검수 후 저장해주세요.</p>}><Button sx={{ height: 40 }} onClick={handleOCRClick} startIcon={<PsychologyIcon fontSize={'large'} />}>OCR</Button></Tooltip>}
                     <MuiFileInput value={ocrFile} multiple onChange={HandleOCRFileChange} sx={{ display: 'none' }} inputRef={ocrRef} />
                     {edit &&
                         <>

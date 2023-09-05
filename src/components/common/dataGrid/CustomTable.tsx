@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { DataGrid, GridCellModes, GridCellModesModel, GridCellParams, GridColDef, GridPreProcessEditCellProps, GridRowId, GridValidRowModel, useGridApiRef } from '@mui/x-data-grid'
-import { FlightList, FlightResult } from 'common/type/FlightType'
+import { FlightList, FlightResult, RowType } from 'common/type/FlightType'
 import styled from '@emotion/styled'
 import { Box } from '@mui/material'
 import CustomToolbar from './CustomToolbar'
@@ -28,7 +28,6 @@ import { renderToString } from 'react-dom/server'
 import { convertToWGS } from 'module/DMS'
 import { getRouteFromFile } from 'common/service/fileService'
 
-
 declare module '@mui/x-data-grid' {
     interface PaginationPropsOverrides {
         edit: boolean;
@@ -46,6 +45,8 @@ declare module '@mui/x-data-grid' {
         edit?: boolean;
         search?: boolean;
         submitted?: boolean;
+        rows: any[];
+        setRows: (rows: any[]) => void;
         setSubmitted: (b: boolean) => void;
         setTitleData: (e: FlightList) => void;
         handleAddRow: (e: React.MouseEvent) => void;
@@ -277,13 +278,13 @@ function CustomTable({ edit, search, add }: Props) {
                     pane: 'pin',
                     icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby), obj[i].no)
                 }).on('mouseover', () => {
-                    hoverPolyline.current = L.polyline([[convertToWGS(siteCoords.lat), convertToWGS(siteCoords.lng)], target!], {pane:'pin'}).addTo(map);
+                    hoverPolyline.current = L.polyline([[convertToWGS(siteCoords.lat), convertToWGS(siteCoords.lng)], target!], { pane: 'pin' }).addTo(map);
                 }).on('mouseout', () => {
-                    if(hoverPolyline.current) {
+                    if (hoverPolyline.current) {
                         hoverPolyline.current.remove();
                     }
                 })
-                .bindTooltip(CustomTableTooltip({ siteName: obj[i].siteName, distance: obj[i].distance, angle: obj[i].angle, index: obj[i].no }))
+                    .bindTooltip(CustomTableTooltip({ siteName: obj[i].siteName, distance: obj[i].distance, angle: obj[i].angle, index: obj[i].no }))
                 )
             }
         }
@@ -299,7 +300,7 @@ function CustomTable({ edit, search, add }: Props) {
         return () => {
             setCellModesModel({});
             instance.clearLayers();
-            if(routePolyline.current) routePolyline.current.remove();
+            if (routePolyline.current) routePolyline.current.remove();
         }
 
     }, [checkboxSelection, map, siteData.data])
@@ -462,7 +463,7 @@ function CustomTable({ edit, search, add }: Props) {
             const result = await getRouteFromFile(filename)
             const coords = result.route.map(t => t.coords)
 
-            routePolyline.current = L.polyline(coords, {pane:'pin', color:'red'}).addTo(map);
+            routePolyline.current = L.polyline(coords, { pane: 'pin', color: 'red' }).addTo(map);
         }
         shrinkWindow()
     }
@@ -514,10 +515,12 @@ function CustomTable({ edit, search, add }: Props) {
                         edit: edit,
                         search: search,
                         submitted: submitted,
+                        rows,
+                        setRows,
                         setSubmitted,
                         handleAddRow,
                         handleDeleteRow,
-                        handleSubmit, 
+                        handleSubmit,
                         handleMarkingBtnClick: () => handleMarkingBtnClick(titleData?.testRoute),
                         titleData,
                         setTitleData,
@@ -531,6 +534,7 @@ function CustomTable({ edit, search, add }: Props) {
                 checkboxSelection
                 onRowSelectionModelChange={handleMarking}
                 disableRowSelectionOnClick
+                // getRowId={(row) => row }
             />
         </Wrapper>
     )

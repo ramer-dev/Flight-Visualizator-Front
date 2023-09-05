@@ -1,3 +1,4 @@
+import { OCRReturnType } from "common/type/FlightType"
 import { LatLngLiteral } from "leaflet"
 import CustomAxios from "module/axios"
 
@@ -35,12 +36,14 @@ export const postRoute = async (file: File) => {
     return data;
 }
 
-export const postImage = async (files: FileList) => {
+export const postImage = async (files: File[]) => {
     const formData = new FormData()
-    for (let i of files) {
-        formData.append('file', i);
-    }
-    const { data } = await CustomAxios.post(`file/ocr`, formData)
+    files.forEach((file : File,i) => {
+        formData.append('file', file)
+    })
+
+    const { data } = await CustomAxios.post<OCRReturnType[]>(`file/ocr`, formData)
+    return data
 }
 
 export const getRouteFromFile = async (filename: string) => {

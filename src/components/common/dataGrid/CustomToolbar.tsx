@@ -8,7 +8,7 @@ import PrintIcon from '@mui/icons-material/Print';
 import PrintDisabledIcon from '@mui/icons-material/PrintDisabled';
 import AddchartIcon from '@mui/icons-material/Addchart';
 import CustomHeader from './CustomHeader';
-import { FlightList } from 'common/type/FlightType';
+import { FlightList, RowType } from 'common/type/FlightType';
 
 interface Props {
   titleData: FlightList;
@@ -17,6 +17,8 @@ interface Props {
   edit?: boolean;
   search?: boolean;
   submitted: boolean;
+  rows: RowType[];
+  setRows: (rows:RowType[]) => void;
   setSubmitted: (item: boolean) => void;
   setTitleData: (item: FlightList) => void;
   handleAddRow: (e: React.MouseEvent) => void;
@@ -32,14 +34,14 @@ const csvOptions = {
 
 const printOptions = { hideToolbar: true, hideFooter: true }
 
-function CustomToolbar({ titleData, count, search, edit, submitted, setTitleData, handleAddRow, handleDeleteRow, setSubmitted, handleMarkingBtnClick }: Props) {
+function CustomToolbar({ titleData, count, search, edit, submitted, rows, setRows, setTitleData, handleAddRow, handleDeleteRow, setSubmitted, handleMarkingBtnClick }: Props) {
   const apiRef = useGridApiContext()
   const disabled = !apiRef.current.getRowsCount();
   const selected = apiRef.current.getSelectedRows()
   return (
     <>
       <GridToolbarContainer>
-        {!search ? <CustomHeader titleData={titleData} setTitleData={setTitleData} submitted={submitted} setSubmitted={setSubmitted} edit={edit} /> : null}
+        {!search ? <CustomHeader rows={rows} setRows={setRows} titleData={titleData} setTitleData={setTitleData} submitted={submitted} setSubmitted={setSubmitted} edit={edit} /> : null}
 
         {edit ?
           <>
