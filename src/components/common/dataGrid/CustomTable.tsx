@@ -7,7 +7,7 @@ import CustomToolbar from './CustomToolbar'
 import CustomPagination from './CustomPagination'
 import CustomNoRowsOverlay from './CustomNoRowsOverlay'
 import LoadingPage from '../LoadingPage'
-import { useRecoilState, useSetRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { contentFormat, contentViewFormat, flightResultDataID } from 'common/store/atom'
 import L, { LatLngLiteral } from 'leaflet'
 import { useGetSite } from 'components/hooks/useSite'
@@ -27,6 +27,7 @@ import CustomTableTooltip from './CustomTableTooltip'
 import { renderToString } from 'react-dom/server'
 import { convertToWGS } from 'module/DMS'
 import { getRouteFromFile } from 'common/service/fileService'
+import { authState } from 'common/store/auth'
 
 declare module '@mui/x-data-grid' {
     interface PaginationPropsOverrides {
@@ -107,7 +108,7 @@ function CustomTable({ edit, search, add }: Props) {
     const [flightDataId, setFlightDataId] = useRecoilState(flightResultDataID);
     const setContentView = useSetRecoilState(contentViewFormat)
     const setContent = useSetRecoilState(contentFormat);
-
+    const auth = useRecoilValue(authState);
     const [titleData, setTitleData] = React.useState<FlightList>()
     const [checkboxSelection, setCheckboxSelection] = React.useState<Map<GridRowId, GridValidRowModel>>();
     const [cellModesModel, setCellModesModel] = React.useState<GridCellModesModel>({});
@@ -156,15 +157,18 @@ function CustomTable({ edit, search, add }: Props) {
 
         if (data?.data?.items) {
             setRows(data.data.items.map((t, i) => ({ ...t, no: i })));
-            const layer = data.data.items.filter(t => t.point === null)
-            for (let item of layer) {
-                const it = { ...item };
-                const siteCoord = siteData.data.filter(t => t.siteName === it.siteName).map(t => t.siteCoordinate);
-                const coord = Destination(siteCoord[0], it.angle, it.distance)
-                delete it.deletedAt;
-                delete it.updatedAt;
-                delete it.status;
-                patchFlightResult({ ...it, point: coord }, it.id!)
+            if (auth.role >= 2) {
+                const layer = data.data.items.filter(t => t.point === null)
+                console.log(layer)
+                for (let item of layer) {
+                    const it = { ...item };
+                    const siteCoord = siteData.data.filter(t => t.siteName === it.siteName).map(t => t.siteCoordinate);
+                    const coord = Destination(siteCoord[0], it.angle, it.distance)
+                    delete it.deletedAt;
+                    delete it.updatedAt;
+                    delete it.status;
+                    patchFlightResult({ ...it, point: coord }, it.id!)
+                }
             }
         }
 
@@ -271,7 +275,7 @@ function CustomTable({ edit, search, add }: Props) {
         });
 
         for (let i in obj) {
-            
+
 
             if (!isNaN(obj[i].angle) && !isNaN(obj[i].distance) && obj[i].siteName) {
                 const angle = parseFloat(obj[i].angle) && obj[i].angle;
@@ -539,7 +543,7 @@ function CustomTable({ edit, search, add }: Props) {
                 checkboxSelection
                 onRowSelectionModelChange={handleMarking}
                 disableRowSelectionOnClick
-                // getRowId={(row) => row }
+            // getRowId={(row) => row }
             />
         </Wrapper>
     )
