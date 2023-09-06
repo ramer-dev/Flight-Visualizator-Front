@@ -14,7 +14,7 @@ interface Props {
     changeData: (e: any) => void;
 }
 export default function Area({ openEditWindow, changeData }: Props) {
-    const { data, refetch, isLoading, isError } = useGetArea();
+    const { data, refetch, isLoading, isError } = useGetArea(true);
     const options = data.map(t => { return { label: `${t.areaName}`, color: t.areaColor, id: t.areaId } })
     const content = useRecoilValue(contentFormat)
 

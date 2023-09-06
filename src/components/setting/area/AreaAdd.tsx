@@ -47,7 +47,6 @@ function AreaAdd() {
   }
 
   const handleSubmit = () => {
-    console.log(color, nameRef)
     if (nameRef.current) {
       const body: AreaDTO = {
         areaColor: color,

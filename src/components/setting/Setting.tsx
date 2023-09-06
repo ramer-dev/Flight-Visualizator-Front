@@ -74,7 +74,6 @@ function Setting() {
   }
 
   React.useEffect(() => {
-    console.log(settingState.current);
     closeWindow();
     changeData(null)
   }, [settingState.current])

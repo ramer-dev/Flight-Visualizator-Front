@@ -14,13 +14,6 @@ const Container = styled.div`
     
 `
 
-const handleValue = (e: any, value: any) => {
-    console.log(e, value)
-}
-
-const handleHighlightValue = (e: any) => {
-    console.log(e)
-}
 export default function Frequency({ openEditWindow, changeData }: Props) {
     const { data, refetch, isLoading, isError } = useGetFrequency()
     const content = useRecoilValue(contentFormat)

@@ -88,7 +88,6 @@ function RouteEdit() {
     }
 
     const addPoint = () => {
-        console.log(options)
         setPoints([...points, options[0]/*{ label: '', id: points.length, coord: { lat: 0, lng: 0 } }*/])
     }
 
@@ -109,7 +108,6 @@ function RouteEdit() {
 
 
     React.useEffect(() => {
-        console.log(settingState)
         if (polyLineLayer.current) {
             polyLineLayer.current.remove();
         }
@@ -135,9 +133,7 @@ function RouteEdit() {
     }, [name, points])
 
     React.useEffect(() => {
-        console.log(nameRef.current, settingState?.data?.coords)
         if (nameRef.current && settingState?.data?.coords?.length) {
-            console.log(settingState)
             nameRef.current.value = settingState.data?.label;
 
             const newState = settingState.data.coords
@@ -149,7 +145,7 @@ function RouteEdit() {
                 } as FixPointAutoCompleteItemType))
             setPoints(newState)
         } else {
-            // closeScreen();
+            closeScreen();
         }
     }, [settingState])
 

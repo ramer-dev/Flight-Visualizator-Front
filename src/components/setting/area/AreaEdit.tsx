@@ -35,7 +35,6 @@ function AreaEdit() {
   }
 
   const handleSubmit = async () => {
-    console.log(color, nameRef)
     if (nameRef.current) {
       const body: AreaDTO = {
         areaColor: color,

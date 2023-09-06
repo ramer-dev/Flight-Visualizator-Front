@@ -79,7 +79,6 @@ function FixPointEdit() {
 
 
     React.useEffect(() => {
-        console.log(name, coord, coordError)
         if (dotLayer.current) {
             dotLayer.current.remove();
         }
@@ -100,7 +99,6 @@ function FixPointEdit() {
 
     React.useEffect(() => {
         if(nameRef.current && coordRef.current[0] && coordRef.current[1] &&settingState?.data){
-            console.log(settingState)
           nameRef.current.value = settingState.data?.label;
           setCoord(settingState?.data?.coord)
         } else {

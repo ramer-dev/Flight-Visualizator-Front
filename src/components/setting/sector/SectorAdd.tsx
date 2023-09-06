@@ -100,7 +100,6 @@ export default function SectorAdd() {
     }
 
     React.useEffect(() => {
-        console.log(points);
         if (polygonLayer.current) {
             polygonLayer.current.remove();
         }
@@ -122,7 +121,7 @@ export default function SectorAdd() {
         <Container>
             <ScreenTitle text={'섹터 추가'} />
             <Content>
-                <TextField sx={{ flex: 2 }} label="섹터 이름" size="small" inputRef={nameRef} onChange={handleNameChange} />
+                <TextField sx={{ flex: 1 }} label="섹터 이름" size="small" inputRef={nameRef} onChange={handleNameChange} />
                 <Autocomplete sx={{ flex: 1 }} options={options} onChange={(event: any, value: any) => { setArea(value) }} value={area}
                     isOptionEqualToValue={(option, value) => option.label === value.label}
                     renderOption={(props, option) => {

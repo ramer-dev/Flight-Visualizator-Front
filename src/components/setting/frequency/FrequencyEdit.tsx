@@ -73,7 +73,6 @@ function FrequencyEdit() {
     }
 
     React.useEffect(() => {
-        console.log(settingState)
         if (site?.current && freq?.current && settingState?.data?.label) {
             freq.current.value = settingState.data.label;
             site.current.value = settingState.data.site;

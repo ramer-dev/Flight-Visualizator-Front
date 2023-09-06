@@ -54,7 +54,7 @@ interface AreaLabelType {
     color?: string,
     id: number
 }
-const invalidValue: AreaLabelType = { label: 'undefined', name: 'Error', color: '#FFF', id: -1 };
+const invalidValue: AreaLabelType = { label: '미지정', name: '미지정', color: '#009CE0', id: 0 };
 export default function SectorEdit() {
     const settingState = useRecoilValue<SettingStateType>(setting)
     const setContentView = useSetRecoilState(contentViewFormat)
@@ -62,8 +62,8 @@ export default function SectorEdit() {
     const { data, refetch, isLoading, isError } = useGetArea();
     const options = data?.map(t => { return { label: `${t.areaName}`, name: t.areaName, color: t.areaColor, id: t.areaId } })
     const [name, setName] = React.useState('');
-    const [area, setArea] = React.useState<AreaLabelType>(getAreaItem(settingState?.data.area))
-    const [points, setPoints] = React.useState<LatLngLiteral[]>(settingState?.data.coords)
+    const [area, setArea] = React.useState<AreaLabelType | null>(null)
+    const [points, setPoints] = React.useState<LatLngLiteral[] | null>(null)
     const nameRef = React.useRef<HTMLInputElement>();
     const map = useMap();
     const polygonLayer = React.useRef<L.Polygon>();
@@ -73,7 +73,7 @@ export default function SectorEdit() {
     }
 
     const handleSubmit = async () => {
-        if (nameRef?.current?.value && points.length && area) {
+        if (nameRef?.current?.value && points?.length && area) {
             const body: SectorDTO = {
                 sectorName: nameRef?.current?.value,
                 sectorData: points,
@@ -94,18 +94,24 @@ export default function SectorEdit() {
 
     const handlePointChange = (field: 'lat' | 'lng', index: number, e: React.ChangeEvent<HTMLInputElement>) => {
         // 2단 깊은 복사
-        const updatedPoints = points.map(t => { return { ...t } });
-        updatedPoints[index][field] = +e.target.value;
-        setPoints(updatedPoints)
+        if (points) {
+            const updatedPoints = points.map(t => { return { ...t } });
+            updatedPoints[index][field] = +e.target.value;
+            setPoints(updatedPoints)
+        }
     }
     const addPoint = () => {
-        setPoints([...points, { lat: 0, lng: 0 }])
+        if (points) {
+            setPoints([...points, { lat: 0, lng: 0 }])
+        }
     }
 
     const removePoint = (index: number) => {
-        const updatedPoints = [...points];
-        updatedPoints.splice(index, 1);
-        setPoints(updatedPoints);
+        if (points) {
+            const updatedPoints = [...points];
+            updatedPoints.splice(index, 1);
+            setPoints(updatedPoints);
+        }
     }
 
 
@@ -119,7 +125,7 @@ export default function SectorEdit() {
         }
     }
 
-    function getAreaItem(id?: number) {
+    function getAreaItem(id?: number): AreaLabelType {
         if (id && data.length) {
             const { areaName, areaId, areaColor } = data.filter(t => t.areaId === id)[0]
             return { label: areaName, name: areaName, color: areaColor, id: areaId }
@@ -162,7 +168,7 @@ export default function SectorEdit() {
             setArea(getAreaItem(settingState.data.area))
             setPoints(coordState)
         } else {
-            // closeScreen();
+            closeScreen();
         }
     }, [settingState])
 
@@ -170,7 +176,7 @@ export default function SectorEdit() {
         <Container>
             <ScreenTitle text={'섹터 수정'} />
             <Content>
-                <TextField label="섹터 이름" size="small" inputRef={nameRef} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleNameChange(e) }} />
+                <TextField label="섹터 이름" size="small" inputRef={nameRef} sx={{ flex: 1 }} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleNameChange(e) }} />
                 <Autocomplete sx={{ flex: 1 }} options={options} onChange={(event: any, value: any) => { setArea(value) }} value={area}
                     isOptionEqualToValue={(option, value) => option?.id === value?.id}
                     getOptionLabel={(option) => option.label}

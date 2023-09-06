@@ -68,7 +68,6 @@ function FixPointAdd() {
 
 
     React.useEffect(() => {
-        console.log(name, coord, coordError)
         if (dotLayer.current) {
             dotLayer.current.remove();
         }

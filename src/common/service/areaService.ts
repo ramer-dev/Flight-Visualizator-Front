@@ -3,8 +3,8 @@ import { AreaDTO } from "dto/areaDTO";
 import { frequencyDTO } from "dto/frequencyDTO";
 import CustomAxios from "module/axios"
 
-export async function getEntireArea() {
-    const { data } = await CustomAxios.get<Area[]>(`area`)
+export async function getEntireArea(valid : boolean) {
+    const { data } = await CustomAxios.get<Area[]>(`area`,{params:{valid}})
     return data;
 }
 
