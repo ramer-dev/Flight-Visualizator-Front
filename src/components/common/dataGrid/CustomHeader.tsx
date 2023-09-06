@@ -67,16 +67,31 @@ function CustomHeader({ rows, setRows, titleData, setTitleData, edit, submitted,
 
         if (ocrFile) {
             let idx = apiRef.current.getRowsCount();
-            
+
             const response = postImage(ocrFile).then(ocrArray => {
-                console.log(ocrArray)
-                const newRows = ocrArray.map(paper => 
-                    paper.ocr.map(item => {idx++; return {  id:`add-${1000+idx}`, ...item, siteName:paper.site, testId:titleData?.id, no:rows.length+idx}})
+                const newRows = ocrArray.map(paper =>
+                    paper.ocr.map(item => {
+                        idx++;
+                        return {
+                            id: `add-${10000 + idx}`,
+                            no: rows.length + idx,
+                            siteName: paper.site,
+                            testId: titleData?.id,
+                            angle:+item.angle,
+                            distance: +item.distance,
+                            frequency: +item.frequency,
+                            height:+item.height,
+                            txmain: item.txmain,
+                            rxmain: item.rxmain,
+                            txstby: item.txstby,
+                            rxstby: item.rxstby,
+                        }
+                    })
                 ).flat()
                 // apiRef.current.updateRows([newRows])
                 setRows([...rows, ...newRows])
-                
-            })
+
+            }).then(() => { console.log(rows) })
 
         }
     }, [ocrFile])

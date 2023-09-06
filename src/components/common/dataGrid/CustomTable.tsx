@@ -271,9 +271,14 @@ function CustomTable({ edit, search, add }: Props) {
         });
 
         for (let i in obj) {
-            if (typeof (obj[i].angle) === 'number' && typeof (obj[i].distance) === 'number' && obj[i].siteName) {
+            
+
+            if (!isNaN(obj[i].angle) && !isNaN(obj[i].distance) && obj[i].siteName) {
+                const angle = parseFloat(obj[i].angle) && obj[i].angle;
+                const distance = parseFloat(obj[i].angle) && obj[i].distance;
+
                 const siteCoords = siteData.data.filter(t => t.siteName === obj[i].siteName)[0]?.siteCoordinate as LatLngLiteral;
-                const target = Destination(siteCoords, obj[i].angle, obj[i].distance);
+                const target = Destination(siteCoords, angle, distance);
                 layer.push(L.marker(target as LatLngLiteral, {
                     pane: 'pin',
                     icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby), obj[i].no)
@@ -284,7 +289,7 @@ function CustomTable({ edit, search, add }: Props) {
                         hoverPolyline.current.remove();
                     }
                 })
-                    .bindTooltip(CustomTableTooltip({ siteName: obj[i].siteName, distance: obj[i].distance, angle: obj[i].angle, index: obj[i].no }))
+                    .bindTooltip(CustomTableTooltip({ siteName: obj[i].siteName, distance, angle: angle, index: obj[i].no }))
                 )
             }
         }
