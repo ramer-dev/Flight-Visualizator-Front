@@ -31,6 +31,7 @@ const Container = styled.div`
 const Content = styled.div`
   display:flex;
   gap:10px;
+  justify-content:end;
 `
 
 const InputWrapper = styled.div`
@@ -38,7 +39,8 @@ const InputWrapper = styled.div`
   flex-direction:column;
   gap:15px;
   overflow-y:auto;
-  height:calc(100vh - 130px);
+  height:100%;
+  max-height:calc(100vh - 230px);
   padding: 5px 0;
 `
 
@@ -170,9 +172,9 @@ function RouteEdit() {
 
             </InputWrapper>
             <Content>
-                <Button onClick={handleSubmit}>확인</Button>
+                <Button color='error' variant="outlined" onClick={handleDelete}>항로 삭제</Button>
                 <Button color='error' onClick={closeScreen}>취소</Button>
-                <Button color='error' variant="outlined" onClick={handleDelete}>삭제</Button>
+                <Button onClick={handleSubmit}>확인</Button>
             </Content>
 
         </Container>
