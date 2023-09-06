@@ -4,13 +4,14 @@ import { page } from "common/store/atom";
 import { NavBarType } from "common/type/NavBarType";
 import { useSetRecoilState } from "recoil";
 const TitleText = styled.h1`
-  margin: 25px 0;
 `
 
 const Wrapper = styled.div`
   display:flex;
   align-items: center;
   gap:5px;
+  margin: 25px 0;
+
 `
 const ICWrapper = styled.div`
   cursor:pointer;

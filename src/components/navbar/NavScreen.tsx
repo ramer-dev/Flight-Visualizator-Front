@@ -18,6 +18,7 @@ const Container = styled(motion.div)`
     width:${(props: styleProp) => (props.contentView)};
     height:100vh;
     transition:all 0.3s ease; 
+    padding: ${({contentView}:styleProp) => contentView === '0' ? 0 : '10px 25px'};
     overflow:hidden;
     user-select: auto;
     z-index:2100;
@@ -25,8 +26,8 @@ const Container = styled(motion.div)`
 
 const widthMap = {
     "NONE": '0',
-    "MID": '730px',
-    "MIN": '395px',
+    "MID": '680px',
+    "MIN": '345px',
     "FULLSCREEN": 'calc(100vw - 465px)',
     'ENTIRE': 'calc(100vw - 64px)'
 }

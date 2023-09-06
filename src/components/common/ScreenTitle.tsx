@@ -6,7 +6,7 @@ import { contentFormat, contentViewFormat } from 'common/store/atom';
 
 const TitleWrapper = styled.div`
     display:flex;
-    margin:25px 15px;
+    margin:25px 0;
     align-items:center;
     gap:5px;
 `
