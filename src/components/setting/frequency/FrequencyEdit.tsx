@@ -1,3 +1,4 @@
+import styled from '@emotion/styled'
 import { Button, TextField } from '@mui/material'
 import { frequencyRegex } from 'common/regex/regex'
 import { deleteFrequency, patchFrequnecy } from 'common/service/frequencyService'
@@ -8,6 +9,18 @@ import { frequencyDTO } from 'dto/frequencyDTO'
 import React from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { SettingStateType } from '../SettingStateType'
+
+const Container = styled.div`
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+`
+
+const Content = styled.div`
+  display:flex;
+  gap:10px;
+  justify-content:end;
+`
 
 function FrequencyEdit() {
     const settingState = useRecoilValue<SettingStateType>(setting)
@@ -70,14 +83,19 @@ function FrequencyEdit() {
 
     return (
 
-        settingState?.data ? <>
+        settingState?.data ? <Container>
             < ScreenTitle text={'주파수 수정'} />
-            <TextField label="주파수" onChange={frequencyErrorHandler} inputRef={freq} defaultValue={settingState.data.label} type="number" error={freqError} />
-            <TextField label="표지소" onChange={siteErrorHandler} inputRef={site} defaultValue={settingState.data.site} error={siteError} />
-            <Button onClick={patchData}>확인</Button>
-            <Button onClick={closeWindow}>취소</Button>
-            <Button onClick={deleteFreq}>삭제</Button>
-        </> : <>{closeWindow()}</>
+
+            <Content>
+                <TextField label="주파수" onChange={frequencyErrorHandler} fullWidth size='small' inputRef={freq} defaultValue={settingState.data.label} type="number" error={freqError} />
+                <TextField label="표지소" onChange={siteErrorHandler} fullWidth size='small' inputRef={site} defaultValue={settingState.data.site} error={siteError} />
+            </Content>
+            <Content>
+                <Button color='error' variant='outlined' onClick={deleteFreq}>삭제</Button>
+                <Button color='error' onClick={closeWindow}>취소</Button>
+                <Button onClick={patchData}>확인</Button>
+            </Content>
+        </Container> : <>{closeWindow()}</>
 
 
     )

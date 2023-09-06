@@ -1,3 +1,4 @@
+import styled from '@emotion/styled'
 import { Button, TextField } from '@mui/material'
 import { frequencyRegex } from 'common/regex/regex'
 import { postFrequency } from 'common/service/frequencyService'
@@ -8,6 +9,19 @@ import { frequencyDTO } from 'dto/frequencyDTO'
 import React from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { SettingStateType } from '../SettingStateType'
+
+
+const Container = styled.div`
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+`
+
+const Content = styled.div`
+  display:flex;
+  gap:10px;
+  justify-content:end;
+`
 
 function FrequencyAdd() {
     // const settingState = useRecoilValue<SettingStateType>(setting)
@@ -22,7 +36,7 @@ function FrequencyAdd() {
 
 
     const frequencyErrorHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if(!e.target.value.match(frequencyRegex)) setFreqError(true)
+        if (!e.target.value.match(frequencyRegex)) setFreqError(true)
         else setFreqError(false)
     }
 
@@ -51,13 +65,17 @@ function FrequencyAdd() {
         }
     }
     return (
-        <>
+        <Container>
             <ScreenTitle text={'주파수 추가'} />
-            <TextField label="주파수" onChange={frequencyErrorHandler} inputRef={freq} type="number" error={freqError}/>
-            <TextField label="표지소" onChange={siteErrorHandler} inputRef={site} error={siteError} />
-            <Button onClick={patchData}>확인</Button>
-            <Button onClick={closeWindow}>취소</Button>
-        </>
+            <Content>
+                <TextField label="주파수" onChange={frequencyErrorHandler} size='small' inputRef={freq} type="number" error={freqError} />
+                <TextField label="표지소" onChange={siteErrorHandler} size='small' inputRef={site} error={siteError} />
+            </Content>
+            <Content>
+                <Button color='error' onClick={closeWindow}>취소</Button>
+                <Button onClick={patchData}>확인</Button>
+            </Content>
+        </Container>
     )
 }
 
