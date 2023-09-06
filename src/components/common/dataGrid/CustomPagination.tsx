@@ -58,9 +58,6 @@ export default function CustomPagination({ edit, totalCount, totalPage, page, on
 
     }
 
-    // useEffect(() => {
-    // }, [pageSize, pageSizeChange])
-
     return <FooterContainer>
         <ButtonWrapper>
             {selected.size ? <span >{selected.size}개 행 선택</span> : <span>총 {apiRef.current.getRowsCount()}행의 데이터</span>}
@@ -77,7 +74,7 @@ export default function CustomPagination({ edit, totalCount, totalPage, page, on
             </Select>
             </FormControl>
         </div>
-        <Pagination variant='outlined' count={totalPage} color='primary' page={page} onChange={(e, page) => { onPageChange(e, page) }} />
+        <Pagination variant='outlined' count={Math.ceil(apiRef.current.getRowsCount() / pageSize)} color='primary' page={page} onChange={(e, page) => { onPageChange(e, page) }} />
         <ButtonWrapper>
             {edit ?
                 <>

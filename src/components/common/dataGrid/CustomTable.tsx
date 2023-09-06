@@ -135,7 +135,9 @@ function CustomTable({ edit, search, add }: Props) {
         const validated = scoreRegex.test(String(params.props.value));
         return { ...params.props, error: !validated }
     }
-
+    const handleCellEditStop = (p:any) => {
+        console.log(p)
+    }
     const stateRefresh = () => {
         if (search || add) {
             setFlightDataId(undefined)
@@ -280,7 +282,6 @@ function CustomTable({ edit, search, add }: Props) {
             if (!isNaN(obj[i].angle) && !isNaN(obj[i].distance) && obj[i].siteName) {
                 const angle = parseFloat(obj[i].angle) && obj[i].angle;
                 const distance = parseFloat(obj[i].angle) && obj[i].distance;
-
                 const siteCoords = siteData.data.filter(t => t.siteName === obj[i].siteName)[0]?.siteCoordinate as LatLngLiteral;
                 const target = Destination(siteCoords, angle, distance);
                 layer.push(L.marker(target as LatLngLiteral, {
@@ -362,9 +363,9 @@ function CustomTable({ edit, search, add }: Props) {
     );
 
     const handleAddRow = (e: React.MouseEvent) => {
-        e.stopPropagation()
-        const newRow = { id: `add-${id.current++}` }
+        const newRow = { id: `add-${id.current}` }
         apiRef.current.updateRows([newRow]);
+        id.current++;
     }
 
     const validateInput = (data: FlightResult[]) => {
@@ -458,7 +459,7 @@ function CustomTable({ edit, search, add }: Props) {
             for (const item of checkboxSelection) {
                 apiRef.current.updateRows([{ id: item[0], _action: 'delete' }])
             }
-
+            
         }
     };
 
@@ -500,9 +501,9 @@ function CustomTable({ edit, search, add }: Props) {
                 slots={{ toolbar: CustomToolbar, pagination: CustomPagination, noRowsOverlay: CustomNoRowsOverlay, loadingOverlay: LoadingPage }}
                 slotProps={{
                     pagination: {
-                        count: data?.data?.totalPage ? data.data.totalPage : 0,
-                        totalCount: data?.data?.totalCount,
-                        totalPage: data?.data?.totalCount ? Math.ceil(data?.data?.totalCount / paginationModel.pageSize) : 0,
+                        count: data?.data?.totalPage ?rows.length : 0,
+                        totalCount: data?.data?.totalCount ? data.data.totalCount : 0,
+                        totalPage: data?.data?.totalPage ? data.data.totalPage :0,
                         edit: edit,
                         page: paginationModel.page + 1,
                         onPageChange(event, page) {
@@ -536,6 +537,7 @@ function CustomTable({ edit, search, add }: Props) {
                     }
                 }}
                 cellModesModel={cellModesModel}
+                onCellEditStop={handleCellEditStop}
                 onCellModesModelChange={handleRowModesModelChange}
                 onCellClick={handleCellClick}
                 paginationModel={paginationModel}
