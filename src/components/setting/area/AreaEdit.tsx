@@ -16,6 +16,8 @@ const Container = styled.div`
 
 const Content = styled.div`
   display:flex;
+  gap:10px;
+  justify-content:end;
 `
 function AreaEdit() {
   const settingState = useRecoilValue<SettingStateType>(setting)
@@ -50,7 +52,7 @@ function AreaEdit() {
   }
 
   React.useEffect(() => {
-    if(nameRef.current && settingState?.data){
+    if (nameRef.current && settingState?.data) {
       nameRef.current.value = settingState.data?.label;
       setColor(settingState?.data.color)
     } else {
@@ -61,10 +63,10 @@ function AreaEdit() {
     <Container>
       <ScreenTitle text={'구역 수정'} />
       <Content>
-        <TextField label="구역명" size="small" inputRef={nameRef}></TextField>
+        <TextField label="구역명" size="small" inputRef={nameRef} fullWidth></TextField>
       </Content>
       <Content>
-        <TextField sx={{ position: 'relative', width: '256px' }} value={color || ''} disabled InputProps={{
+        <TextField sx={{ position: 'relative'}} fullWidth value={color || ''} disabled InputProps={{
           endAdornment: (<ColorPicker selectedColor={color} title={"구역 색상 선택"} open={open} close={close} isOpen={isColorPickerOpen}
             colors={['#4D4D4D', '#999999', '#FFFFFF', '#F44E3B', '#FE9200', '#FCDC00', '#DBDF00', '#A4DD00', '#68CCCA', '#73D8FF', '#AEA1FF', '#FDA1FF', '#333333', '#808080', '#cccccc', '#D33115', '#E27300', '#FCC400', '#B0BC00', '#68BC00', '#16A5A5', '#009CE0', '#7B64FF', '#FA28FF', '#000000', '#666666', '#B3B3B3', '#9F0500', '#C45100', '#FB9E00', '#808900', '#194D33', '#0C797D', '#0062B1', '#653294', '#AB149E']}
             setColor={setColor} />)
@@ -72,10 +74,9 @@ function AreaEdit() {
 
       </Content>
       <Content>
-
-        <Button onClick={handleSubmit}>확인</Button>
+        <Button color='error' variant='outlined' onClick={handleDelete}>구역 삭제</Button>
         <Button color='error' onClick={closeScreen}>취소</Button>
-        <Button color='error' variant='outlined' onClick={handleDelete}>삭제</Button>
+        <Button onClick={handleSubmit}>확인</Button>
       </Content>
 
     </Container>

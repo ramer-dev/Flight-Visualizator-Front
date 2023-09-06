@@ -91,7 +91,7 @@ function FrequencyEdit() {
                 <TextField label="표지소" onChange={siteErrorHandler} fullWidth size='small' inputRef={site} defaultValue={settingState.data.site} error={siteError} />
             </Content>
             <Content>
-                <Button color='error' variant='outlined' onClick={deleteFreq}>삭제</Button>
+                <Button color='error' variant='outlined' onClick={deleteFreq}>주파수 삭제</Button>
                 <Button color='error' onClick={closeWindow}>취소</Button>
                 <Button onClick={patchData}>확인</Button>
             </Content>
