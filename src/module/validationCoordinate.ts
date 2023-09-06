@@ -6,7 +6,6 @@ export function validateCoordinates(input?: string) {
             const parts = input.split(".");
 
             if (parts.length <= 2 && parts[0].length <= 3) {
-                console.log(parts)
                 const degrees = parseInt(parts[0]);
                 let minutes;
                 let seconds;

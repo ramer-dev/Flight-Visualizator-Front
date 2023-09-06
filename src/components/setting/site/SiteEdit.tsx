@@ -1,9 +1,11 @@
 import styled from '@emotion/styled'
 import { Autocomplete, Box, Button, TextField } from '@mui/material'
 import { deleteFixPoint, patchFixPoint, postFixPoint } from 'common/service/pointService'
+import { deleteSite, patchSite } from 'common/service/siteService'
 import { contentFormat, contentViewFormat, setting } from 'common/store/atom'
 import ScreenTitle from 'components/common/ScreenTitle'
 import { FixPointDTO } from 'dto/fixPointDTO'
+import { SiteDTO } from 'dto/siteDTO'
 import L from 'leaflet'
 import { LatLngLiteral } from 'leaflet'
 import { convertToWGS } from 'module/DMS'
@@ -24,9 +26,17 @@ const Container = styled.div`
 
 const Content = styled.div`
   display:flex;
+  gap:10px;
+  justify-content:end;
 `
 
+const Wrapper = styled.div`
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+`
 
+const options = [{ label: '표지소', value:'SITE' }, { label: '저고도', value:'LOWSITE' }, { label: 'VORTAC', value:'VORTAC' }]
 
 function SiteEdit() {
     const settingState = useRecoilValue<SettingStateType>(setting)
@@ -35,6 +45,7 @@ function SiteEdit() {
     const [name, setName] = React.useState('');
     const [siteMenuOpen, setSiteMenuOpen] = React.useState(false);
     const [site, setSite] = React.useState('')
+    const [siteType, setSiteType] = React.useState(options[0])
     const [coord, setCoord] = React.useState<LatLngLiteral>({ lat: 0, lng: 0 })
     const [coordError, setCoordError] = React.useState({ lat: false, lng: false })
     const coordRef = React.useRef<HTMLDivElement[]>([]);
@@ -49,18 +60,23 @@ function SiteEdit() {
 
     const handleSubmit = async () => {
         if (nameRef.current) {
-            const body: FixPointDTO = {
-                pointName: nameRef.current.value,
-                pointCoordinate: { lat: coord.lat, lng: coord.lng }
+            const body: SiteDTO = {
+                siteName: nameRef.current.value,
+                siteCoordinate: { lat: coord.lat, lng: coord.lng },
+                siteType: siteType.value
             }
-            await patchFixPoint(body, settingState.data.id);
+            await patchSite(body, settingState.data.id);
             closeScreen()
         }
     }
 
     const handleDelete = async () => {
-        await deleteFixPoint(settingState.data.id);
+        await deleteSite(settingState.data.id);
         closeScreen();
+    }
+
+    const handleSiteTypeChange = (e: any, a:any) => {
+        setSiteType(a)
     }
 
     const handleCoordChange = (e: React.ChangeEvent<HTMLInputElement>, st: string) => {
@@ -79,7 +95,6 @@ function SiteEdit() {
 
 
     React.useEffect(() => {
-        console.log(name, coord, coordError)
         if (dotLayer.current) {
             dotLayer.current.remove();
         }
@@ -102,64 +117,47 @@ function SiteEdit() {
         if (nameRef.current && coordRef.current[0] && coordRef.current[1] && settingState?.data) {
             nameRef.current.value = settingState.data?.label;
             setCoord(settingState?.data?.coord)
+            setSiteType(options.filter(t => t.value === settingState.data.siteType)[0])
+
         } else {
             closeScreen();
         }
     }, [settingState])
 
-    const handleSiteChange = (e: any) => {
-        const it = e.target.value as string
-        setSite(it)
-        // changeOrigin(it)
-        // handleSiteClickClose();
-    }
-
-    const handleSiteClickOpen = (e: any) => {
-        e.stopPropagation();
-        setSiteMenuOpen(true);
-    }
-
-    const handleSiteClickClose = (e: any) => {
-        e.stopPropagation();
-        setSiteMenuOpen(false);
-    }
-
-    
-
     return (
         <Container>
             <ScreenTitle text={'표지소 수정'} />
-            <Content>
-                <TextField label="표지소 이름" size="small" inputRef={nameRef} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'name') }}></TextField>
-                <Autocomplete options={[{ label: '표지소' }, { label: '저고도' }, { label: 'VORTAC' }]}
-                    isOptionEqualToValue={(option, value) => option.label === value.label}
-                    renderOption={(props, option) => {
-                        return <>
-                            {
-                                <Box component='li' key={option.label} {...props} value={`${option.label}`}>
-                                    {option.label}
-                                </Box>
-                            }
-                        </>
-                    }}
-                    renderInput={(params) => <TextField {...params} inputProps={{
-                        ...params.inputProps,
-                    }} />
-                    }
-                    size='small' 
-                    fullWidth/>
-            </Content>
-            <Content>
-                <TextField value={coord.lat} sx={{ flex: 1 }} label='위도' type={'number'} size="small" ref={(el: HTMLDivElement) => (coordRef.current[0] = el)} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'lat') }}></TextField>
-                <TextField value={coord.lng} sx={{ flex: 1 }} label='경도' type={'number'} size="small" ref={(el: HTMLDivElement) => (coordRef.current[1] = el)} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'lng') }} ></TextField>
-            </Content>
-            <Content>
-                <Button onClick={handleSubmit}>확인</Button>
-                <Button color='error' onClick={closeScreen}>취소</Button>
-                <Button color='error' variant='outlined' onClick={handleDelete}>삭제</Button>
-
-            </Content>
-
+            <Wrapper>
+                <Content>
+                    <TextField label="표지소 이름" size="small" inputRef={nameRef} sx={{ flex: 1 }} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'name') }}></TextField>
+                    <Autocomplete options={options} value={siteType} onChange={handleSiteTypeChange}
+                        sx={{ flex: 1 }} isOptionEqualToValue={(option, value) => option.label === value.label}
+                        renderOption={(props, option) => {
+                            return <>
+                                {
+                                    <Box component='li' key={option.label} {...props} value={`${option.label}`}>
+                                        {option.label}
+                                    </Box>
+                                }
+                            </>
+                        }}
+                        renderInput={(params) => <TextField {...params} label='표지소 타입' inputProps={{
+                            ...params.inputProps,
+                        }} />
+                        }
+                        size='small'
+                        fullWidth />
+                </Content>
+                <Content>
+                    <TextField value={coord.lat} sx={{ flex: 1 }} label='위도' type={'number'} size="small" ref={(el: HTMLDivElement) => (coordRef.current[0] = el)} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'lat') }}></TextField>
+                    <TextField value={coord.lng} sx={{ flex: 1 }} label='경도' type={'number'} size="small" ref={(el: HTMLDivElement) => (coordRef.current[1] = el)} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'lng') }} ></TextField>
+                </Content>
+                <Content>
+                    <Button color='error' variant='outlined' onClick={handleDelete}>표지소 삭제</Button>
+                    <Button color='error' onClick={closeScreen}>취소</Button>
+                    <Button onClick={handleSubmit}>확인</Button>
+                </Content>
+            </Wrapper>
         </Container>
 
     )

@@ -131,7 +131,7 @@ export default function SectorEdit() {
         }
         // const error = { lat: validateCoordinates(coord.lat.toString()), lng: validateCoordinates(coord.lng.toString()) }
 
-        if (points.length) {
+        if (points?.length) {
             const polygonCoords = []
 
             for (let item of points) {
