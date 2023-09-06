@@ -11,9 +11,6 @@ import { validateCoordinates } from 'module/validationCoordinate'
 import React from 'react'
 import { useMap } from 'react-leaflet'
 import { useSetRecoilState } from 'recoil'
-interface StyledProp {
-    color: string,
-}
 
 const Container = styled.div`
   display:flex;
@@ -23,6 +20,8 @@ const Container = styled.div`
 
 const Content = styled.div`
   display:flex;
+  gap:10px;
+  justify-content:end;
 `
 
 
@@ -91,15 +90,15 @@ function FixPointAdd() {
         <Container>
             <ScreenTitle text={'픽스점 추가'} />
             <Content>
-                <TextField label="픽스점 이름" size="small" inputRef={nameRef} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'name') }}></TextField>
+                <TextField label="픽스점 이름" size="small" fullWidth inputRef={nameRef} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'name') }}></TextField>
             </Content>
             <Content>
                 <TextField sx={{ flex: 1 }} label='위도' type={'number'} size="small" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'lat') }}></TextField>
                 <TextField sx={{ flex: 1 }} label='경도' type={'number'} size="small" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'lng') }} ></TextField>
             </Content>
             <Content>
-                <Button onClick={handleSubmit}>확인</Button>
                 <Button color='error' onClick={closeScreen}>취소</Button>
+                <Button onClick={handleSubmit}>확인</Button>
             </Content>
 
         </Container>
