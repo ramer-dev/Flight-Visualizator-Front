@@ -30,6 +30,7 @@ const Container = styled.div`
 
 const Content = styled.div`
   display:flex;
+  gap:10px;
 `
 
 const InputWrapper = styled.div`
@@ -154,7 +155,7 @@ function RouteEdit() {
         <Container>
             <ScreenTitle text={'항로 수정'} />
             <Content>
-                <TextField label="항로 이름" size="small" inputRef={nameRef} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleNameChange(e) }} />
+                <TextField label="항로 이름" size="small" fullWidth inputRef={nameRef} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleNameChange(e) }} />
             </Content>
             <InputWrapper>
 
@@ -162,7 +163,7 @@ function RouteEdit() {
                     <Content key={t?.label ? `${t.id}-${i}-${t.label}` : null}>
                         <FixPointAutoComplete label={`픽스점-${i + 1}`} options={options} isLoading={isLoading} isError={isError} value={t}
                             changeData={(e: FixPointAutoCompleteItemType) => handlePointChange(i, e)} />
-                        <Button onClick={() => removePoint(i)}>삭제</Button>
+                        <Button color='error' onClick={() => removePoint(i)}>삭제</Button>
                     </Content>
                 )}
                 <Button onClick={addPoint}>픽스점 추가</Button>

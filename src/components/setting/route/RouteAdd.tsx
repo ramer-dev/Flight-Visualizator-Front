@@ -28,6 +28,7 @@ const Container = styled.div`
 
 const Content = styled.div`
   display:flex;
+  gap:10px;
 `
 
 const InputWrapper = styled.div`
@@ -115,7 +116,7 @@ function RouteAdd() {
         <Container>
             <ScreenTitle text={'항로 추가'} />
             <Content>
-                <TextField label="항로 이름" size="small" inputRef={nameRef} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleNameChange(e) }} />
+                <TextField label="항로 이름" size="small" fullWidth inputRef={nameRef} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleNameChange(e) }} />
             </Content>
             <InputWrapper>
 
