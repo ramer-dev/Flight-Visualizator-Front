@@ -12,9 +12,6 @@ import { convertToWGS } from 'module/DMS'
 import React from 'react'
 import { useMap } from 'react-leaflet'
 import { useSetRecoilState } from 'recoil'
-interface StyledProp {
-    color: string,
-}
 
 const Container = styled.div`
   display:flex;
@@ -23,7 +20,9 @@ const Container = styled.div`
 `
 
 const Content = styled.div`
-  display:flex;
+   display:flex;
+  gap:10px;
+  justify-content:end;
 `
 
 const InputWrapper = styled.div`
@@ -31,7 +30,8 @@ const InputWrapper = styled.div`
   flex-direction:column;
   gap:15px;
   overflow-y:auto;
-  height:calc(100vh - 240px);
+  height:100%;
+  max-height:calc(100vh - 230px);
   padding: 5px 0;
 `
 
@@ -64,7 +64,7 @@ export default function SectorAdd() {
             const body: SectorDTO = {
                 sectorName: name,
                 sectorData: points,
-                sectorAreaId : area.id
+                sectorAreaId: area.id
             }
             try {
                 await postSectorData(body);
@@ -122,25 +122,25 @@ export default function SectorAdd() {
         <Container>
             <ScreenTitle text={'섹터 추가'} />
             <Content>
-                <TextField sx={{flex:2}} label="섹터 이름" size="small" inputRef={nameRef} onChange={handleNameChange} />
-                <Autocomplete sx={{flex:1}} options={options} onChange={(event:any, value:any) => {setArea(value)}} value={area}
-                isOptionEqualToValue={(option, value) => option.label === value.label}
-                renderOption={(props, option) => {
-                    return <>
-                        {isLoading && <CircularProgress size={20} /> }
-                        {isError && <ErrorPage />}
-                        {
-                            <Box sx={{justifyContent:'center', alignItems:'center'}} component={'li'} key={option.label + option.name + option.color} {...props} value={option.id}>
-                                <Typography>{option.label}</Typography>
-                                <Box sx={{backgroundColor:option?.color, width:24, height:18, borderRadius:2, marginLeft:2}}></Box>
-                            </Box>
-                        }
-                    </>
-                }}
-                renderInput={(params) => {
-                    return <TextField   {...params} fullWidth inputProps={{...params.inputProps}} label="구역" size="small" />
-                }
-                }
+                <TextField sx={{ flex: 2 }} label="섹터 이름" size="small" inputRef={nameRef} onChange={handleNameChange} />
+                <Autocomplete sx={{ flex: 1 }} options={options} onChange={(event: any, value: any) => { setArea(value) }} value={area}
+                    isOptionEqualToValue={(option, value) => option.label === value.label}
+                    renderOption={(props, option) => {
+                        return <>
+                            {isLoading && <CircularProgress size={20} />}
+                            {isError && <ErrorPage />}
+                            {
+                                <Box sx={{ justifyContent: 'center', alignItems: 'center' }} component={'li'} key={option.label + option.name + option.color} {...props} value={option.id}>
+                                    <Typography>{option.label}</Typography>
+                                    <Box sx={{ backgroundColor: option?.color, width: 24, height: 18, borderRadius: 2, marginLeft: 2 }}></Box>
+                                </Box>
+                            }
+                        </>
+                    }}
+                    renderInput={(params) => {
+                        return <TextField   {...params} fullWidth inputProps={{ ...params.inputProps }} label="구역" size="small" />
+                    }
+                    }
                 />
             </Content>
             <InputWrapper>
@@ -149,14 +149,14 @@ export default function SectorAdd() {
                     <Content key={`${name}-${i}`}>
                         <TextField key={`${name} lat ${i}`} sx={{ flex: 1 }} label='위도' type={'number'} size="small" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handlePointChange('lat', i, e) }}></TextField>
                         <TextField key={`${name} lng ${i}`} sx={{ flex: 1 }} label='경도' type={'number'} size="small" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handlePointChange('lng', i, e) }} ></TextField>
-                        <Button onClick={() => removePoint(i)}>삭제</Button>
+                        <Button color='error' onClick={() => removePoint(i)}>삭제</Button>
                     </Content>
                 )}
                 <Button onClick={addPoint}>지점 추가</Button>
             </InputWrapper>
             <Content>
-                <Button onClick={handleSubmit}>확인</Button>
                 <Button color='error' onClick={closeScreen}>취소</Button>
+                <Button onClick={handleSubmit}>확인</Button>
             </Content>
 
         </Container>

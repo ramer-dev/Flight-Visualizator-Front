@@ -34,6 +34,8 @@ const Container = styled.div`
 
 const Content = styled.div`
   display:flex;
+  gap:10px;
+  justify-content:end;
 `
 
 const InputWrapper = styled.div`
@@ -41,7 +43,8 @@ const InputWrapper = styled.div`
   flex-direction:column;
   gap:15px;
   overflow-y:auto;
-  height:calc(100vh - 240px);
+  height:100%;
+  max-height:calc(100vh - 230px);
   padding: 5px 0;
 `
 
@@ -195,17 +198,16 @@ export default function SectorEdit() {
                     <Content key={`${name}-${i}`}>
                         <TextField key={`${name} lat ${i}`} sx={{ flex: 1 }} label='위도' type={'number'} value={t.lat} size="small" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handlePointChange('lat', i, e) }}></TextField>
                         <TextField key={`${name} lng ${i}`} sx={{ flex: 1 }} label='경도' type={'number'} value={t.lng} size="small" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handlePointChange('lng', i, e) }} ></TextField>
-                        <Button onClick={() => removePoint(i)}>삭제</Button>
+                        <Button color='error' onClick={() => removePoint(i)}>삭제</Button>
                     </Content>
                 )}
+                <Button onClick={addPoint}>지점 추가</Button>
 
             </InputWrapper>
             <Content>
-                <Button onClick={addPoint}>픽스점 추가</Button>
-
-                <Button onClick={handleSubmit}>저장</Button>
-                <Button color='error' onClick={closeScreen}>취소</Button>
                 <Button color='error' variant="outlined" onClick={handleDelete}>섹터 삭제</Button>
+                <Button color='error' onClick={closeScreen}>취소</Button>
+                <Button onClick={handleSubmit}>저장</Button>
             </Content>
 
         </Container>
