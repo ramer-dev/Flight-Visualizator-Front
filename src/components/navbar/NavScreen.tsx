@@ -15,11 +15,8 @@ type styleProp = {
 }
 
 const Container = styled(motion.div)`
-    width:${(props: styleProp) => (props.contentView)};
     height:100vh;
-    transition:all 0.3s ease; 
-    padding: ${({contentView}:styleProp) => contentView === '0' ? 0 : '10px 25px'};
-    overflow:hidden;
+    padding: ${({ contentView }: styleProp) => contentView === '0' || contentView?.charAt(0) === 'c' ? 0 : '10px 25px'};
     user-select: auto;
     z-index:2100;
 `
@@ -79,10 +76,11 @@ function NavScreen() {
             controls.start('inactive')
         }
     }, [selectedPage, setContent, setContentView])
+    
     return (
         <AnimatePresence mode='wait'>
             <motion.div variants={menuHandlerStyles}>
-                <Container contentView={widthMap[contentView]}>
+                <Container contentView={widthMap[contentView]} initial={{ x: '-100%' }} animate={{ x: 0, width: widthMap[contentView] }}>
                     {selector(selectedPage, settingValue.current)}
                 </Container>
             </motion.div>

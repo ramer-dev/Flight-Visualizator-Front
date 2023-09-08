@@ -5,6 +5,7 @@ import { contentFormat, contentViewFormat } from 'common/store/atom'
 import ErrorPage from 'components/common/ErrorPage'
 import ScreenTitle from 'components/common/ScreenTitle'
 import { useGetArea } from 'components/hooks/useArea'
+import NavCloseButton from 'components/navbar/NavCloseButton'
 import { SectorDTO } from 'dto/sectorDTO'
 import L from 'leaflet'
 import { LatLngLiteral } from 'leaflet'
@@ -17,6 +18,7 @@ const Container = styled.div`
   display:flex;
   flex-direction:column;
   gap:15px;
+  overflow-X:hidden;
 `
 
 const Content = styled.div`
@@ -158,6 +160,7 @@ export default function SectorAdd() {
                 <Button onClick={handleSubmit}>확인</Button>
             </Content>
 
+            <NavCloseButton contentSize={['NONE', 'MIN']} />
         </Container>
 
     )

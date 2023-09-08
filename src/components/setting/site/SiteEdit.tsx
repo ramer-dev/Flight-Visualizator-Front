@@ -4,6 +4,7 @@ import { deleteFixPoint, patchFixPoint, postFixPoint } from 'common/service/poin
 import { deleteSite, patchSite } from 'common/service/siteService'
 import { contentFormat, contentViewFormat, setting } from 'common/store/atom'
 import ScreenTitle from 'components/common/ScreenTitle'
+import NavCloseButton from 'components/navbar/NavCloseButton'
 import { FixPointDTO } from 'dto/fixPointDTO'
 import { SiteDTO } from 'dto/siteDTO'
 import L from 'leaflet'
@@ -14,14 +15,12 @@ import React from 'react'
 import { useMap } from 'react-leaflet'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { SettingStateType } from '../SettingStateType'
-interface StyledProp {
-    color: string,
-}
 
 const Container = styled.div`
   display:flex;
   flex-direction:column;
   gap:15px;
+  overflow-X:hidden;
 `
 
 const Content = styled.div`
@@ -36,7 +35,7 @@ const Wrapper = styled.div`
     gap:15px;
 `
 
-const options = [{ label: '표지소', value:'SITE' }, { label: '저고도', value:'LOWSITE' }, { label: 'VORTAC', value:'VORTAC' }]
+const options = [{ label: '표지소', value: 'SITE' }, { label: '저고도', value: 'LOWSITE' }, { label: 'VORTAC', value: 'VORTAC' }]
 
 function SiteEdit() {
     const settingState = useRecoilValue<SettingStateType>(setting)
@@ -75,7 +74,7 @@ function SiteEdit() {
         closeScreen();
     }
 
-    const handleSiteTypeChange = (e: any, a:any) => {
+    const handleSiteTypeChange = (e: any, a: any) => {
         setSiteType(a)
     }
 
@@ -158,6 +157,7 @@ function SiteEdit() {
                     <Button onClick={handleSubmit}>확인</Button>
                 </Content>
             </Wrapper>
+            <NavCloseButton contentSize={['NONE', 'MIN']} />
         </Container>
 
     )

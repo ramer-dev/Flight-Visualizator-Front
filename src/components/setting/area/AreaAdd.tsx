@@ -3,18 +3,17 @@ import { Button, TextField } from '@mui/material'
 import { postArea } from 'common/service/areaService'
 import { contentFormat, contentViewFormat } from 'common/store/atom'
 import ScreenTitle from 'components/common/ScreenTitle'
+import NavCloseButton from 'components/navbar/NavCloseButton'
 import { AreaDTO } from 'dto/areaDTO'
 import React from 'react'
 import { useSetRecoilState } from 'recoil'
 import ColorPicker from './ColorPicker'
-interface StyledProp {
-  color: string,
-}
 
 const Container = styled.div`
   display:flex;
   flex-direction:column;
   gap:15px;
+  overflow-X:hidden;
 `
 
 const Content = styled.div`
@@ -74,6 +73,7 @@ function AreaAdd() {
         <Button color='error' onClick={closeScreen}>취소</Button>
         <Button onClick={handleSubmit}>확인</Button>
       </Content>
+      <NavCloseButton contentSize={['NONE', 'MIN']} />
 
     </Container>
 

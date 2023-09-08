@@ -3,6 +3,7 @@ import { Button, TextField } from '@mui/material'
 import { deleteArea, patchArea } from 'common/service/areaService'
 import { contentFormat, contentViewFormat, setting } from 'common/store/atom'
 import ScreenTitle from 'components/common/ScreenTitle'
+import NavCloseButton from 'components/navbar/NavCloseButton'
 import { AreaDTO } from 'dto/areaDTO'
 import React from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
@@ -12,6 +13,7 @@ const Container = styled.div`
   display:flex;
   flex-direction:column;
   gap:15px;
+  overflow-X:hidden;
 `
 
 const Content = styled.div`
@@ -77,7 +79,7 @@ function AreaEdit() {
         <Button color='error' onClick={closeScreen}>취소</Button>
         <Button onClick={handleSubmit}>확인</Button>
       </Content>
-
+      <NavCloseButton contentSize={['NONE', 'MIN']}/>
     </Container>
   )
 }

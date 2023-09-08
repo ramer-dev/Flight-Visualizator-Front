@@ -7,6 +7,7 @@ import { contentFormat, contentViewFormat, setting } from 'common/store/atom'
 import { RoutePointType } from 'common/type/RouteType'
 import ScreenTitle from 'components/common/ScreenTitle'
 import { useGetPoint } from 'components/hooks/useFixPoint'
+import NavCloseButton from 'components/navbar/NavCloseButton'
 import { FixPointAutoCompleteItemType, FixPointDTO } from 'dto/fixPointDTO'
 import { RouteDTO, RoutePointDTO } from 'dto/routeDTO'
 import L from 'leaflet'
@@ -18,14 +19,12 @@ import { useMap } from 'react-leaflet'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import FixPointAutoComplete from '../fixPoint/FixPointAutoComplete'
 import { SettingStateType } from '../SettingStateType'
-interface StyledProp {
-    color: string,
-}
 
 const Container = styled.div`
   display:flex;
   flex-direction:column;
   gap:15px;
+  overflow-X:hidden;
 `
 
 const Content = styled.div`
@@ -173,6 +172,7 @@ function RouteEdit() {
                 <Button onClick={handleSubmit}>확인</Button>
             </Content>
 
+            <NavCloseButton contentSize={['NONE', 'MIN']} />
         </Container>
 
     )

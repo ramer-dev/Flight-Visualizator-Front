@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import { contentFormat } from 'common/store/atom'
 import { ContentType } from 'common/type/NavBarType';
 import React from 'react'
@@ -18,11 +19,15 @@ const selector = (content: ContentType) => {
     }
 }
 
+const Wrapper = styled.div`
+  overflow-X:hidden;
+`
+
 export const NoticeScreen = () => {
     const content = useRecoilValue(contentFormat);
     return (
-        <>
+        <Wrapper>
             {selector(content)}
-        </>
+        </Wrapper>
     )
 }

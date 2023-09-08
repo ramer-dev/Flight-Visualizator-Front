@@ -6,6 +6,7 @@ import { postRouteData } from 'common/service/routeService'
 import { contentFormat, contentViewFormat } from 'common/store/atom'
 import ScreenTitle from 'components/common/ScreenTitle'
 import { useGetPoint } from 'components/hooks/useFixPoint'
+import NavCloseButton from 'components/navbar/NavCloseButton'
 import { FixPointAutoCompleteItemType, FixPointDTO } from 'dto/fixPointDTO'
 import { RouteDTO, RoutePointDTO } from 'dto/routeDTO'
 import L from 'leaflet'
@@ -16,14 +17,12 @@ import React from 'react'
 import { useMap } from 'react-leaflet'
 import { useSetRecoilState } from 'recoil'
 import FixPointAutoComplete from '../fixPoint/FixPointAutoComplete'
-interface StyledProp {
-    color: string,
-}
 
 const Container = styled.div`
   display:flex;
   flex-direction:column;
   gap:15px;
+  overflow-X:hidden;
 `
 
 const Content = styled.div`
@@ -64,12 +63,12 @@ function RouteAdd() {
         if (nameRef?.current?.value && points.length) {
             const body: RouteDTO = {
                 routeName: nameRef.current.value,
-                routeData: points.map(t => { return { routeName: t.label }})
+                routeData: points.map(t => { return { routeName: t.label } })
             }
             try {
-            await postRouteData(body);
-            closeScreen()
-            } catch(e : any) {
+                await postRouteData(body);
+                closeScreen()
+            } catch (e: any) {
                 console.error(e)
             }
         }
@@ -86,7 +85,7 @@ function RouteAdd() {
     }
 
     const addPoint = () => {
-        setPoints([...points, options[0]/*{ label: '', id: points.length, coord: { lat: 0, lng: 0 } }*/] )
+        setPoints([...points, options[0]/*{ label: '', id: points.length, coord: { lat: 0, lng: 0 } }*/])
     }
 
     const removePoint = (index: number) => {
@@ -139,6 +138,7 @@ function RouteAdd() {
                 <Button onClick={handleSubmit}>확인</Button>
             </Content>
 
+            <NavCloseButton contentSize={['NONE', 'MIN']} />
         </Container>
 
     )

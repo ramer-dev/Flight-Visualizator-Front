@@ -1,4 +1,5 @@
 import { ContentType } from 'common/type/NavBarType'
+import NavCloseButton from 'components/navbar/NavCloseButton'
 import React from 'react'
 import AreaAdd from './AreaAdd'
 import AreaEdit from './AreaEdit'

@@ -10,6 +10,7 @@ import ErrorPage from 'components/common/ErrorPage'
 import ScreenTitle from 'components/common/ScreenTitle'
 import { useGetArea } from 'components/hooks/useArea'
 import { useGetPoint } from 'components/hooks/useFixPoint'
+import NavCloseButton from 'components/navbar/NavCloseButton'
 import { FixPointAutoCompleteItemType, FixPointDTO } from 'dto/fixPointDTO'
 import { RouteDTO, RoutePointDTO } from 'dto/routeDTO'
 import { SectorDTO } from 'dto/sectorDTO'
@@ -22,14 +23,12 @@ import { useMap } from 'react-leaflet'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import FixPointAutoComplete from '../fixPoint/FixPointAutoComplete'
 import { SettingStateType } from '../SettingStateType'
-interface StyledProp {
-    color: string,
-}
 
 const Container = styled.div`
   display:flex;
   flex-direction:column;
   gap:15px;
+  overflow-X:hidden;
 `
 
 const Content = styled.div`
@@ -216,6 +215,7 @@ export default function SectorEdit() {
                 <Button onClick={handleSubmit}>저장</Button>
             </Content>
 
+            <NavCloseButton contentSize={['NONE', 'MIN']} />
         </Container>
 
     )

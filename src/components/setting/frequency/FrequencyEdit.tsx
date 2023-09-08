@@ -5,6 +5,7 @@ import { deleteFrequency, patchFrequnecy } from 'common/service/frequencyService
 import { contentFormat, contentViewFormat, setting } from 'common/store/atom'
 import ScreenTitle from 'components/common/ScreenTitle'
 import { useGetSite } from 'components/hooks/useSite'
+import NavCloseButton from 'components/navbar/NavCloseButton'
 import { frequencyDTO } from 'dto/frequencyDTO'
 import React from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
@@ -14,6 +15,7 @@ const Container = styled.div`
   display:flex;
   flex-direction:column;
   gap:15px;
+  overflow-X:hidden;
 `
 
 const Content = styled.div`
@@ -94,6 +96,8 @@ function FrequencyEdit() {
                 <Button color='error' onClick={closeWindow}>취소</Button>
                 <Button onClick={patchData}>확인</Button>
             </Content>
+            <NavCloseButton
+                contentSize={['NONE', 'MIN']} />
         </Container> : <>{closeWindow()}</>
 
 
