@@ -179,7 +179,7 @@ function CustomTable({ edit, search, add }: Props) {
 
     const columns: GridColDef[] = [
         { field: 'id', editable: false, flex: .5 },
-        { field: 'no', disableExport: true, editable: false, flex: .5, type: 'number', sortable: false, renderCell: (params) =>  apiRef.current.getRowIndexRelativeToVisibleRows(params.id) + 1 || apiRef.current.getAllRowIds().indexOf(params.id) + 1 , headerName: 'No' },
+        { field: 'no', disableExport: true, editable: false, flex: .5, type: 'number', sortable: false, valueGetter: (params) =>  apiRef.current.getRowIndexRelativeToVisibleRows(params.id) + 1 || apiRef.current.getAllRowIds().indexOf(params.id) + 1 , headerName: 'No' },
         {
             field: 'siteName', editable: !!edit, flex: 1, headerName: '표지소', type: 'string',
             preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
@@ -262,17 +262,14 @@ function CustomTable({ edit, search, add }: Props) {
 
     useEffect(() => {
         const obj: { [key: string]: GridValidRowModel } = {};
-        const layer = []
+        const layer : L.Marker[] = []
         const instance = layerGroup.current;
 
 
         checkboxSelection?.forEach((value, key) => {
             obj[String(key)] = value;
         });
-
-        for (let i in obj) {
-
-
+        Object.keys(obj).map((i, idx) => {
             if (!isNaN(obj[i].angle) && !isNaN(obj[i].distance) && obj[i].siteName) {
                 const angle = parseFloat(obj[i].angle) && obj[i].angle;
                 const distance = parseFloat(obj[i].angle) && obj[i].distance;
@@ -280,18 +277,41 @@ function CustomTable({ edit, search, add }: Props) {
                 const target = Destination(siteCoords, angle, distance);
                 layer.push(L.marker(target as LatLngLiteral, {
                     pane: 'pin',
-                    icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby), obj[i].no)
+                    icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby), idx+1)
                 }).on('mouseover', () => {
-                    hoverPolyline.current = L.polyline([[convertToWGS(siteCoords.lat), convertToWGS(siteCoords.lng)], target!], { pane: 'pin' }).addTo(map);
+                    hoverPolyline.current = L.polyline([[convertToWGS(siteCoords.lat), convertToWGS(siteCoords.lng)], target!], { pane: 'pin', color:'red' }).addTo(map);
                 }).on('mouseout', () => {
                     if (hoverPolyline.current) {
                         hoverPolyline.current.remove();
                     }
                 })
-                    .bindTooltip(CustomTableTooltip({ siteName: obj[i].siteName, distance, angle: angle, index: obj[i].no }))
+                    .bindTooltip(CustomTableTooltip({ siteName: obj[i].siteName, distance, angle: angle, index: idx+1 }))
                 )
             }
-        }
+
+        })
+        // for (let i in obj) {
+
+
+        //     if (!isNaN(obj[i].angle) && !isNaN(obj[i].distance) && obj[i].siteName) {
+        //         const angle = parseFloat(obj[i].angle) && obj[i].angle;
+        //         const distance = parseFloat(obj[i].angle) && obj[i].distance;
+        //         const siteCoords = siteData.data.filter(t => t.siteName === obj[i].siteName)[0]?.siteCoordinate as LatLngLiteral;
+        //         const target = Destination(siteCoords, angle, distance);
+        //         layer.push(L.marker(target as LatLngLiteral, {
+        //             pane: 'pin',
+        //             icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby), +i+1)
+        //         }).on('mouseover', () => {
+        //             hoverPolyline.current = L.polyline([[convertToWGS(siteCoords.lat), convertToWGS(siteCoords.lng)], target!], { pane: 'pin' }).addTo(map);
+        //         }).on('mouseout', () => {
+        //             if (hoverPolyline.current) {
+        //                 hoverPolyline.current.remove();
+        //             }
+        //         })
+        //             .bindTooltip(CustomTableTooltip({ siteName: obj[i].siteName, distance, angle: angle, index: (+i+1) }))
+        //         )
+        //     }
+        // }
 
         instance.clearLayers()
 
@@ -358,7 +378,7 @@ function CustomTable({ edit, search, add }: Props) {
 
     const handleAddRow = (e: React.MouseEvent) => {
         if (titleData) {
-            const newRow = { id: `add-${id.current}`, siteName: '', frequency: 0, testId: titleData.id!, angle: 0, distance: 0, height: 0 }
+            const newRow = { id: `add-${id.current}`, siteName: '', frequency: 0, testId: titleData.id!, angle: 0, distance: 0, height: 0}
             apiRef.current.updateRows([newRow]);
             setRows((prevRow) => [...prevRow, newRow])
             id.current++;
