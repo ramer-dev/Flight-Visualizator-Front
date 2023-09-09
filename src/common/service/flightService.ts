@@ -19,13 +19,13 @@ export const getFlightData = async (take?: number, skip?: number, id?: number) =
 
 }
 
-export const postFlightData = async (data: FlightResult[]) => {
-    const response = await CustomAxios.post(`flight/result`, data);
+export const postFlightData = async (data: FlightResult[], testId:string) => {
+    const response = await CustomAxios.post(`flight/result`, {data,testId});
     return response;
 }
 
-export const patchFlightData = async (data: FlightResult[]) => {
-    const response = await CustomAxios.patch(`flight/result`, data);
+export const patchFlightData = async (data: FlightListPost, testId: number) => {
+    const response = await CustomAxios.patch(`flight/list/${testId}`, data);
     return response;
 }
 
@@ -60,7 +60,7 @@ export const deleteFlightList = async (id: number) => {
     return response;
 }
 
-export const patchFlightResult = async (data : FlightResult, id:string) => {
+export const patchFlightResultCoords = async (data : FlightResult, id:string) => {
     const response = await CustomAxios.patch(`flight/result/${id}`, data);
     return response;
 }
