@@ -63,6 +63,7 @@ export default function SectorEdit() {
     const [name, setName] = React.useState('');
     const [area, setArea] = React.useState<AreaLabelType | null>(null)
     const [points, setPoints] = React.useState<LatLngLiteral[] | null>(null)
+    const [coordError, setCoordError] = React.useState<{lat:boolean,lng:boolean}[]>([])
     const nameRef = React.useRef<HTMLInputElement>();
     const map = useMap();
     const polygonLayer = React.useRef<L.Polygon>();

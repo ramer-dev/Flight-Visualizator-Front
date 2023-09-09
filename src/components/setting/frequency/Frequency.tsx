@@ -3,6 +3,7 @@ import { MenuItem, Autocomplete, TextField, Box, CircularProgress } from "@mui/m
 import { contentFormat } from "common/store/atom"
 import ErrorPage from "components/common/ErrorPage"
 import { useGetFrequency } from "components/hooks/useFrequency"
+import { motion } from "framer-motion"
 import React from "react"
 import { useRecoilValue } from "recoil"
 
@@ -10,7 +11,7 @@ interface Props {
     openEditWindow: () => void;
     changeData: (e: any) => void;
 }
-const Container = styled.div`
+const Container = styled(motion.div)`
     
 `
 
@@ -24,7 +25,7 @@ export default function Frequency({ openEditWindow, changeData }: Props) {
     // const options = [{label:'test'}, {label:'test2'}]
     const options = data.map(t => { return { label: `${t.frequency}`, site: t.frequencySiteName, id: t.frequencyId, siteId: t.frequencySiteId } }).sort((a, b) => a.site.localeCompare(b.site))
     return (
-        <Container>
+        <Container initial={{y:'-100%', opacity:0}} animate={{y:'0', opacity:1}} transition={{damping:60}}>
             <Autocomplete
                 options={options}
                 autoHighlight

@@ -3,13 +3,14 @@ import { Autocomplete, Box, CircularProgress, MenuItem, Select, TextField } from
 import { contentFormat } from "common/store/atom";
 import ErrorPage from "components/common/ErrorPage";
 import { useGetRoute } from "components/hooks/useRoute";
+import { motion } from "framer-motion";
 import React from "react";
 import { useRecoilValue } from "recoil";
 interface Props {
     openEditWindow: () => void;
     changeData: (e: any) => void;
 }
-const Container = styled.div`
+const Container = styled(motion.div)`
 
 `
 
@@ -23,7 +24,7 @@ export default function Route({ openEditWindow, changeData } : Props) {
     }, [content])
 
     return (
-        <Container>
+        <Container initial={{y:'-100%', opacity:0}} animate={{y:'0', opacity:1}} transition={{damping:60}}>
             <Autocomplete
                 options={options}
                 autoHighlight
