@@ -179,15 +179,9 @@ function CustomTable({ edit, search, add }: Props) {
 
     const columns: GridColDef[] = [
         { field: 'id', editable: false, flex: .5 },
-        { field: 'no', editable: false, flex: .5, type: 'number', sortable: false, renderCell: (params) => apiRef.current.getRowIndexRelativeToVisibleRows(params.id) + 1, headerName: 'No' },
-        // { field: 'no', editable: false, flex: .5, valueGetter: (params) => (apiRef.current.getAllRowIds().indexOf(params.id) + 1), headerName: 'No' },
-
+        { field: 'no', disableExport: true, editable: false, flex: .5, type: 'number', sortable: false, renderCell: (params) =>  apiRef.current.getRowIndexRelativeToVisibleRows(params.id) + 1 || apiRef.current.getAllRowIds().indexOf(params.id) + 1 , headerName: 'No' },
         {
             field: 'siteName', editable: !!edit, flex: 1, headerName: '표지소', type: 'string',
-            // valueOptions: (params: GridValueOptionsParams) => {
-
-            //     return siteData.data.map(t => {return {value: t.siteId, label:t.siteName}})
-            // }
             preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
                 if (params.hasChanged) {
                     const hasError = !siteData.data.map(t => t.siteName).includes(params.props.value)
@@ -259,7 +253,6 @@ function CustomTable({ edit, search, add }: Props) {
     }
     useEffect(() => {
         stateRefresh()
-        // eslint-disable-next-line
         if (data) {
             const excludesPoint = data.data?.items.filter(t => !t.point)
             setTitleData({ ...data, data: undefined })
@@ -374,198 +367,198 @@ function CustomTable({ edit, search, add }: Props) {
 
     const validateInput = (data: FlightResult[]) => {
         for (let i in data) {
-        
+
             if (!data[i].siteName) {
                 console.log(data[i], '표지소 입력')
-                window.alert(`${+i+1}행의 표지소를 정확하게 입력해주세요.`)
+                window.alert(`${+i + 1}행의 표지소를 정확하게 입력해주세요.`)
                 return true;
             }
             if (!data[i].frequency || !data[i].frequency.toString().match(frequencyRegex)) {
-                window.alert(`${+i+1}행의 주파수를 정확하게 입력해주세요.\n','(콤마)가 입력되어 있을 수 있습니다.`)
-                
+                window.alert(`${+i + 1}행의 주파수를 정확하게 입력해주세요.\n','(콤마)가 입력되어 있을 수 있습니다.`)
+
                 return true;
             }
 
             if (!data[i].angle || data[i].angle >= 360 || data[i].angle < 0) {
-                window.alert(`${+i+1}행의 각도를 정확하게 입력해주세요.`)
+                window.alert(`${+i + 1}행의 각도를 정확하게 입력해주세요.`)
                 return true;
             }
 
             if (!data[i].distance || data[i].distance >= 400 || data[i].angle < 0) {
-                window.alert(`${+i+1}행의 거리를 정확하게 입력해주세요.`)
+                window.alert(`${+i + 1}행의 거리를 정확하게 입력해주세요.`)
                 return true;
             }
 
             if (!data[i].height || data[i].height >= 50000 || data[i].height < 0) {
-                window.alert(`${+i+1}행의 고도를 정확하게 입력해주세요.`)
+                window.alert(`${+i + 1}행의 고도를 정확하게 입력해주세요.`)
                 return true;
             }
 
             if ((!data[i].txmain || !data[i].rxmain) && (!data[i].txstby || !data[i].rxstby)) {
-                window.alert(`${+i+1}행의 검사결과를 정확하게 입력해주세요.`)
+                window.alert(`${+i + 1}행의 검사결과를 정확하게 입력해주세요.`)
                 return true;
             }
 
-            
+
 
         }
-    return false;
+        return false;
 
     }
 
-const handleSubmit = () => {
-    if (!data) return;
-    if (!submitted) {
-        openModal()
-        return
-    };
+    const handleSubmit = () => {
+        if (!data) return;
+        if (!submitted) {
+            openModal()
+            return
+        };
 
-    const rowModel = apiRef.current.getRowModels()
-    const editArray: FlightResult[] = [];
+        const rowModel = apiRef.current.getRowModels()
+        const editArray: FlightResult[] = [];
 
-    for (const t of rowModel) {
-        const item: any = { testId: add ? null : data.id }
-        for (const key in t[1]) {
-            if (key !== null) {
-                item[key] = t[1][key];
+        for (const t of rowModel) {
+            const item: any = { testId: add ? null : data.id }
+            for (const key in t[1]) {
+                if (key !== null) {
+                    item[key] = t[1][key];
+                }
+            }
+
+            // 불필요한 속성 명시적으로 삭제
+            // Mode가 (추가)인 경우, 모든 item의 id를 삭제하여 DB에서 Auto Increment된 값 부여하도록 설정
+            if (String(item.id).startsWith('add')) {
+                delete item.id
+            }
+            editArray.push(item)
+
+            if (validateInput(editArray)) {
+                return;
+            }
+
+            delete item.no;
+            delete item.status;
+            delete item.deletedAt;
+            delete item.updatedAt;
+
+        }
+        if (titleData) {
+            const fetchData: FlightListPost = { ...titleData, data: editArray }
+            if (add) {
+                delete fetchData.id;
+                delete fetchData.deletedAt;
+                delete fetchData.updatedAt;
+                postFlightList(fetchData);
+            } else if (titleData?.id) {
+                delete fetchData.deletedAt;
+                delete fetchData.updatedAt;
+                patchFlightData(fetchData, titleData.id)
             }
         }
 
-        // 불필요한 속성 명시적으로 삭제
-        // Mode가 (추가)인 경우, 모든 item의 id를 삭제하여 DB에서 Auto Increment된 값 부여하도록 설정
-        if (String(item.id).startsWith('add')) {
-            delete item.id
-        }
-        editArray.push(item)
-
-        if (validateInput(editArray)) {
-            return;
-        }
-
-        delete item.no;
-        delete item.status;
-        delete item.deletedAt;
-        delete item.updatedAt;
-
-    }
-    if (titleData) {
-        const fetchData: FlightListPost = { ...titleData, data: editArray }
-        if (add) {
-            delete fetchData.id;
-            delete fetchData.deletedAt;
-            delete fetchData.updatedAt;
-            postFlightList(fetchData);
-        } else if (titleData?.id) {
-            delete fetchData.deletedAt;
-            delete fetchData.updatedAt;
-            patchFlightData(fetchData, titleData.id)
-        }
     }
 
-}
+    const handleDeleteRow = (e: React.MouseEvent) => {
+        e.stopPropagation()
+        const idList: string[] = []
+        if (checkboxSelection && window.confirm(`${checkboxSelection.size}개의 행을 삭제할까요?`)) {
+            for (const item of checkboxSelection) {
+                idList.push(item[0] as string)
+                apiRef.current.updateRows([{ id: item[0], _action: 'delete' }])
+            }
+            setRows(rows.filter(t => !idList.includes(t.id!)))
 
-const handleDeleteRow = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    const idList: string[] = []
-    if (checkboxSelection && window.confirm(`${checkboxSelection.size}개의 행을 삭제할까요?`)) {
-        for (const item of checkboxSelection) {
-            idList.push(item[0] as string)
-            apiRef.current.updateRows([{ id: item[0], _action: 'delete' }])
         }
-        setRows(rows.filter(t => !idList.includes(t.id!)))
+    };
 
+    const handleMarking = () => {
+        setCheckboxSelection(apiRef.current.getSelectedRows());
     }
-};
 
-const handleMarking = () => {
-    setCheckboxSelection(apiRef.current.getSelectedRows());
-}
+    const handleMarkingBtnClick = async (filename?: string) => {
+        setCheckboxSelection(apiRef.current.getSelectedRows());
+        if (filename) {
+            const result = await getRouteFromFile(filename)
+            const coords = result.route.map(t => t.coords)
 
-const handleMarkingBtnClick = async (filename?: string) => {
-    setCheckboxSelection(apiRef.current.getSelectedRows());
-    if (filename) {
-        const result = await getRouteFromFile(filename)
-        const coords = result.route.map(t => t.coords)
-
-        routePolyline.current = L.polyline(coords, { pane: 'pin', color: 'red' }).addTo(map);
+            routePolyline.current = L.polyline(coords, { pane: 'pin', color: 'red' }).addTo(map);
+        }
+        shrinkWindow()
     }
-    shrinkWindow()
-}
 
-const handleCancelEdit = (e: React.MouseEvent) => {
-    setContentView('NONE')
-    setContent('NONE')
-}
-const shrinkWindow = () => {
-    setContentView('MID');
-}
+    const handleCancelEdit = (e: React.MouseEvent) => {
+        setContentView('NONE')
+        setContent('NONE')
+    }
+    const shrinkWindow = () => {
+        setContentView('MID');
+    }
 
-const handlePaginationModelChange = (e: any) => {
-    console.log(e)
-}
+    const handlePaginationModelChange = (e: any) => {
+        console.log(e)
+    }
 
-return (
-    <Wrapper>
-        <Portal>
-            <CustomModal isOpen={isModalOpen} title="비행검사 입력 에러" message='비행검사 기본 정보 입력 후 확인버튼을 눌러주세요.' close={closeModal} />
-        </Portal>
-        <StyledDataGrid apiRef={apiRef} editMode='cell' rows={rows} columns={columns}
-            loading={isLoading}
-            columnVisibilityModel={columnVisibilityModel}
-            slots={{ toolbar: CustomToolbar, pagination: CustomPagination, noRowsOverlay: CustomNoRowsOverlay, loadingOverlay: LoadingPage, columnMenu: CustomColumnMenu }}
-            slotProps={{
-                pagination: {
-                    count: data?.data?.totalPage ? rows.length : 0,
-                    totalCount: data?.data?.totalCount ? data.data.totalCount : 0,
-                    totalPage: data?.data?.totalPage ? data.data.totalPage : 0,
-                    edit: edit,
-                    page: paginationModel.page + 1,
-                    onPageChange(event, page) {
-                        setPaginationModel({ pageSize: paginationModel.pageSize, page: page - 1 })
-                        apiRef.current.setPage(page - 1)
+    return (
+        <Wrapper>
+            <Portal>
+                <CustomModal isOpen={isModalOpen} title="비행검사 입력 에러" message='비행검사 기본 정보 입력 후 확인버튼을 눌러주세요.' close={closeModal} />
+            </Portal>
+            <StyledDataGrid apiRef={apiRef} editMode='cell' rows={rows} columns={columns}
+                loading={isLoading}
+                columnVisibilityModel={columnVisibilityModel}
+                slots={{ toolbar: CustomToolbar, pagination: CustomPagination, noRowsOverlay: CustomNoRowsOverlay, loadingOverlay: LoadingPage, columnMenu: CustomColumnMenu }}
+                slotProps={{
+                    pagination: {
+                        count: data?.data?.totalPage ? rows.length : 0,
+                        totalCount: data?.data?.totalCount ? data.data.totalCount : 0,
+                        totalPage: data?.data?.totalPage ? data.data.totalPage : 0,
+                        edit: edit,
+                        page: paginationModel.page + 1,
+                        onPageChange(event, page) {
+                            setPaginationModel({ pageSize: paginationModel.pageSize, page: page - 1 })
+                            apiRef.current.setPage(page - 1)
+                        },
+                        pageSizeChange(pageSize) {
+                            setPaginationModel({ pageSize, page: 0 })
+                            apiRef.current.setPageSize(pageSize);
+                        },
+                        handleAddRow,
+                        handleDeleteRow,
+                        handleSubmit,
+                        handleCancelEdit
                     },
-                    pageSizeChange(pageSize) {
-                        setPaginationModel({ pageSize, page: 0 })
-                        apiRef.current.setPageSize(pageSize);
-                    },
-                    handleAddRow,
-                    handleDeleteRow,
-                    handleSubmit,
-                    handleCancelEdit
-                },
-                toolbar: {
-                    count: data?.data?.totalCount,
-                    title: data?.testName,
-                    edit: edit,
-                    search: search,
-                    submitted: submitted,
-                    rows,
-                    setRows,
-                    setSubmitted,
-                    handleAddRow,
-                    handleDeleteRow,
-                    handleSubmit,
-                    handleMarkingBtnClick: () => handleMarkingBtnClick(titleData?.testRoute),
-                    titleData,
-                    setTitleData,
-                }
-            }}
-            cellModesModel={cellModesModel}
-            onCellModesModelChange={handleRowModesModelChange}
-            onCellClick={handleCellClick}
-            paginationModel={paginationModel}
-            onPaginationModelChange={handlePaginationModelChange}
-            sortModel={sortModel}
-            onSortModelChange={(newSortModel) => setSortModel(newSortModel)}
-            filterModel={filterModel}
-            onFilterModelChange={(newFilterModel) => setFilterModel(newFilterModel)}
-            checkboxSelection
-            onRowSelectionModelChange={handleMarking}
-            disableRowSelectionOnClick
-        // getRowId={(row) => row }
-        />
-    </Wrapper>
-)
+                    toolbar: {
+                        count: data?.data?.totalCount,
+                        title: data?.testName,
+                        edit: edit,
+                        search: search,
+                        submitted: submitted,
+                        rows,
+                        setRows,
+                        setSubmitted,
+                        handleAddRow,
+                        handleDeleteRow,
+                        handleSubmit,
+                        handleMarkingBtnClick: () => handleMarkingBtnClick(titleData?.testRoute),
+                        titleData,
+                        setTitleData,
+                    }
+                }}
+                cellModesModel={cellModesModel}
+                onCellModesModelChange={handleRowModesModelChange}
+                onCellClick={handleCellClick}
+                paginationModel={paginationModel}
+                onPaginationModelChange={handlePaginationModelChange}
+                sortModel={sortModel}
+                onSortModelChange={(newSortModel) => setSortModel(newSortModel)}
+                filterModel={filterModel}
+                onFilterModelChange={(newFilterModel) => setFilterModel(newFilterModel)}
+                checkboxSelection
+                onRowSelectionModelChange={handleMarking}
+                disableRowSelectionOnClick
+            // getRowId={(row) => row }
+            />
+        </Wrapper>
+    )
 }
 
 export default CustomTable
