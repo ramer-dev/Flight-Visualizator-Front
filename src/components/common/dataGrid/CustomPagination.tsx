@@ -35,7 +35,7 @@ const ButtonWrapper = styled.div`
     gap:8px;
 `
 
-export default function CustomPagination({ edit, totalCount, totalPage, page, onPageChange, handleCancelEdit, handleSubmit, pageSizeChange }: Props) {
+export default function CustomPagination({ edit, page, onPageChange, handleCancelEdit, handleSubmit, pageSizeChange }: Props) {
     const apiRef = useGridApiContext()
     const selected = apiRef.current.getSelectedRows()
     const [pageSize, setPageSize] = React.useState(100)

@@ -60,7 +60,7 @@ export const deleteFlightList = async (id: number) => {
     return response;
 }
 
-export const patchFlightResult = async (data : FlightResult, id:number) => {
+export const patchFlightResult = async (data : FlightResult, id:string) => {
     const response = await CustomAxios.patch(`flight/result/${id}`, data);
     return response;
 }

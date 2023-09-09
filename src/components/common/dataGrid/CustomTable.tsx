@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { DataGrid, GridCellModes, GridCellModesModel, GridCellParams, GridColDef, GridPreProcessEditCellProps, GridRowId, GridValidRowModel, useGridApiRef } from '@mui/x-data-grid'
+import { DataGrid, GridCellModes, GridCellModesModel, GridCellParams, GridColDef, GridPreProcessEditCellProps, GridRowId, GridSortModel, GridValidRowModel, useGridApiRef } from '@mui/x-data-grid'
 import { FlightList, FlightResult, RowType } from 'common/type/FlightType'
 import styled from '@emotion/styled'
 import { Box } from '@mui/material'
@@ -28,6 +28,7 @@ import { renderToString } from 'react-dom/server'
 import { convertToWGS } from 'module/DMS'
 import { getRouteFromFile } from 'common/service/fileService'
 import { authState } from 'common/store/auth'
+import CustomColumnMenu from './CustomColumnMenu'
 
 declare module '@mui/x-data-grid' {
     interface PaginationPropsOverrides {
@@ -113,6 +114,7 @@ function CustomTable({ edit, search, add }: Props) {
     const [checkboxSelection, setCheckboxSelection] = React.useState<Map<GridRowId, GridValidRowModel>>();
     const [cellModesModel, setCellModesModel] = React.useState<GridCellModesModel>({});
     const [submitted, setSubmitted] = React.useState(false);
+    const [sortModel, setSortModel] = React.useState<GridSortModel>([])
     const [paginationModel, setPaginationModel] = React.useState({
         pageSize: 100,
         page: 0,
@@ -128,15 +130,12 @@ function CustomTable({ edit, search, add }: Props) {
     const siteData = useGetSite();
     const { data, refetch, isLoading } = useFlightData(paginationModel.pageSize, 0, flightDataId)
 
-    const [rows, setRows] = React.useState(data?.data?.items ? data.data.items.map((t, i) => ({ ...t, no: i })) : []);
+    const [rows, setRows] = React.useState(data?.data?.items ? data.data.items.map((t, i) => ({ ...t })) : []);
     const { isModalOpen, openModal, closeModal } = useModal()
 
     const scoreValidate = (params: GridPreProcessEditCellProps) => {
         const validated = scoreRegex.test(String(params.props.value));
         return { ...params.props, error: !validated }
-    }
-    const handleCellEditStop = (p:any) => {
-        console.log(p)
     }
     const stateRefresh = () => {
         if (search || add) {
@@ -178,8 +177,8 @@ function CustomTable({ edit, search, add }: Props) {
 
     const columns: GridColDef[] = [
         { field: 'id', editable: false, flex: .5 },
-        // { field: 'no', editable: false, flex: 1, valueGetter: (params) => ((params.api.getRowIndexRelativeToVisibleRows(params.id) + 1) ? (paginationModel.page * paginationModel.pageSize) + params.api.getRowIndexRelativeToVisibleRows(params.id) + 1 : ''), headerName: 'No' },
-        { field: 'no', editable: false, flex: .5, valueGetter: (params) => (apiRef.current.getAllRowIds().indexOf(params.id) + 1), headerName: 'No' },
+        { field: 'no', editable: false, flex: .5, type:'number', sortable:false, renderCell:(params) => apiRef.current.getRowIndexRelativeToVisibleRows(params.id) + 1,  headerName: 'No' },
+        // { field: 'no', editable: false, flex: .5, valueGetter: (params) => (apiRef.current.getAllRowIds().indexOf(params.id) + 1), headerName: 'No' },
 
         {
             field: 'siteName', editable: !!edit, flex: 1, headerName: '표지소', type: 'string',
@@ -363,9 +362,12 @@ function CustomTable({ edit, search, add }: Props) {
     );
 
     const handleAddRow = (e: React.MouseEvent) => {
-        const newRow = { id: `add-${id.current}` }
-        apiRef.current.updateRows([newRow]);
-        id.current++;
+        if(titleData){
+            const newRow  = { id: `add-${id.current}`, siteName:'', frequency:0, testId: titleData.id!, angle:0, distance:0, height:0 }
+            apiRef.current.updateRows([newRow]);
+            setRows((prevRow) => [...prevRow, newRow])
+            id.current++;    
+        }
     }
 
     const validateInput = (data: FlightResult[]) => {
@@ -455,10 +457,13 @@ function CustomTable({ edit, search, add }: Props) {
 
     const handleDeleteRow = (e: React.MouseEvent) => {
         e.stopPropagation()
+        const idList : string[] = []
         if (checkboxSelection && window.confirm(`${checkboxSelection.size}개의 행을 삭제할까요?`)) {
             for (const item of checkboxSelection) {
+                idList.push(item[0] as string)
                 apiRef.current.updateRows([{ id: item[0], _action: 'delete' }])
             }
+            setRows(rows.filter(t => !idList.includes(t.id!)))
             
         }
     };
@@ -498,7 +503,7 @@ function CustomTable({ edit, search, add }: Props) {
             <StyledDataGrid apiRef={apiRef} editMode='cell' rows={rows} columns={columns}
                 loading={isLoading}
                 columnVisibilityModel={columnVisibilityModel}
-                slots={{ toolbar: CustomToolbar, pagination: CustomPagination, noRowsOverlay: CustomNoRowsOverlay, loadingOverlay: LoadingPage }}
+                slots={{ toolbar: CustomToolbar, pagination: CustomPagination, noRowsOverlay: CustomNoRowsOverlay, loadingOverlay: LoadingPage, columnMenu: CustomColumnMenu }}
                 slotProps={{
                     pagination: {
                         count: data?.data?.totalPage ?rows.length : 0,
@@ -537,11 +542,12 @@ function CustomTable({ edit, search, add }: Props) {
                     }
                 }}
                 cellModesModel={cellModesModel}
-                onCellEditStop={handleCellEditStop}
                 onCellModesModelChange={handleRowModesModelChange}
                 onCellClick={handleCellClick}
                 paginationModel={paginationModel}
                 onPaginationModelChange={handlePaginationModelChange}
+                sortModel={sortModel}
+                onSortModelChange={(newSortModel) => setSortModel(newSortModel)}
                 checkboxSelection
                 onRowSelectionModelChange={handleMarking}
                 disableRowSelectionOnClick

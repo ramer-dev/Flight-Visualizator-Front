@@ -74,7 +74,6 @@ function CustomHeader({ rows, setRows, titleData, setTitleData, edit, submitted,
                         idx++;
                         return {
                             id: `add-${10000 + idx}`,
-                            no: rows.length + idx,
                             siteName: paper.site,
                             testId: titleData?.id,
                             angle:+item.angle,
