@@ -68,29 +68,26 @@ function CustomHeader({ rows, setRows, titleData, setTitleData, edit, submitted,
         if (ocrFile) {
             let idx = apiRef.current.getRowsCount();
 
-            const response = postImage(ocrFile).then(ocrArray => {
-                const newRows = ocrArray.map(paper =>
-                    paper.ocr.map(item => {
-                        idx++;
-                        return {
-                            id: `add-${10000 + idx}`,
-                            siteName: paper.site,
-                            testId: titleData?.id,
-                            angle:+item.angle,
-                            distance: +item.distance,
-                            frequency: +item.frequency,
-                            height:+item.height,
-                            txmain: item.txmain,
-                            rxmain: item.rxmain,
-                            txstby: item.txstby,
-                            rxstby: item.rxstby,
-                        }
-                    })
-                ).flat()
-                // apiRef.current.updateRows([newRows])
+            postImage(ocrFile).then(ocrArray => {
+                const newRows = ocrArray.ocr.map(item => {
+                    idx++;
+                    return {
+                        id: `add-${10000 + idx}`,
+                        siteName: ocrArray.site,
+                        testId: titleData?.id,
+                        angle: +item.angle,
+                        distance: +item.distance,
+                        frequency: +item.frequency,
+                        height: +item.height,
+                        txmain: item.txmain,
+                        rxmain: item.rxmain,
+                        txstby: item.txstby,
+                        rxstby: item.rxstby,
+                    }
+                })
                 setRows([...rows, ...newRows])
-
-            }).then(() => { console.log(rows) })
+            }
+            ).catch(e => console.error(e))
 
         }
     }, [ocrFile])

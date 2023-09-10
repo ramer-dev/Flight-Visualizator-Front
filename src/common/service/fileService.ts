@@ -42,7 +42,7 @@ export const postImage = async (files: File[]) => {
         formData.append('file', file)
     })
 
-    const { data } = await CustomAxios.post<OCRReturnType[]>(`file/ocr`, formData)
+    const { data } = await CustomAxios.post<OCRReturnType>(`file/ocr`, formData)
     return data
 }
 
