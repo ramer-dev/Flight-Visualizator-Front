@@ -265,10 +265,10 @@ function CustomTable({ edit, search, add }: Props) {
         const layer : L.Marker[] = []
         const instance = layerGroup.current;
 
-
         checkboxSelection?.forEach((value, key) => {
             obj[String(key)] = value;
         });
+
         Object.keys(obj).map((i, idx) => {
             if (!isNaN(obj[i].angle) && !isNaN(obj[i].distance) && obj[i].siteName) {
                 const angle = parseFloat(obj[i].angle) && obj[i].angle;
@@ -290,28 +290,6 @@ function CustomTable({ edit, search, add }: Props) {
             }
 
         })
-        // for (let i in obj) {
-
-
-        //     if (!isNaN(obj[i].angle) && !isNaN(obj[i].distance) && obj[i].siteName) {
-        //         const angle = parseFloat(obj[i].angle) && obj[i].angle;
-        //         const distance = parseFloat(obj[i].angle) && obj[i].distance;
-        //         const siteCoords = siteData.data.filter(t => t.siteName === obj[i].siteName)[0]?.siteCoordinate as LatLngLiteral;
-        //         const target = Destination(siteCoords, angle, distance);
-        //         layer.push(L.marker(target as LatLngLiteral, {
-        //             pane: 'pin',
-        //             icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby), +i+1)
-        //         }).on('mouseover', () => {
-        //             hoverPolyline.current = L.polyline([[convertToWGS(siteCoords.lat), convertToWGS(siteCoords.lng)], target!], { pane: 'pin' }).addTo(map);
-        //         }).on('mouseout', () => {
-        //             if (hoverPolyline.current) {
-        //                 hoverPolyline.current.remove();
-        //             }
-        //         })
-        //             .bindTooltip(CustomTableTooltip({ siteName: obj[i].siteName, distance, angle: angle, index: (+i+1) }))
-        //         )
-        //     }
-        // }
 
         instance.clearLayers()
 
@@ -409,7 +387,7 @@ function CustomTable({ edit, search, add }: Props) {
                 return true;
             }
 
-            if (!data[i].height || data[i].height >= 50000 || data[i].height < 0) {
+            if (!data[i].height || data[i].height >= 60000 || data[i].height < 0) {
                 window.alert(`${+i + 1}행의 고도를 정확하게 입력해주세요.`)
                 return true;
             }
@@ -474,7 +452,7 @@ function CustomTable({ edit, search, add }: Props) {
                 patchFlightData(fetchData, titleData.id)
             }
         }
-
+        refetch()
     }
 
     const handleDeleteRow = (e: React.MouseEvent) => {
