@@ -5,7 +5,7 @@ export function validateCoordinates(input?: string) {
 
         if (stringfrequency.includes('.')) {
             const parts = stringfrequency.split('.')
-            if (parts.length == 2) {
+            if (parts.length === 2) {
                 const degrees = +parts[0]
                 const minutes = parts[1].substring(0, 2).length === 1 ? +(parts[1].substring(0, 2) + '0') : +parts[1].substring(0, 2)
                 const seconds = parts[1].substring(2).length === 1 ? +(parts[1].substring(2) + '0') : +parts[1].substring(2)
