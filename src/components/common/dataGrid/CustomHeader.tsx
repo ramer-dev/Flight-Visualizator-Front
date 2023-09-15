@@ -37,7 +37,7 @@ interface Props {
 function CustomHeader({ rows, setRows, titleData, setTitleData, edit, submitted, setSubmitted }: Props) {
 
     const [routeFile, setRouteFile] = React.useState<File>();
-    const [ocrFile, setOCRFile] = React.useState<File[]>();
+    const [ocrFile, setOCRFile] = React.useState<File>();
     // const [resultFile, setResultFile] = React.useState<File[]>([]);
     const [flightData, setFlightData] = React.useState<FlightList>(titleData)
     const apiRef = useGridApiContext()
@@ -124,7 +124,7 @@ function CustomHeader({ rows, setRows, titleData, setTitleData, edit, submitted,
                     {/* <CustomFileInput id={1}/> */}
                     <DatePicker format="YYYY-MM-DD" inputRef={dateRef} slotProps={{ textField: { size: 'small', helperText: '검사일자' } }} value={titleData?.testDate ? dayjs(titleData.testDate) : null} sx={{ width: 156 }} disabled={!edit || submitted} />
                     {edit && <Tooltip title={<p>반드시 지정 형식으로 스캔한 이미지를 넣어주세요.<br />입력된 데이터는 꼭 검수 후 저장해주세요.</p>}><Button sx={{ height: 40 }} onClick={handleOCRClick} startIcon={<PsychologyIcon fontSize={'large'} />}>OCR</Button></Tooltip>}
-                    <MuiFileInput value={ocrFile} multiple onChange={HandleOCRFileChange} sx={{ display: 'none' }} inputRef={ocrRef} />
+                    <MuiFileInput value={ocrFile} onChange={HandleOCRFileChange} sx={{ display: 'none' }} inputRef={ocrRef} />
                     {edit &&
                         <>
                             <Button onClick={handleSubmit} disabled={!edit || submitted} sx={{ height: 40 }}>확인</Button>
