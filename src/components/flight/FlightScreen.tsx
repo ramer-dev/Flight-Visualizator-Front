@@ -5,6 +5,7 @@ import { useRecoilValue } from 'recoil'
 import FlightAdd from './FlightAdd';
 import FlightEdit from './FlightEdit';
 import FlightView from './FlightView';
+import NavCloseButton from 'components/navbar/NavCloseButton';
 
 
 const selector = (content: ContentType) => {
@@ -25,6 +26,8 @@ export const FlightScreen = () => {
     return (
         <>
             {selector(content)}
+            <NavCloseButton contentSize={['MID', 'FULLSCREEN']} />
+
         </>
     )
 }

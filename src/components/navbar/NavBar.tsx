@@ -128,10 +128,8 @@ const NavBar = () => {
         }
         setContentFormat('NONE')
         setContentView('NONE');
+        setPage(null);
         setIsLogin(emptyUser);
-        if(selectedPage === 'SETTING'){
-            setPage(null);
-        }
     }
 
     const LogoutConfirm = () => {

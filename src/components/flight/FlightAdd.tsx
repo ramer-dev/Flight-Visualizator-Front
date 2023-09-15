@@ -8,19 +8,24 @@ import NavCloseButton from '../navbar/NavCloseButton'
 const Wrapper = styled(Box)`
     height: calc(100vh - 100px);
 `
+
+const Container = styled.div`
+    overflow: hidden;
+`
+
 function FlightAdd() {
 
     return (
-        <>
+
+        <Container >
             <ScreenTitle text={"비행검사 추가"} />
             {/* {<TableViewer data={data} />} */}
             <Wrapper>
                 <CustomTable edit add />
 
             </Wrapper>
+        </Container>
 
-            <NavCloseButton contentSize={['MID', 'FULLSCREEN']} />
-        </>
     )
 }
 
