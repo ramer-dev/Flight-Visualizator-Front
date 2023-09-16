@@ -17,7 +17,9 @@ interface Props {
   edit?: boolean;
   search?: boolean;
   submitted: boolean;
-  rows: RowType[];
+  rows: RowType[]; 
+  loading: boolean;
+  setLoading: (b: boolean) => void;
   setRows: (rows: RowType[]) => void;
   setSubmitted: (item: boolean) => void;
   setTitleData: (item: FlightList) => void;
@@ -30,7 +32,7 @@ interface Props {
 
 const printOptions = { hideToolbar: true, hideFooter: true }
 
-function CustomToolbar({ titleData, count, search, edit, submitted, rows, setRows, setTitleData, handleAddRow, handleDeleteRow, setSubmitted, handleMarkingBtnClick }: Props) {
+function CustomToolbar({ titleData, count, search, edit, submitted, rows, setRows, setTitleData, handleAddRow, handleDeleteRow, setSubmitted, handleMarkingBtnClick, setLoading }: Props) {
   const apiRef = useGridApiContext()
   const disabled = !apiRef.current.getRowsCount();
   const selected = apiRef.current.getSelectedRows()
@@ -41,13 +43,13 @@ function CustomToolbar({ titleData, count, search, edit, submitted, rows, setRow
   })
 
   React.useEffect(() => {
-    if(titleData) csvOptions.current.fileName = titleData.testName
+    if (titleData) csvOptions.current.fileName = titleData.testName
   }, [titleData])
 
   return (
     <>
       <GridToolbarContainer>
-        {!search ? <CustomHeader rows={rows} setRows={setRows} titleData={titleData} setTitleData={setTitleData} submitted={submitted} setSubmitted={setSubmitted} edit={edit} /> : null}
+        {!search ? <CustomHeader rows={rows} setRows={setRows} titleData={titleData} setTitleData={setTitleData} submitted={submitted} setSubmitted={setSubmitted} edit={edit} setLoading={setLoading} /> : null}
 
         {edit ?
           <>

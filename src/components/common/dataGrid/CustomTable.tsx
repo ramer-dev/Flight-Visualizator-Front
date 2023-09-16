@@ -48,6 +48,7 @@ declare module '@mui/x-data-grid' {
         search?: boolean;
         submitted?: boolean;
         rows: any[];
+        setLoading: (b : boolean) => void;
         setRows: (rows: any[]) => void;
         setSubmitted: (b: boolean) => void;
         setTitleData: (e: FlightList) => void;
@@ -112,6 +113,7 @@ function CustomTable({ edit, search, add }: Props) {
     const setContentView = useSetRecoilState(contentViewFormat)
     const setContent = useSetRecoilState(contentFormat);
     const auth = useRecoilValue(authState);
+    const [loading, setLoading] = React.useState(false);
     const [titleData, setTitleData] = React.useState<FlightList>()
     const [checkboxSelection, setCheckboxSelection] = React.useState<Map<GridRowId, GridValidRowModel>>();
     const [cellModesModel, setCellModesModel] = React.useState<GridCellModesModel>({});
@@ -232,9 +234,9 @@ function CustomTable({ edit, search, add }: Props) {
                 return formatInput(value);
             }
         },
-        { field: 'angle', editable: !!edit, flex: .5, type: 'number', headerName: '각도' },
-        { field: 'distance', editable: !!edit, flex: .5, type: 'number', headerName: '거리' },
-        { field: 'height', editable: !!edit, flex: 1, type: 'number', headerName: '고도' },
+        { field: 'angle', editable: !!edit, flex: .5, type: 'number', headerName: '각도',align:'left', headerAlign:'left' },
+        { field: 'distance', editable: !!edit, flex: .5, type: 'number', headerName: '거리(NM)',align:'left', headerAlign:'left' },
+        { field: 'height', editable: !!edit, flex: 1, type: 'number', headerName: '고도(ft)', align:'left', headerAlign:'left' },
         { field: 'status', editable: false, flex: 1 },
         { field: 'updatedAt', flex: 1 },
         { field: 'deletedAt', flex: 1 },
@@ -499,7 +501,7 @@ function CustomTable({ edit, search, add }: Props) {
                 <CustomModal isOpen={isModalOpen} title="비행검사 입력 에러" message='비행검사 기본 정보 입력 후 확인버튼을 눌러주세요.' close={closeModal} />
             </Portal>
             <StyledDataGrid apiRef={apiRef} editMode='cell' rows={rows} columns={columns}
-                loading={isLoading}
+                loading={isLoading || loading}
                 columnVisibilityModel={columnVisibilityModel}
                 slots={{ toolbar: CustomToolbar, pagination: CustomPagination, noRowsOverlay: CustomNoRowsOverlay, loadingOverlay: LoadingPage, columnMenu: CustomColumnMenu }}
                 slotProps={{
@@ -529,6 +531,7 @@ function CustomTable({ edit, search, add }: Props) {
                         search: search,
                         submitted: submitted,
                         rows,
+                        setLoading,
                         setRows,
                         setSubmitted,
                         handleAddRow,

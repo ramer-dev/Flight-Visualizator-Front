@@ -30,11 +30,12 @@ interface Props {
     setSubmitted: (b: boolean) => void;
     rows: RowType[];
     setRows: (rows: RowType[]) => void;
+    setLoading: (b: boolean) => void;
 }
 
 
 
-function CustomHeader({ rows, setRows, titleData, setTitleData, edit, submitted, setSubmitted }: Props) {
+function CustomHeader({ rows, setRows, titleData, setTitleData, edit, submitted, setSubmitted, setLoading }: Props) {
 
     const [routeFile, setRouteFile] = React.useState<File>();
     const [ocrFile, setOCRFile] = React.useState<File>();
@@ -67,7 +68,7 @@ function CustomHeader({ rows, setRows, titleData, setTitleData, edit, submitted,
 
         if (ocrFile) {
             let idx = apiRef.current.getRowsCount();
-
+            setLoading(true)
             postImage(ocrFile).then(ocrArray => {
                 const newRows = ocrArray.ocr.map(item => {
                     idx++;
@@ -86,8 +87,9 @@ function CustomHeader({ rows, setRows, titleData, setTitleData, edit, submitted,
                     }
                 })
                 setRows([...rows, ...newRows])
+                setLoading(false);
             }
-            ).catch(e => console.error(e))
+            ).catch(e => {console.error(e); setLoading(false);})
 
         }
     }, [ocrFile])
