@@ -66,7 +66,6 @@ const FlightItem = ({ testName, testType, testDate, id, refetch }: FlightList & 
 
     const DeleteFlightItem = (e: any) => {
         e.stopPropagation();
-        console.log('delete');
         if (id)
             if (window.confirm("진짜로 비행점검 삭제?")) {
                 deleteFlightList(id).then(() => refetch())

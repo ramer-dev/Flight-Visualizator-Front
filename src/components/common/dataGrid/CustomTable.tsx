@@ -369,7 +369,6 @@ function CustomTable({ edit, search, add }: Props) {
         for (let i in data) {
 
             if (!data[i].siteName) {
-                console.log(data[i], '표지소 입력')
                 window.alert(`${+i + 1}행의 표지소를 정확하게 입력해주세요.`)
                 return true;
             }
@@ -492,7 +491,6 @@ function CustomTable({ edit, search, add }: Props) {
     }
 
     const handlePaginationModelChange = (e: any) => {
-        console.log(e)
     }
 
     return (

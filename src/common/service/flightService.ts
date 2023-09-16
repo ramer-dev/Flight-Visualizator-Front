@@ -30,7 +30,6 @@ export const patchFlightData = async (data: FlightListPost, testID: number) => {
     if (data?.data) {
         const rows = [...data.data].map(t => {return {...t, testId:testID}})
         const response = await CustomAxios.patch(`flight/list/${testID}`, titleData); 
-        console.log(rows)
         const resultResponse = await CustomAxios.patch(`flight/result`, rows)
         return response;
     }

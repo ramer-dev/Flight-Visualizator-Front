@@ -22,6 +22,6 @@ export const postLogout = async () => {
         const result = await CustomAxios.post('auth/logout')
         return result;
     } catch (e) {
-        console.log(e)
+        console.error(e)
     }
 }

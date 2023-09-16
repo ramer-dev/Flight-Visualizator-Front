@@ -39,11 +39,6 @@ function LoginComponent({ open, closeLogin }: Props) {
         setPayload(newItem)
     }
 
-    const testCookie = async () => {
-        const result = await getTestCookie();
-        console.log(result);
-    }
-
     const loginCheck = async () => {
         // const loginValue: AuthType = {
         //     id: 'test',
@@ -95,8 +90,7 @@ function LoginComponent({ open, closeLogin }: Props) {
                     <TextField label="ID" onChange={(e) => { handleInputChange(e, 'id') }} />
                     <TextField label="PW" type="password" onChange={(e) => { handleInputChange(e, 'pw') }} />
 
-                    <Button variant='outlined' onClick={() => { loginCheck() }}>testLogin</Button>
-                    <Button onClick={testCookie}>test Cookie</Button>
+                    <Button variant='outlined' onClick={() => { loginCheck() }}>로그인</Button>
                 </TextWrapper>
 
             </Box>
