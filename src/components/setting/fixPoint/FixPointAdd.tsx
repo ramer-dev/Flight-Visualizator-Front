@@ -76,11 +76,10 @@ function FixPointAdd() {
         const error = { lat: validateCoordinates(coord.lat.toString()), lng: validateCoordinates(coord.lng.toString()) }
 
         if (coord.lat && coord.lng && error.lat && error.lng) {
-            dotLayer.current = L.circleMarker([convertToWGS(coord.lat), convertToWGS(coord.lng)], { radius: 4, color: 'red' }).addTo(map);
+            dotLayer.current = L.circleMarker([convertToWGS(coord.lat), convertToWGS(coord.lng)], { radius: 8, color: 'red', }).addTo(map);
         }
-
-        setCoordError(error)
-
+        setCoordError({lat:!error.lat, lng:!error.lng})
+        
         return () => {
             if (dotLayer.current) {
                 dotLayer.current.remove();
@@ -94,8 +93,8 @@ function FixPointAdd() {
                 <TextField label="픽스점 이름" size="small" fullWidth inputRef={nameRef} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'name') }}></TextField>
             </Content>
             <Content>
-                <TextField sx={{ flex: 1 }} label='위도' type={'number'} size="small" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'lat') }}></TextField>
-                <TextField sx={{ flex: 1 }} label='경도' type={'number'} size="small" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'lng') }} ></TextField>
+                <TextField sx={{ flex: 1 }} error={coordError.lat} label='위도' type={'number'} size="small" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'lat') }}></TextField>
+                <TextField sx={{ flex: 1 }} error={coordError.lng} label='경도' type={'number'} size="small" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'lng') }} ></TextField>
             </Content>
             <Content>
                 <Button color='error' onClick={closeScreen}>취소</Button>
