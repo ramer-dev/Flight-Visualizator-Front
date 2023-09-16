@@ -9,23 +9,23 @@ const Wrapper = styled(Box)`
     height: calc(100vh - 100px);
 `
 
-const Test = styled.div`
-    height:150px;
+const Container = styled.div`
+    overflow: hidden;
 `
 
 function FlightAdd() {
 
     return (
         <>
+        <Container >
             <ScreenTitle text={"비행검사 추가"} />
             {/* {<TableViewer data={data} />} */}
             <Wrapper>
-                <Test>test</Test>
                 <CustomTable edit add />
 
             </Wrapper>
-
-            <NavCloseButton contentSize={['MID', 'FULLSCREEN']} />
+        </Container>
+        <NavCloseButton contentSize={['MID', 'FULLSCREEN']} />
         </>
     )
 }

@@ -4,20 +4,25 @@ import { LatLngLiteral } from 'leaflet';
 import { useRecoilState } from 'recoil';
 import { markingCards } from 'common/store/atom';
 import CancelIcon from '@mui/icons-material/Cancel';
+import { motion } from 'framer-motion';
 
 interface StyleProps {
-  isDragging?: boolean
+  drag?: boolean
 }
 
-const Container = styled.div`
+const Container = styled(motion.div)`
     display:flex;
     user-select:none;
     justify-content: space-between;
     align-items:center;
     padding: 15px 10px;
+    border: 1px solid #eeeeee;
+    margin: 5px 0;
     border-radius:4px;
     margin-bottom:1px;
-    background-color: ${({ isDragging }: StyleProps) => (isDragging ? '#cccccc' : 'white')};
+    background-color: ${({ drag }: StyleProps) => (drag ? '#eeeeee' : 'white')};
+    opacity: ${({drag}: StyleProps) => (drag ? 0.5 : 1)};
+    transition:0.2s all ease;
 `
 
 const FlexBox = styled.div`
@@ -74,7 +79,7 @@ const MarkingCard = ({ site, coord, distance, angle, index, isDragging, id }: Ma
   }
 
   return (
-    <Container isDragging={isDragging}>
+    <Container drag={isDragging} initial={{opacity:0 ,y:'-100%'}} animate={{opacity:1, y:0}} exit={{opacity:0, y:'-100%'}} transition={{duration:.2}}>
       <FlexBox>
         <Index>
           {index + 1}

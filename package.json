@@ -9,6 +9,7 @@
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.5",
     "@mui/x-data-grid": "^6.9.2",
+    "@mui/x-date-pickers": "^6.11.1",
     "@tanstack/react-query": "^4.29.2",
     "@tanstack/react-query-devtools": "^4.29.2",
     "@tanstack/react-table": "^8.9.2",
@@ -20,6 +21,7 @@
     "@types/node": "^16.18.23",
     "@types/react": "^18.0.31",
     "@types/react-beautiful-dnd": "^13.1.4",
+    "@types/react-color": "^3.0.6",
     "@types/react-dom": "^18.0.11",
     "@types/react-table": "^7.7.14",
     "axios": "^1.4.0",
@@ -30,6 +32,7 @@
     "leaflet": "^1.9.3",
     "leaflet-draw": "^1.0.4",
     "leaflet-geometryutil": "^0.10.2",
+    "mui-file-input": "^3.0.0",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",
@@ -39,6 +42,7 @@
     "react-scripts": "^5.0.1",
     "recoil": "^0.7.7",
     "typescript": "^4.9.5",
+    "uuid": "^9.0.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

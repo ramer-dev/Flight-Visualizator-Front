@@ -39,11 +39,6 @@ function LoginComponent({ open, closeLogin }: Props) {
         setPayload(newItem)
     }
 
-    const testCookie = async () => {
-        const result = await getTestCookie();
-        console.log(result);
-    }
-
     const loginCheck = async () => {
         // const loginValue: AuthType = {
         //     id: 'test',
@@ -51,12 +46,12 @@ function LoginComponent({ open, closeLogin }: Props) {
         //     role: 1
         // }
         // setLogin(loginValue)
-        const password = payload.pw + 'c0mtr2'
+        const password = payload.pw + process.env.REACT_APP_SECRET_KEY;
+
         const hashedPW = sha256(password).toString();
         const loginResult = await getLogin(payload.id, hashedPW)
         // console.log(loginResult)
         if (loginResult) {
-            console.log(`${payload.id} 로그인 성공`)
             openModal()
             const item: AuthType = {
                 id: payload.id,
@@ -66,14 +61,19 @@ function LoginComponent({ open, closeLogin }: Props) {
             setLoginState(item)
         } else {
             openModal()
-            console.log(`${payload.id} 로그인 실패`)
             setLoginState({ id: '', username: '', role: 0 })
 
         }
     }
 
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            loginCheck()
+        }
+    }
+
     return (
-        <Dialog sx={{ minWidth: 350, overflow: 'hidden' }} maxWidth={'md'} open={open} onClose={closeLogin} >
+        <Dialog sx={{ minWidth: 350, overflow: 'hidden' }} maxWidth={'md'} open={open} onClose={closeLogin} onKeyDown={(e: React.KeyboardEvent) => handleKeyPress(e)} >
             {isModalOpen ? loginState.role ? (
                 <Portal>
                     <CustomModal isOpen={isModalOpen} title="로그인 성공" message={`ID:${loginState.id}\n로그인에 성공하였습니다.`} close={() => { closeModal(); closeLogin() }} />
@@ -89,9 +89,8 @@ function LoginComponent({ open, closeLogin }: Props) {
                     <Title>로그인</Title>
                     <TextField label="ID" onChange={(e) => { handleInputChange(e, 'id') }} />
                     <TextField label="PW" type="password" onChange={(e) => { handleInputChange(e, 'pw') }} />
-                    
-                <Button variant='outlined' onClick={() => { loginCheck() }}>testLogin</Button>
-                <Button onClick={testCookie}>test Cookie</Button>
+
+                    <Button variant='outlined' onClick={() => { loginCheck() }}>로그인</Button>
                 </TextWrapper>
 
             </Box>

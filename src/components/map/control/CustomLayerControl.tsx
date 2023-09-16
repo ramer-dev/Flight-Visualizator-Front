@@ -6,8 +6,11 @@ import { green, red, orange, blue, pink, grey } from '@mui/material/colors'
 import LayersIcon from '@mui/icons-material/Layers';
 import PolylineIcon from '@mui/icons-material/Timeline';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
+import TextIcon from '@mui/icons-material/FormatColorText';
 import { useMap } from 'react-leaflet'
-
+import FlightResultIcon from '@mui/icons-material/ArticleOutlined';
+import MarkingIcon from '@mui/icons-material/PushPinOutlined';
+import AnalyzeIcon from '@mui/icons-material/DataSaverOffOutlined';
 // const POSITION_CLASSES = {
 //   bottomleft: 'leaflet-bottom leaflet-left',
 //   bottomright: 'leaflet-right leaflet-bottom',
@@ -67,6 +70,8 @@ interface LayerControlType {
   point: boolean,
   marking: boolean,
   pin: boolean,
+  analyze: boolean,
+  pointSubtitle:boolean,
 }
 
 const Cover = styled.div`
@@ -94,6 +99,8 @@ function CustomLayerControl({ position }: ControlOptions) {
     point: true,
     marking: true,
     pin:true,
+    analyze:true,
+    pointSubtitle:false,
   })
 
   useEffect(() => {
@@ -135,9 +142,11 @@ function CustomLayerControl({ position }: ControlOptions) {
         <Item onClick={(e) => { handlerButtonClick(e, 'vortac') }}><LayersIcon sx={layers.vortac ? { color: blue[300] } : EmptyStyle} /><Text>VORTAC</Text></Item>
         <Item onClick={(e) => { handlerButtonClick(e, 'sector') }}><LayersIcon sx={layers.sector ? { color: orange[500] } : EmptyStyle} /><Text>섹터</Text></Item>
         <Item onClick={(e) => { handlerButtonClick(e, 'route') }}><PolylineIcon sx={layers.route ? { color: pink[400] } : EmptyStyle} /><Text>항로</Text></Item>
-        <Item onClick={(e) => { handlerButtonClick(e, 'point') }}><RadioButtonCheckedIcon sx={layers.point ? { color: blue[600] } : EmptyStyle} /><Text>포인트</Text></Item>
-        <Item onClick={(e) => { handlerButtonClick(e, 'pin') }}><RadioButtonCheckedIcon sx={layers.pin ? { color: blue[600] } : EmptyStyle} /><Text>비행검사</Text></Item>
-        <Item onClick={(e) => { handlerButtonClick(e, 'marking') }}><RadioButtonCheckedIcon sx={layers.marking ? { color: blue[600] } : EmptyStyle} /><Text>마킹</Text></Item>
+        <Item onClick={(e) => { handlerButtonClick(e, 'point') }}><RadioButtonCheckedIcon sx={layers.point ? { color: blue[600] } : EmptyStyle} /><Text>픽스점</Text></Item>
+        <Item onClick={(e) => { handlerButtonClick(e, 'pointSubtitle') }}><TextIcon sx={layers.pointSubtitle ? { color: blue[600] } : EmptyStyle} /><Text>픽스점명칭</Text></Item>
+        <Item onClick={(e) => { handlerButtonClick(e, 'pin') }}><FlightResultIcon sx={layers.pin ? { color: blue[600] } : EmptyStyle} /><Text>비행검사</Text></Item>
+        <Item onClick={(e) => { handlerButtonClick(e, 'marking') }}><MarkingIcon sx={layers.marking ? { color: blue[600] } : EmptyStyle} /><Text>마킹</Text></Item>
+        <Item onClick={(e) => { handlerButtonClick(e, 'analyze') }}><AnalyzeIcon sx={layers.analyze ? { color: blue[600] } : EmptyStyle} /><Text>주변분석</Text></Item>
 
       </Wrapper>
       : <Cover onMouseEnter={() => {setIsOpen(true)}}>

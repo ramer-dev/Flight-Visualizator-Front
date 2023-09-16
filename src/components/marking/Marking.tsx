@@ -17,6 +17,10 @@ import divicon from "module/NumberIcon";
 import L from "leaflet";
 import { blue, green, orange, red, yellow } from "@mui/material/colors";
 import MarkingTooltip from "./MarkingTooltip";
+import useModal from "components/hooks/useModal";
+import Portal from "module/Portal";
+import CustomModal from "components/common/CustomModal";
+import MarkingPopup from "./MarkingPopup";
 
 
 const InputWrapper = styled.div`
@@ -52,15 +56,15 @@ export default function Marking() {
     const [siteMenuOpen, setSiteMenuOpen] = useState(false);
     const [list, setList] = useRecoilState<MarkingCardProps[]>(markingCards);
     const [color, setColor] = useState<string>('5');
-    // const [error, setError] = useState<boolean[]>([false, false, false]);
     const origin = useRef<LatLngExpression>({ lat: 0, lng: 0 });
     const angle = useRef<HTMLInputElement>(null);
     const distance = useRef<HTMLInputElement>(null);
+    const addBtnRef = useRef<HTMLButtonElement>(null);
     const layerGroup = useRef(L.layerGroup([], { pane: 'marking' }))
-
+    const { isModalOpen, openModal, closeModal } = useModal()
     useEffect(() => {
         const layer = list.map((t: MarkingCardProps, index: number) => L.marker(t.coord!, { icon: divicon(t.level, index), pane: 'marking' })
-            .bindTooltip(MarkingTooltip(t)))
+            .bindTooltip(MarkingTooltip(t)).bindPopup(MarkingPopup(t), {closeOnClick:false, autoClose:false}))
         const instance = layerGroup.current
 
         instance.clearLayers()
@@ -94,30 +98,8 @@ export default function Marking() {
         origin.current = coordinate;
     }
 
-    // const Validation = () => {
-    //     const arr = [false, false, false];
-
-    //     site === ''
-    //         ? arr[0] = true
-    //         : arr[0] = false;
-
-    //     if (angle.current && distance.current) {
-    //         angle.current.value === ''
-    //             ? arr[1] = true
-    //             : arr[1] = false;
-
-    //         distance.current.value === ''
-    //             ? arr[2] = true
-    //             : arr[2] = false;
-    //     }
-
-    //     // setError(arr);
-    //     if (arr.includes(true)) return true;
-    //     return false;
-    // }
-
     const AddElement = (origin_: LatLngExpression, site_: string) => {
-        if (angle.current && distance.current) {
+        if (angle.current?.value && distance.current?.value && site) {
 
             // if (Validation()) return;
 
@@ -136,7 +118,9 @@ export default function Marking() {
             angle.current.value = '';
             distance.current.value = '';
             angle.current.focus();
+            return;
         }
+        openModal();
     }
 
 
@@ -152,10 +136,20 @@ export default function Marking() {
         inputProps: { 'aria-label': item },
     });
 
+    const handleKeyPress = React.useCallback((e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            if (addBtnRef.current && angle.current) {
+                e.stopPropagation()
+                addBtnRef.current.click()
+                angle.current.focus();
+            }
+        }
+    }, [])
+
     return (
         <div>
             <Title>마킹</Title>
-            <SearchBox>
+            <SearchBox onKeyDown={handleKeyPress}>
                 <FormControl>
                     <InputWrapper>
                         <h6>기준점</h6>
@@ -228,7 +222,7 @@ export default function Marking() {
                             }} />
                         </FlexBox>
                     </InputWrapper>
-                    <AddButton variant='outlined' sx={{ borderRadius: '16px', width: 100 }}
+                    <AddButton variant='outlined' sx={{ borderRadius: '16px', width: 100 }} ref={addBtnRef}
                         onClick={() => {
                             AddElement(origin.current, site)
                         }}
@@ -241,7 +235,9 @@ export default function Marking() {
                 <MarkingDragDrop />
 
             </DragDropContext>
-
+            <Portal>
+                <CustomModal isOpen={isModalOpen} title="마킹" message="내용을 입력해주세요." close={closeModal}/>
+            </Portal>
         </div >
     )
 } 

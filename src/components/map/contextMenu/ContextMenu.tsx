@@ -4,6 +4,9 @@ import { LatLng } from 'leaflet'
 import { Divider } from '@mui/material'
 import { useMap } from 'react-leaflet'
 import { motion } from 'framer-motion'
+import { getNearBy } from 'common/service/mapService'
+import { FlightResult } from 'common/type/FlightType'
+import L from 'leaflet'
 
 const Container = styled(motion.div)`
     width:200px;
@@ -54,8 +57,17 @@ type WrapperProps = {
 
 function ContextMenu({ startPosition, setSelectedMenu, popup, setOpen }: WrapperProps) {
     const map = useMap();
+    const container = React.useRef(null)
+
+    React.useEffect(() => {
+        if (container.current) {
+            L.DomEvent.disableClickPropagation(container.current);
+            L.DomEvent.disableScrollPropagation(container.current);
+        }
+    }, [])
+    
     return (
-        <Container >
+        <Container ref={container}>
             <CoordinateView>
                 {startPosition.lat.toFixed(8)} | {startPosition.lng.toFixed(8)}
             </CoordinateView>
@@ -69,7 +81,7 @@ function ContextMenu({ startPosition, setSelectedMenu, popup, setOpen }: Wrapper
                 }}>
                     좌표
                 </MenuItem>
-                <MenuItem onClick={() => { setSelectedMenu('analyze') }}>
+                <MenuItem onClick={async (e) => { setSelectedMenu('analyze')}}>
                     분석
                 </MenuItem>
             </Menu>

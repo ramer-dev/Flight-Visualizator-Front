@@ -10,8 +10,18 @@ type Props = {
 };
 
 const CustomModal = ({ isOpen, title, message, close }: Props) => {
+  const closeBtnRef = React.useRef<HTMLButtonElement>(null)
+  const handleKeyPress = React.useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      if(closeBtnRef.current){
+        e.stopPropagation()
+        closeBtnRef.current.click()
+      }
+    }
+}, [])
+
     return (
-        <Wrapper>
+        <Wrapper onKeyDown={handleKeyPress}>
             <Modal open={isOpen} onClose={close} slots={{ backdrop: Backdrop }} closeAfterTransition slotProps={{ backdrop: { timeout: 500 } }}>
                 <Fade in={isOpen}>
                     <Content>
@@ -21,7 +31,7 @@ const CustomModal = ({ isOpen, title, message, close }: Props) => {
                         </Top>
                         <Message>{message}</Message>
                         <BtnContainer>
-                            <ConfirmBtn variant='contained' size='small'
+                            <ConfirmBtn ref={closeBtnRef} variant='contained' size='small'
                                 onClick={close}>
                                 닫기
                             </ConfirmBtn>

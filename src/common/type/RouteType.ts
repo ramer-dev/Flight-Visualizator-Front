@@ -14,6 +14,6 @@ export interface RoutePointType {
     minHeight:number,
     maxHeight:number,
     routeArea:string,
-    routeTytpe:string,
+    routeType:string,
     routePointData : FixPointType
 }

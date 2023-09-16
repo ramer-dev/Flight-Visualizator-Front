@@ -1,11 +1,11 @@
-function getScoreFromString(data?: string): number {
+function getScoreFromString(data?: string | null): number {
     if (!data) return 5; // 값이 주어지지 않은 경우 기본값 5를 반환
     const [x, y] = data.split('/');
     return Math.min((parseInt(x), parseInt(y)));
 }
 
-export function FindMinimumScore(txm?: string, rxm?: string, txs?: string, rxs?: string) {
-
+export function FindMinimumScore(txm?: string | null, rxm?: string | null, txs?: string | null, rxs?: string | null) {
+    if((txm && rxm) || (txs && rxs)) {
     const mainTx = getScoreFromString(txm);
     const mainRx = getScoreFromString(rxm);
     const backupTx = getScoreFromString(txs);
@@ -25,5 +25,8 @@ export function FindMinimumScore(txm?: string, rxm?: string, txs?: string, rxs?:
 
     // 해당 점수에 따른 색깔을 가져옵니다.
     return minScore;
+    } else {
+        return 0;
+    }
 }
 

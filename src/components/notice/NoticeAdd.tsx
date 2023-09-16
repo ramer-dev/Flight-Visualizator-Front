@@ -13,6 +13,7 @@ const Wrapper = styled.div`
   margin:75px 10px 10px;
   padding: 10px;
   gap:10px;
+  overflow-X:hidden;
   overflow-Y:scroll;
   height:100vh;
 `
@@ -22,7 +23,6 @@ const DivButtonFlex = styled.div`
   gap:20px;
   justify-content:center;
 `
-
 function NoticeAdd() {
   const setContentType = useSetRecoilState(contentViewFormat)
   const [noticeContent, setNoticeContent] = useRecoilState(editingNoticeContent)
@@ -55,7 +55,7 @@ function NoticeAdd() {
     }
     try {
       await postNotice(body)
-    } catch (e:any) {
+    } catch (e: any) {
       const code = e.response.status;
       if (+code === 403) {
         window.alert('권한이 없습니다.')
@@ -72,20 +72,18 @@ function NoticeAdd() {
   }
 
   return (
-    <>
-      {/* <Container> */}
-      <Wrapper>
-        <TextField placeholder='공지사항 제목' size='small' label="제목" inputRef={title} ></TextField>
-        <TextField placeholder='태그 선택' size='small' label="태그" inputRef={tag}></TextField>
-        <TextField placeholder='공지사항 내용' size='small' label="내용" inputRef={content} multiline minRows={3}></TextField>
-        <DivButtonFlex>
-          <Button sx={{ color: 'white' }} variant='contained' onClick={handlerAddOnClick}>추가</Button>
-          <Button variant='outlined' onClick={handlerCancelOnClick}>취소</Button>
-        </DivButtonFlex>
-      </Wrapper>
-      {/* </Container> */}
-      <NavCloseButton contentSize={['MIN']} />
-    </>
+
+    <Wrapper>
+      <TextField placeholder='공지사항 제목' size='small' label="제목" inputRef={title} ></TextField>
+      <TextField placeholder='태그 선택' size='small' label="태그" inputRef={tag}></TextField>
+      <TextField placeholder='공지사항 내용' size='small' label="내용" inputRef={content} multiline minRows={3}></TextField>
+      <DivButtonFlex>
+        <Button sx={{ color: 'white' }} variant='contained' onClick={handlerAddOnClick}>추가</Button>
+        <Button variant='outlined' onClick={handlerCancelOnClick}>취소</Button>
+      </DivButtonFlex>
+      <NavCloseButton contentSize={['NONE', 'MIN']} />
+    </Wrapper>
+
 
   )
 }

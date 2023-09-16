@@ -66,15 +66,14 @@ const FlightItem = ({ testName, testType, testDate, id, refetch }: FlightList & 
 
     const DeleteFlightItem = (e: any) => {
         e.stopPropagation();
-        console.log('delete');
-
-        if (window.confirm("진짜로 비행점검 삭제?")) {
-            deleteFlightList(id).then(() => refetch())
-        }
+        if (id)
+            if (window.confirm("진짜로 비행점검 삭제?")) {
+                deleteFlightList(id).then(() => refetch())
+            }
     }
 
     return (
-        <Container onClick={(e) => { ViewFlightItem(e, id) }}>
+        <Container onClick={(e) => { ViewFlightItem(e, id ? id : -1) }}>
 
             <Title>{testName}</Title>
             <ContentWrapper>

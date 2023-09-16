@@ -21,6 +21,7 @@ const StyledMapContainer = styled(MapContainer)`
     width:100%;
     height:100vh;
     z-index:0;
+    font-family: 'Pretendard';
 `
 
 L.Marker.prototype.options.icon = L.icon({
@@ -43,30 +44,33 @@ const Map = () => {
         features: [
         ],
     });
-
+ 
     const MapFunction = useMemo(() => (
         <StyledMapContainer center={[36.0, 128.09]} zoom={zoom} minZoom={4} maxZoom={10} id='enroute' zoomControl={false}>
             <NavBar />
             <Initializer />
             <MapEvents isOpen={contextMenuOpened} setOpen={setContextMenuOpened} setZoom={setZoom} />
 
-            <TileLayer url="http://localhost:3000/v1/api/map/{z}/{x}/{y}" attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Dev by. Hee Sang Shin' />
-            <TileLayer
+            <TileLayer url={`${process.env.REACT_APP_API_URL}/map/{z}/{x}/{y}`} attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Dev by. Hee Sang Shin' />
+            {/* <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
+            /> */}
             {/* <LayersControl position="topright"> */}
 
-            <Pane name="sector" />
+            <Pane name="sector"/>
             <Pane name="route" />
             <Pane name="site" />
             <Pane name="lowsite" />
             <Pane name="vortac" />
             <Pane name="point" />
+            <Pane name="pointSubtitle"/>
             <Pane name="marking" />
             <Pane name="pin" />
             <Pane name="flight-record"/>
             <Pane name="range-bearing" />
+            <Pane name='analyze'/>
+            <Pane name='setting' style={{zIndex:1900}}/>
 
             <EditControlFC geojson={geojson} setGeojson={setGeojson} />
             <CustomLayerControl position="topright" />

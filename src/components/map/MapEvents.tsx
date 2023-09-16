@@ -1,19 +1,23 @@
-import {  markingSelectCursor } from "common/store/atom";
-import ContextMenu from "components/contextMenu/ContextMenu";
+import { markingSelectCursor } from "common/store/atom";
+import ContextMenu from "components/map/contextMenu/ContextMenu";
 import L from "leaflet";
 import { LatLng, Polyline } from "leaflet";
-import {  useRef, useState } from "react";
-import { Popup, useMap, useMapEvents } from "react-leaflet";
+import { useRef, useState } from "react";
+import { Popup, PopupProps, useMap, useMapEvents } from "react-leaflet";
 import { useRecoilState } from "recoil";
+import { renderToString } from 'react-dom/server'
+import RangeBearing from "./contextMenu/RangeBearing";
+import React from "react";
+import Analyze from "./contextMenu/Analyze";
 
 type Props = {
     isOpen: boolean,
     setOpen: (a: boolean) => void,
-    setZoom: (a:number) => void,
+    setZoom: (a: number) => void,
 }
+type MenuType = 'range-bearing' | 'analyze' | null;
 
 const MapEvents = ({ isOpen, setOpen, setZoom }: Props) => {
-    type MenuType = 'range-bearing' | 'analyze' | null;
     const map = useMap()
 
     const popup = useRef(L.popup({
@@ -26,7 +30,6 @@ const MapEvents = ({ isOpen, setOpen, setZoom }: Props) => {
     const [marking, setMarking] = useRecoilState(markingSelectCursor)
     const currLine = useRef<Polyline | null>(null);
 
-
     useMapEvents({
         contextmenu(e) {
             setPosition(e.latlng)
@@ -35,19 +38,13 @@ const MapEvents = ({ isOpen, setOpen, setZoom }: Props) => {
         },
         mousemove(e) {
             if (selectedMenu === 'range-bearing') {
-                const angle = L.GeometryUtil.angle(map, position, e.latlng)
-                const distance = map.distance(position, e.latlng) 
+                const angle = L.GeometryUtil.angle(map, position, e.latlng).toFixed(1)
+                const distance = (map.distance(position, e.latlng) * 0.000539957).toFixed(1)
 
                 if (currLine.current) currLine.current.remove();
-                // console.log(position, e.latlng);
-                // console.log(L.GeometryUtil.distance(distance))
                 currLine.current = L.polyline([position, e.latlng], { color: 'red', pane: 'range-bearing' }).addTo(map);
 
-                popup.current.setLatLng(e.latlng).setContent(`${angle.toFixed(1)}|${(distance * 0.000539957).toFixed(1)}`)
-            }
-
-            if (marking.selection) {
-                // console.log(e.latlng)
+                popup.current.setLatLng(e.latlng).setContent(renderToString(<RangeBearing angle={angle} distance={distance} />))
             }
 
         },
@@ -55,27 +52,33 @@ const MapEvents = ({ isOpen, setOpen, setZoom }: Props) => {
         click(e) {
             if (selectedMenu === 'range-bearing') {
                 setSelectedMenu(null)
+            } else {
             }
 
             if (marking.selection) {
 
                 setMarking({ selection: false, coordinate: e.latlng })
             }
-            if (isOpen) {
-                setOpen(false);
-            }
+
+
+
         },
-        zoomend(e){
+        zoomend(e) {
             setZoom(e.target._animateToZoom)
         },
 
+        popupclose(e: L.PopupEvent) {
+            if (e.popup.options.className === 'test') setTimeout(() => {setSelectedMenu(null)}, 200)
+        }
+
     })
 
-    return <>
-        {isOpen ? <Popup closeButton={false} keepInView={false} position={position} offset={[0, 0]}>
-            <ContextMenu setOpen={setOpen} startPosition={position} setSelectedMenu={setSelectedMenu} popup={popup.current} />
-        </Popup> : null}
-    </>
+    return isOpen ? <Popup className="test" closeButton={true} keepInView={false} closeOnClick={false} position={position} offset={[0, 0]} closeOnEscapeKey>
+        {selectedMenu === 'analyze' ?
+            <Analyze origin={position} />
+            : <ContextMenu setOpen={setOpen} startPosition={position} setSelectedMenu={setSelectedMenu} popup={popup.current} />}
+    </Popup> : null
+
 }
 
 export default MapEvents;

@@ -2,6 +2,7 @@ import React from 'react'
 import styled from '@emotion/styled'
 import { MarkingCardProps } from './MarkingCard';
 import { renderToString } from 'react-dom/server'
+import { LatLngLiteral } from 'leaflet';
 
 interface StyleProps {
   isDragging?: boolean
@@ -39,7 +40,7 @@ const Site = styled.div`
   font-size:14px;
   font-weight:700;
 `
- 
+
 
 const InfoText = styled.div`
   font-size:12px;
@@ -47,20 +48,18 @@ const InfoText = styled.div`
   font-weight:400;
 `
 
-// export interface MarkingCardProps {
-//   id: string,
-//   site: string,
-//   distance: number,
-//   angle: number,
-//   index: number,
-//   isDragging?: boolean,
-//   level: number,
-//   coord?: LatLngLiteral
-// }
+export interface MarkingTooltipProps {
+  site: string,
+  distance: number,
+  angle: number,
+  index?: number,
+  isDragging?: boolean,
+  coord?: LatLngLiteral
+}
 
 
 
-const MarkingTooltip = ({ site, coord, distance, angle, index, isDragging, id }: MarkingCardProps) => {
+export default function MarkingTooltip({ site, coord, distance, angle, index }: MarkingTooltipProps) {
 
   // const [list, setList] = useRecoilState<MarkingCardProps[]>(markingCards);
 
@@ -70,25 +69,41 @@ const MarkingTooltip = ({ site, coord, distance, angle, index, isDragging, id }:
   // }
 
   return renderToString(
-    <Container isDragging={isDragging}>
-      <FlexBox>
-        <Index>
-          {index + 1}
-        </Index>
-        <Site>{site ? site : coord?.lat.toFixed(4) + ' / ' + coord?.lng.toFixed(4)}</Site>
+    <Container style={{
+      display: 'flex',
+      userSelect: 'none',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '10px 10px',
+      borderRadius: '4px',
+      marginBottom: '1px',
+    }}>
+      <FlexBox style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '7px'
+      }}>
+        {typeof index === 'number' ?
+          <Index style={{
+            borderRadius: '50%',
+            backgroundColor: '#d9d9d9',
+            width: '24px',
+            height: '24px',
+            lineHeight: '24px',
+            textAlign: 'center',
+            fontWeight: 300,
+            fontSize: '15px'
+          }}>
+            {index + 1}
+          </Index> : null
+        }
+        <Site style={{
+          fontSize: "14px",
+          fontWeight: 700
+        }}>{site ? site : coord?.lat.toFixed(4) + ' / ' + coord?.lng.toFixed(4)}</Site>
         <InfoText>{angle}/{distance}</InfoText>
       </FlexBox>
-      <FlexBox>
-        {/* <ButtonBox> */}
-          {/* <ModifyButton>수정</ModifyButton> */}
-          {/* <CancelIcon sx={{cursor:'pointer'}} onClick={handlerDeleteClick}/> */}
-        {/* </ButtonBox> */}
-        {/* <PinButton>
-          <ICMarking />
-        </PinButton> */}
-      </FlexBox>
+      
     </Container>
   )
 }
-
-export default MarkingTooltip
