@@ -473,13 +473,13 @@ function CustomTable({ edit, search, add }: Props) {
 
     const handleMarkingBtnClick = async (filename?: string) => {
         setCheckboxSelection(apiRef.current.getSelectedRows());
+        shrinkWindow()
         if (filename) {
             const result = await getRouteFromFile(filename)
             const coords = result.route.map(t => t.coords)
 
             routePolyline.current = L.polyline(coords, { pane: 'pin', color: 'red' }).addTo(map);
         }
-        shrinkWindow()
     }
 
     const handleCancelEdit = (e: React.MouseEvent) => {
