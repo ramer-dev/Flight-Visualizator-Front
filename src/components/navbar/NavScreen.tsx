@@ -63,17 +63,29 @@ function NavScreen() {
     };
 
     useEffect(() => {
-        if (selectedPage !== 'SEARCH') {
-            setContentView('NONE')
-            setContent('NONE')
-        } else {
-            setContentView('ENTIRE')
-        }
+        // if (selectedPage !== 'SEARCH') {
+        //     setContentView('NONE')
+        //     setContent('NONE')
+        // } else {
+        //     setContentView('ENTIRE')
+        // }
 
-        if (content !== 'NONE' || selectedPage === 'SEARCH') {
-            controls.start('active')
+        // if (content !== 'NONE' || selectedPage === 'SEARCH') {
+        //     controls.start('active')
+        // } else {
+        //     controls.start('inactive')
+        // }
+        if (selectedPage !== 'SEARCH') {
+            setContentView('NONE');
+            setContent('NONE');
+            controls.start('inactive');
         } else {
-            controls.start('inactive')
+            setContentView('ENTIRE');
+            if (content !== 'NONE') {
+                controls.start('active');
+            } else {
+                controls.start('inactive');
+            }
         }
     }, [selectedPage, setContent, setContentView])
     

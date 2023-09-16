@@ -26,7 +26,7 @@ export const FlightScreen = () => {
     return (
         <>
             {selector(content)}
-            <NavCloseButton contentSize={['MID', 'FULLSCREEN']} />
+            
 
         </>
     )

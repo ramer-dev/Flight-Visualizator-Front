@@ -11,11 +11,14 @@ const Container = styled.div`
 function FlightView() {
 
   return (
-    <Container>
-      <ScreenTitle text={"비행검사 조회"} />
-      <CustomTable />
+    <>
+      <Container>
+        <ScreenTitle text={"비행검사 조회"} />
+        <CustomTable />
 
-    </Container>
+      </Container>
+      <NavCloseButton contentSize={['MID', 'FULLSCREEN']} />
+    </>
   )
 
 }

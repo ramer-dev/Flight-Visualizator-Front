@@ -16,7 +16,7 @@ const Container = styled.div`
 function FlightAdd() {
 
     return (
-
+        <>
         <Container >
             <ScreenTitle text={"비행검사 추가"} />
             {/* {<TableViewer data={data} />} */}
@@ -25,7 +25,8 @@ function FlightAdd() {
 
             </Wrapper>
         </Container>
-
+        <NavCloseButton contentSize={['MID', 'FULLSCREEN']} />
+        </>
     )
 }
 

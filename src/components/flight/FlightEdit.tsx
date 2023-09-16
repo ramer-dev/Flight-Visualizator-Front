@@ -11,12 +11,15 @@ const Container = styled.div`
 function FlightEdit() {
 
     return (
-        <Container>
-            <ScreenTitle text={"비행검사 수정"} />
-            {/* {<TableViewer data={data} />} */}
-            <CustomTable edit />
+        <>
+            <Container>
+                <ScreenTitle text={"비행검사 수정"} />
+                {/* {<TableViewer data={data} />} */}
+                <CustomTable edit />
 
-        </Container>
+            </Container>
+            <NavCloseButton contentSize={['MID', 'FULLSCREEN']} />
+        </>
     )
 }
 
