@@ -81,7 +81,7 @@ export default function CustomPagination({ edit, page, onPageChange, handleCance
                     <Button variant='outlined' color={'error'} onClick={handleCancelEdit} startIcon={<ClearIcon />}>취소</Button>
                 </>
                 :
-                <Button variant='outlined' onClick={(e: React.MouseEvent) => { handleCancelEdit(e); console.log('close') }} startIcon={<ClearIcon />}>닫기</Button>
+                <Button variant='outlined' onClick={(e: React.MouseEvent) => { handleCancelEdit(e) }} startIcon={<ClearIcon />}>닫기</Button>
             }
 
         </ButtonWrapper>

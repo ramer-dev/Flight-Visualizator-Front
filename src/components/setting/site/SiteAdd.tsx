@@ -86,10 +86,9 @@ function SiteAdd() {
         const error = { lat: validateCoordinates(coord.lat.toString()), lng: validateCoordinates(coord.lng.toString()) }
 
         if (coord.lat && coord.lng && error.lat && error.lng) {
-            dotLayer.current = L.circleMarker([convertToWGS(coord.lat), convertToWGS(coord.lng)], { radius: 5, color: 'red', pane: 'setting' }).addTo(map);
+            dotLayer.current = L.circleMarker([convertToWGS(coord.lat), convertToWGS(coord.lng)], { radius: 15, color: 'red', }).addTo(map);
         }
-
-        setCoordError(error)
+        setCoordError({lat:!error.lat, lng:!error.lng})
 
         return () => {
             if (dotLayer.current) {

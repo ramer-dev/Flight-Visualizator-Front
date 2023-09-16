@@ -48,6 +48,7 @@ declare module '@mui/x-data-grid' {
         search?: boolean;
         submitted?: boolean;
         rows: any[];
+        setLoading: (b : boolean) => void;
         setRows: (rows: any[]) => void;
         setSubmitted: (b: boolean) => void;
         setTitleData: (e: FlightList) => void;
@@ -112,6 +113,7 @@ function CustomTable({ edit, search, add }: Props) {
     const setContentView = useSetRecoilState(contentViewFormat)
     const setContent = useSetRecoilState(contentFormat);
     const auth = useRecoilValue(authState);
+    const [loading, setLoading] = React.useState(false);
     const [titleData, setTitleData] = React.useState<FlightList>()
     const [checkboxSelection, setCheckboxSelection] = React.useState<Map<GridRowId, GridValidRowModel>>();
     const [cellModesModel, setCellModesModel] = React.useState<GridCellModesModel>({});
@@ -179,7 +181,7 @@ function CustomTable({ edit, search, add }: Props) {
 
     const columns: GridColDef[] = [
         { field: 'id', editable: false, flex: .5 },
-        { field: 'no', disableExport: true, editable: false, flex: .5, type: 'number', sortable: false, valueGetter: (params) =>  apiRef.current.getRowIndexRelativeToVisibleRows(params.id) + 1 || apiRef.current.getAllRowIds().indexOf(params.id) + 1 , headerName: 'No' },
+        { field: 'no', disableExport: true, editable: false, flex: .5, type: 'number', sortable: false, valueGetter: (params) => apiRef.current.getRowIndexRelativeToVisibleRows(params.id) + 1 || apiRef.current.getAllRowIds().indexOf(params.id) + 1, headerName: 'No' },
         {
             field: 'siteName', editable: !!edit, flex: 1, headerName: '표지소', type: 'string',
             preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
@@ -232,9 +234,9 @@ function CustomTable({ edit, search, add }: Props) {
                 return formatInput(value);
             }
         },
-        { field: 'angle', editable: !!edit, flex: .5, type: 'number', headerName: '각도' },
-        { field: 'distance', editable: !!edit, flex: .5, type: 'number', headerName: '거리' },
-        { field: 'height', editable: !!edit, flex: 1, type: 'number', headerName: '고도' },
+        { field: 'angle', editable: !!edit, flex: .5, type: 'number', headerName: '각도',align:'left', headerAlign:'left' },
+        { field: 'distance', editable: !!edit, flex: .5, type: 'number', headerName: '거리(NM)',align:'left', headerAlign:'left' },
+        { field: 'height', editable: !!edit, flex: 1, type: 'number', headerName: '고도(ft)', align:'left', headerAlign:'left' },
         { field: 'status', editable: false, flex: 1 },
         { field: 'updatedAt', flex: 1 },
         { field: 'deletedAt', flex: 1 },
@@ -262,13 +264,13 @@ function CustomTable({ edit, search, add }: Props) {
 
     useEffect(() => {
         const obj: { [key: string]: GridValidRowModel } = {};
-        const layer : L.Marker[] = []
+        const layer: L.Marker[] = []
         const instance = layerGroup.current;
-
 
         checkboxSelection?.forEach((value, key) => {
             obj[String(key)] = value;
         });
+
         Object.keys(obj).map((i, idx) => {
             if (!isNaN(obj[i].angle) && !isNaN(obj[i].distance) && obj[i].siteName) {
                 const angle = parseFloat(obj[i].angle) && obj[i].angle;
@@ -277,41 +279,19 @@ function CustomTable({ edit, search, add }: Props) {
                 const target = Destination(siteCoords, angle, distance);
                 layer.push(L.marker(target as LatLngLiteral, {
                     pane: 'pin',
-                    icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby), idx+1)
+                    icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby), idx + 1)
                 }).on('mouseover', () => {
-                    hoverPolyline.current = L.polyline([[convertToWGS(siteCoords.lat), convertToWGS(siteCoords.lng)], target!], { pane: 'pin', color:'red' }).addTo(map);
+                    hoverPolyline.current = L.polyline([[convertToWGS(siteCoords.lat), convertToWGS(siteCoords.lng)], target!], { pane: 'pin', color: 'red' }).addTo(map);
                 }).on('mouseout', () => {
                     if (hoverPolyline.current) {
                         hoverPolyline.current.remove();
                     }
                 })
-                    .bindTooltip(CustomTableTooltip({ siteName: obj[i].siteName, distance, angle: angle, index: idx+1 }))
+                    .bindTooltip(CustomTableTooltip({ siteName: obj[i].siteName, distance, angle: angle, index: idx + 1 }))
                 )
             }
 
         })
-        // for (let i in obj) {
-
-
-        //     if (!isNaN(obj[i].angle) && !isNaN(obj[i].distance) && obj[i].siteName) {
-        //         const angle = parseFloat(obj[i].angle) && obj[i].angle;
-        //         const distance = parseFloat(obj[i].angle) && obj[i].distance;
-        //         const siteCoords = siteData.data.filter(t => t.siteName === obj[i].siteName)[0]?.siteCoordinate as LatLngLiteral;
-        //         const target = Destination(siteCoords, angle, distance);
-        //         layer.push(L.marker(target as LatLngLiteral, {
-        //             pane: 'pin',
-        //             icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby), +i+1)
-        //         }).on('mouseover', () => {
-        //             hoverPolyline.current = L.polyline([[convertToWGS(siteCoords.lat), convertToWGS(siteCoords.lng)], target!], { pane: 'pin' }).addTo(map);
-        //         }).on('mouseout', () => {
-        //             if (hoverPolyline.current) {
-        //                 hoverPolyline.current.remove();
-        //             }
-        //         })
-        //             .bindTooltip(CustomTableTooltip({ siteName: obj[i].siteName, distance, angle: angle, index: (+i+1) }))
-        //         )
-        //     }
-        // }
 
         instance.clearLayers()
 
@@ -378,7 +358,7 @@ function CustomTable({ edit, search, add }: Props) {
 
     const handleAddRow = (e: React.MouseEvent) => {
         if (titleData) {
-            const newRow = { id: `add-${id.current}`, siteName: '', frequency: 0, testId: titleData.id!, angle: 0, distance: 0, height: 0}
+            const newRow = { id: `add-${id.current}`, siteName: '', frequency: 0, testId: titleData.id!, angle: 0, distance: 0, height: 0 }
             apiRef.current.updateRows([newRow]);
             setRows((prevRow) => [...prevRow, newRow])
             id.current++;
@@ -389,7 +369,6 @@ function CustomTable({ edit, search, add }: Props) {
         for (let i in data) {
 
             if (!data[i].siteName) {
-                console.log(data[i], '표지소 입력')
                 window.alert(`${+i + 1}행의 표지소를 정확하게 입력해주세요.`)
                 return true;
             }
@@ -409,7 +388,7 @@ function CustomTable({ edit, search, add }: Props) {
                 return true;
             }
 
-            if (!data[i].height || data[i].height >= 50000 || data[i].height < 0) {
+            if (!data[i].height || data[i].height >= 60000 || data[i].height < 0) {
                 window.alert(`${+i + 1}행의 고도를 정확하게 입력해주세요.`)
                 return true;
             }
@@ -463,18 +442,16 @@ function CustomTable({ edit, search, add }: Props) {
         }
         if (titleData) {
             const fetchData: FlightListPost = { ...titleData, data: editArray }
+            delete fetchData.deletedAt;
+            delete fetchData.updatedAt;
             if (add) {
                 delete fetchData.id;
-                delete fetchData.deletedAt;
-                delete fetchData.updatedAt;
                 postFlightList(fetchData);
             } else if (titleData?.id) {
-                delete fetchData.deletedAt;
-                delete fetchData.updatedAt;
                 patchFlightData(fetchData, titleData.id)
             }
         }
-
+        stateRefresh()
     }
 
     const handleDeleteRow = (e: React.MouseEvent) => {
@@ -514,7 +491,6 @@ function CustomTable({ edit, search, add }: Props) {
     }
 
     const handlePaginationModelChange = (e: any) => {
-        console.log(e)
     }
 
     return (
@@ -523,7 +499,7 @@ function CustomTable({ edit, search, add }: Props) {
                 <CustomModal isOpen={isModalOpen} title="비행검사 입력 에러" message='비행검사 기본 정보 입력 후 확인버튼을 눌러주세요.' close={closeModal} />
             </Portal>
             <StyledDataGrid apiRef={apiRef} editMode='cell' rows={rows} columns={columns}
-                loading={isLoading}
+                loading={isLoading || loading}
                 columnVisibilityModel={columnVisibilityModel}
                 slots={{ toolbar: CustomToolbar, pagination: CustomPagination, noRowsOverlay: CustomNoRowsOverlay, loadingOverlay: LoadingPage, columnMenu: CustomColumnMenu }}
                 slotProps={{
@@ -553,6 +529,7 @@ function CustomTable({ edit, search, add }: Props) {
                         search: search,
                         submitted: submitted,
                         rows,
+                        setLoading,
                         setRows,
                         setSubmitted,
                         handleAddRow,

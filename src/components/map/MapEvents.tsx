@@ -30,11 +30,6 @@ const MapEvents = ({ isOpen, setOpen, setZoom }: Props) => {
     const [marking, setMarking] = useRecoilState(markingSelectCursor)
     const currLine = useRef<Polyline | null>(null);
 
-    React.useEffect(() => {
-        console.log(isOpen)
-
-    }, [isOpen])
-
     useMapEvents({
         contextmenu(e) {
             setPosition(e.latlng)
@@ -47,15 +42,9 @@ const MapEvents = ({ isOpen, setOpen, setZoom }: Props) => {
                 const distance = (map.distance(position, e.latlng) * 0.000539957).toFixed(1)
 
                 if (currLine.current) currLine.current.remove();
-                // console.log(position, e.latlng);
-                // console.log(L.GeometryUtil.distance(distance))
                 currLine.current = L.polyline([position, e.latlng], { color: 'red', pane: 'range-bearing' }).addTo(map);
 
                 popup.current.setLatLng(e.latlng).setContent(renderToString(<RangeBearing angle={angle} distance={distance} />))
-            }
-
-            if (marking.selection) {
-                // console.log(e.latlng)
             }
 
         },
@@ -78,9 +67,6 @@ const MapEvents = ({ isOpen, setOpen, setZoom }: Props) => {
             setZoom(e.target._animateToZoom)
         },
 
-        add(e) {
-            console.log(e)
-        },
         popupclose(e: L.PopupEvent) {
             if (e.popup.options.className === 'test') setTimeout(() => {setSelectedMenu(null)}, 200)
         }

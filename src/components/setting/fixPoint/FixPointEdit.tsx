@@ -89,8 +89,7 @@ function FixPointEdit() {
         if (coord.lat && coord.lng && error.lat && error.lng) {
             dotLayer.current = L.circleMarker([convertToWGS(coord.lat), convertToWGS(coord.lng)], { radius: 8, color: 'red', }).addTo(map);
         }
-
-        setCoordError(error)
+        setCoordError({lat:!error.lat, lng:!error.lng})
 
         return () => {
             if (dotLayer.current) {
@@ -115,8 +114,8 @@ function FixPointEdit() {
                 <TextField label="픽스점 이름" size="small" fullWidth inputRef={nameRef} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'name') }}></TextField>
             </Content>
             <Content>
-                <TextField value={coord.lat} sx={{ flex: 1 }} label='위도' type={'number'} size="small" ref={(el:HTMLDivElement) => (coordRef.current[0] = el)} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'lat') }}></TextField>
-                <TextField value={coord.lng} sx={{ flex: 1 }} label='경도' type={'number'} size="small" ref={(el:HTMLDivElement) => (coordRef.current[1] = el)} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'lng') }} ></TextField>
+                <TextField value={coord.lat} error={coordError.lat} sx={{ flex: 1 }} label='위도' type={'number'} size="small" ref={(el:HTMLDivElement) => (coordRef.current[0] = el)} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'lat') }}></TextField>
+                <TextField value={coord.lng} error={coordError.lng} sx={{ flex: 1 }} label='경도' type={'number'} size="small" ref={(el:HTMLDivElement) => (coordRef.current[1] = el)} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'lng') }} ></TextField>
             </Content>
             <Content>
                 <Button color='error' variant='outlined' onClick={handleDelete}>픽스점 삭제</Button>

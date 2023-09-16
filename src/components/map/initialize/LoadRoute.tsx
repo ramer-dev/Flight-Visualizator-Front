@@ -17,6 +17,7 @@ function LoadRoute() {
         <>
             {
                 route.map(route => <Polyline key={route.routeId}
+                    color={'rgba(122,122,122,1)'}
                     positions={route.routeData
                         ?.filter((t, i) => (i <= route.routeData.length - 1))
                         .sort((a, b) => a.routeEntry > b.routeEntry ? -1 : 1)

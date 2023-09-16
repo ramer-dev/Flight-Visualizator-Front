@@ -39,11 +39,6 @@ function LoginComponent({ open, closeLogin }: Props) {
         setPayload(newItem)
     }
 
-    const testCookie = async () => {
-        const result = await getTestCookie();
-        console.log(result);
-    }
-
     const loginCheck = async () => {
         // const loginValue: AuthType = {
         //     id: 'test',
@@ -51,12 +46,12 @@ function LoginComponent({ open, closeLogin }: Props) {
         //     role: 1
         // }
         // setLogin(loginValue)
-        const password = payload.pw + 'c0mtr2'
+        const password = payload.pw + process.env.REACT_APP_SECRET_KEY;
+
         const hashedPW = sha256(password).toString();
         const loginResult = await getLogin(payload.id, hashedPW)
         // console.log(loginResult)
         if (loginResult) {
-            console.log(`${payload.id} 로그인 성공`)
             openModal()
             const item: AuthType = {
                 id: payload.id,
@@ -66,7 +61,6 @@ function LoginComponent({ open, closeLogin }: Props) {
             setLoginState(item)
         } else {
             openModal()
-            console.log(`${payload.id} 로그인 실패`)
             setLoginState({ id: '', username: '', role: 0 })
 
         }
@@ -96,8 +90,7 @@ function LoginComponent({ open, closeLogin }: Props) {
                     <TextField label="ID" onChange={(e) => { handleInputChange(e, 'id') }} />
                     <TextField label="PW" type="password" onChange={(e) => { handleInputChange(e, 'pw') }} />
 
-                    <Button variant='outlined' onClick={() => { loginCheck() }}>testLogin</Button>
-                    <Button onClick={testCookie}>test Cookie</Button>
+                    <Button variant='outlined' onClick={() => { loginCheck() }}>로그인</Button>
                 </TextWrapper>
 
             </Box>

@@ -38,7 +38,7 @@ export default function Frequency({ openEditWindow, changeData }: Props) {
                         {isLoading ? <CircularProgress size={20} /> : null}
                         {isError ? <ErrorPage /> : null}
                         {
-                            <Box component='li' key={option.site + option.id} {...props} value={`${option.site} ${option.label}`}>
+                            <Box component='li' key={option.site + option.id + option.label} {...props} value={`${option.site} ${option.label}`}>
                                 {option.label} ㎒
                             </Box>
                         }

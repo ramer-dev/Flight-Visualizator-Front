@@ -11,12 +11,12 @@ import { AnimatePresence, motion, useAnimation } from 'framer-motion';
 import { SettingState } from 'components/setting/SettingStateType';
 
 type styleProp = {
-    contentView: string | null;
+    contentview: string | null;
 }
 
 const Container = styled(motion.div)`
     height:100vh;
-    padding: ${({ contentView }: styleProp) => contentView === '0' || contentView?.charAt(0) === 'c' ? 0 : '10px 25px'};
+    padding: ${({ contentview }: styleProp) => contentview === '0' || contentview?.charAt(0) === 'c' ? 0 : '10px 25px'};
     user-select: auto;
     z-index:2100;
 `
@@ -63,24 +63,36 @@ function NavScreen() {
     };
 
     useEffect(() => {
-        if (selectedPage !== 'SEARCH') {
-            setContentView('NONE')
-            setContent('NONE')
-        } else {
-            setContentView('ENTIRE')
-        }
+        // if (selectedPage !== 'SEARCH') {
+        //     setContentView('NONE')
+        //     setContent('NONE')
+        // } else {
+        //     setContentView('ENTIRE')
+        // }
 
-        if (content !== 'NONE' || selectedPage === 'SEARCH') {
-            controls.start('active')
+        // if (content !== 'NONE' || selectedPage === 'SEARCH') {
+        //     controls.start('active')
+        // } else {
+        //     controls.start('inactive')
+        // }
+        if (selectedPage !== 'SEARCH') {
+            setContentView('NONE');
+            setContent('NONE');
+            controls.start('inactive');
         } else {
-            controls.start('inactive')
+            setContentView('ENTIRE');
+            if (content !== 'NONE') {
+                controls.start('active');
+            } else {
+                controls.start('inactive');
+            }
         }
     }, [selectedPage, setContent, setContentView])
     
     return (
         <AnimatePresence mode='wait'>
             <motion.div variants={menuHandlerStyles}>
-                <Container contentView={widthMap[contentView]} initial={{ x: '-100%' }} animate={{ x: 0, width: widthMap[contentView] }}>
+                <Container contentview={widthMap[contentView]} initial={{ x: '-100%' }} animate={{ x: 0, width: widthMap[contentView] }}>
                     {selector(selectedPage, settingValue.current)}
                 </Container>
             </motion.div>

@@ -35,7 +35,6 @@ export default function EditControlFC({geojson, setGeojson} : Props) {
 
   const handleChange = () => {
     const geo = ref.current?.toGeoJSON();
-    console.log(geo);
     if (geo?.type === 'FeatureCollection') {
       setGeojson(geo);
     }
