@@ -18,6 +18,7 @@ interface Props {
 function FixPointAutoComplete({ openEditWindow, changeData, label, value, options, isLoading, isError }: Props) {
     return (
         <Autocomplete
+        key={label}
         clearOnEscape
             fullWidth
             value={value}
@@ -28,10 +29,10 @@ function FixPointAutoComplete({ openEditWindow, changeData, label, value, option
             isOptionEqualToValue={(option, value) => option.id === value.id}
             renderOption={(props, option) => {
                 return <>
-                    {isLoading && <CircularProgress size={20} />}
-                    {isError && <ErrorPage />}
+                    {isLoading && <CircularProgress size={20} key={'loading'} />}
+                    {isError && <ErrorPage key={'error'}/>}
                     {
-                        <Box component='li' key={option.id + option.label} {...props} value={`${option.label}`}>
+                        <Box component='li' key={option.id + option.label } {...props} value={`${option.label}`}>
                             {option.label}
                         </Box>
                     }

@@ -34,11 +34,11 @@ body::-webkit-scrollbar-track {
   margin-top: 0
 }
 
-.leaflet-draw-toolbar-notop a:first-child {
+.leaflet-draw-toolbar-notop a:first-of-type {
   border-top-right-radius: 0
 }
 
-.leaflet-draw-toolbar-nobottom a:last-child {
+.leaflet-draw-toolbar-nobottom a:last-of-type {
   border-bottom-right-radius: 0
 }
 
@@ -101,7 +101,7 @@ body::-webkit-scrollbar-track {
   display: inline-block
 }
 
-.leaflet-draw-actions li:first-child a {
+.leaflet-draw-actions li:first-of-type a {
   border-left: 0
 }
 
@@ -115,7 +115,7 @@ body::-webkit-scrollbar-track {
   border-radius: 0
 }
 
-.leaflet-right .leaflet-draw-actions li:first-child a {
+.leaflet-right .leaflet-draw-actions li:first-of-type a {
   -webkit-border-radius: 4px 0 0 4px;
   border-radius: 4px 0 0 4px
 }

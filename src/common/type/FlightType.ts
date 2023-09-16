@@ -16,7 +16,7 @@ export interface FlightResultModel {
 }
 
 export interface FlightResult {
-  id?: number,
+  id?: string,
   siteName: string,
   frequency: number,
   testId: number,
@@ -51,7 +51,6 @@ export interface FlightList {
 }
 
 export interface RowType {
-  no: number;
   id: string;
   siteName: string,
   frequency: number,

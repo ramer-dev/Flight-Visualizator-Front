@@ -17,7 +17,7 @@ import NavEtcItem from "./NavEtcItem";
 import L from 'leaflet';
 import LoginComponent from "components/login/LoginComponent";
 import { authState } from "common/store/auth";
-import { getLogout } from "components/hooks/useLogin";
+import { postLogout } from "components/hooks/useLogin";
 import { AuthType } from "common/type/AuthType";
 import { AnimatePresence, motion } from "framer-motion";
 import useConfirm from "components/hooks/useConfirm";
@@ -86,6 +86,7 @@ const NavBar = () => {
     const [logoState, setLogoState] = useState(false);
     const container = useRef<HTMLDivElement>(null);
     const setContentView = useSetRecoilState<ContentViewType>(contentViewFormat);
+    const setContentFormat = useSetRecoilState(contentViewFormat)
     const [dialogOpen, setDialogOpen] = useState(false);
     const { isConfirmOpen, closeConfirm, openConfirm } = useConfirm()
     const onButtonClick = (str: NavBarType) => {
@@ -119,14 +120,16 @@ const NavBar = () => {
 
     const Logout = () => {
 
-        getLogout();
+        postLogout();
         const emptyUser: AuthType = {
             id: "",
             username: "",
             role: 0
         }
-
-        setIsLogin(emptyUser)
+        setContentFormat('NONE')
+        setContentView('NONE');
+        setPage(null);
+        setIsLogin(emptyUser);
     }
 
     const LogoutConfirm = () => {

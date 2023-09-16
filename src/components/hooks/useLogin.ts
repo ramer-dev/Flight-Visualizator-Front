@@ -17,11 +17,11 @@ export const getTestCookie = async () => {
     return result
 } 
 
-export const getLogout = async () => {
+export const postLogout = async () => {
     try {
         const result = await CustomAxios.post('auth/logout')
         return result;
     } catch (e) {
-        console.log(e)
+        console.error(e)
     }
 }

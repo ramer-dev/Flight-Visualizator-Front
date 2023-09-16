@@ -36,13 +36,11 @@ export const postRoute = async (file: File) => {
     return data;
 }
 
-export const postImage = async (files: File[]) => {
+export const postImage = async (file: File) => {
     const formData = new FormData()
-    files.forEach((file : File,i) => {
-        formData.append('file', file)
-    })
+    formData.append('file', file)
 
-    const { data } = await CustomAxios.post<OCRReturnType[]>(`file/ocr`, formData)
+    const { data } = await CustomAxios.post<OCRReturnType>(`file/ocr`, formData, {timeout:180 * 1000})
     return data
 }
 

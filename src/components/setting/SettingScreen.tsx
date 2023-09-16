@@ -1,7 +1,7 @@
-import { contentFormat, setting } from 'common/store/atom';
+import { contentFormat, contentViewFormat } from 'common/store/atom';
 import { ContentType } from 'common/type/NavBarType';
 import React from 'react'
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { AreaScreen } from './area/AreaScreen';
 import { FixPointScreen } from './fixPoint/FixPointScreen';
 import { FrequencyScreen } from './frequency/FrequencyScreen';
@@ -34,7 +34,13 @@ interface SettingType {
 }
 
 export const SettingScreen = ({ settings }: SettingType) => {
-    const content = useRecoilValue(contentFormat);
+    const [content, setContent] = useRecoilState(contentFormat);
+    const setContentView = useSetRecoilState(contentViewFormat);
+    React.useEffect(() => {
+        setContentView('NONE')
+        setContent('NONE')
+    }, [settings])
+    
     return (
         <>
             {selector(content, settings)}

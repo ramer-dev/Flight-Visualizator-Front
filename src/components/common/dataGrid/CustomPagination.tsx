@@ -35,7 +35,7 @@ const ButtonWrapper = styled.div`
     gap:8px;
 `
 
-export default function CustomPagination({ edit, totalCount, totalPage, page, onPageChange, handleCancelEdit, handleSubmit, pageSizeChange }: Props) {
+export default function CustomPagination({ edit, page, onPageChange, handleCancelEdit, handleSubmit, pageSizeChange }: Props) {
     const apiRef = useGridApiContext()
     const selected = apiRef.current.getSelectedRows()
     const [pageSize, setPageSize] = React.useState(100)
@@ -62,27 +62,26 @@ export default function CustomPagination({ edit, totalCount, totalPage, page, on
         <ButtonWrapper>
             {selected.size ? <span >{selected.size}개 행 선택</span> : <span>총 {apiRef.current.getRowsCount()}행의 데이터</span>}
         </ButtonWrapper>
-        <div>
-            <FormControl>
-            <InputLabel sx={{backgroundColor:'white', transform: 'translate(4px, -9px)', fontSize:14}} id='rowsPerPage'>개수</InputLabel>
-            <Select labelId='rowsPerPage' open={menuOpen} value={pageSize} onClick={handleSiteClickOpen} size="small"
-                onClose={handleSiteClickClose} onChange={handleValueChange}>
-
-                <MenuItem value={25}>25</MenuItem>
-                <MenuItem value={50}>50</MenuItem>
-                <MenuItem value={100}>100</MenuItem>
-            </Select>
-            </FormControl>
-        </div>
         <Pagination variant='outlined' count={Math.ceil(apiRef.current.getRowsCount() / pageSize)} color='primary' page={page} onChange={(e, page) => { onPageChange(e, page) }} />
+
         <ButtonWrapper>
+            <FormControl>
+                <InputLabel sx={{ backgroundColor: 'white', transform: 'translate(4px, -9px)', fontSize: 14 }} id='rowsPerPage'>개수</InputLabel>
+                <Select labelId='rowsPerPage' open={menuOpen} value={pageSize} onClick={handleSiteClickOpen} size="small"
+                    onClose={handleSiteClickClose} onChange={handleValueChange}>
+
+                    <MenuItem value={25}>25</MenuItem>
+                    <MenuItem value={50}>50</MenuItem>
+                    <MenuItem value={100}>100</MenuItem>
+                </Select>
+            </FormControl>
             {edit ?
                 <>
                     <Button variant='outlined' onClick={handleSubmit} startIcon={<SaveIcon />}>저장</Button>
                     <Button variant='outlined' color={'error'} onClick={handleCancelEdit} startIcon={<ClearIcon />}>취소</Button>
                 </>
                 :
-                <Button variant='outlined' onClick={(e: React.MouseEvent) => { handleCancelEdit(e); console.log('close') }} startIcon={<ClearIcon />}>닫기</Button>
+                <Button variant='outlined' onClick={(e: React.MouseEvent) => { handleCancelEdit(e) }} startIcon={<ClearIcon />}>닫기</Button>
             }
 
         </ButtonWrapper>

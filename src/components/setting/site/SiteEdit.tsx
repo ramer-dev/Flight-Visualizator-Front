@@ -1,11 +1,9 @@
 import styled from '@emotion/styled'
 import { Autocomplete, Box, Button, TextField } from '@mui/material'
-import { deleteFixPoint, patchFixPoint, postFixPoint } from 'common/service/pointService'
 import { deleteSite, patchSite } from 'common/service/siteService'
 import { contentFormat, contentViewFormat, setting } from 'common/store/atom'
 import ScreenTitle from 'components/common/ScreenTitle'
 import NavCloseButton from 'components/navbar/NavCloseButton'
-import { FixPointDTO } from 'dto/fixPointDTO'
 import { SiteDTO } from 'dto/siteDTO'
 import L from 'leaflet'
 import { LatLngLiteral } from 'leaflet'
@@ -42,8 +40,8 @@ function SiteEdit() {
     const setContentView = useSetRecoilState(contentViewFormat)
     const setContent = useSetRecoilState(contentFormat)
     const [name, setName] = React.useState('');
-    const [siteMenuOpen, setSiteMenuOpen] = React.useState(false);
-    const [site, setSite] = React.useState('')
+    const [, setSiteMenuOpen] = React.useState(false);
+    const [, setSite] = React.useState('')
     const [siteType, setSiteType] = React.useState(options[0])
     const [coord, setCoord] = React.useState<LatLngLiteral>({ lat: 0, lng: 0 })
     const [coordError, setCoordError] = React.useState({ lat: false, lng: false })
@@ -100,10 +98,9 @@ function SiteEdit() {
         const error = { lat: validateCoordinates(coord.lat.toString()), lng: validateCoordinates(coord.lng.toString()) }
 
         if (coord.lat && coord.lng && error.lat && error.lng) {
-            dotLayer.current = L.circleMarker([convertToWGS(coord.lat), convertToWGS(coord.lng)], { radius: 8, color: 'red', }).addTo(map);
+            dotLayer.current = L.circleMarker([convertToWGS(coord.lat), convertToWGS(coord.lng)], { radius: 15, color: 'red', }).addTo(map);
         }
-
-        setCoordError(error)
+        setCoordError({lat:!error.lat, lng:!error.lng})
 
         return () => {
             if (dotLayer.current) {
@@ -148,8 +145,8 @@ function SiteEdit() {
                         fullWidth />
                 </Content>
                 <Content>
-                    <TextField value={coord.lat} sx={{ flex: 1 }} label='위도' type={'number'} size="small" ref={(el: HTMLDivElement) => (coordRef.current[0] = el)} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'lat') }}></TextField>
-                    <TextField value={coord.lng} sx={{ flex: 1 }} label='경도' type={'number'} size="small" ref={(el: HTMLDivElement) => (coordRef.current[1] = el)} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'lng') }} ></TextField>
+                    <TextField value={coord.lat} sx={{ flex: 1 }} error={coordError.lat} label='위도' type={'number'} size="small" ref={(el: HTMLDivElement) => (coordRef.current[0] = el)} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'lat') }}></TextField>
+                    <TextField value={coord.lng} sx={{ flex: 1 }} error={coordError.lng} label='경도' type={'number'} size="small" ref={(el: HTMLDivElement) => (coordRef.current[1] = el)} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'lng') }} ></TextField>
                 </Content>
                 <Content>
                     <Button color='error' variant='outlined' onClick={handleDelete}>표지소 삭제</Button>

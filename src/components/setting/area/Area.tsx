@@ -3,10 +3,11 @@ import { Autocomplete, Box, CircularProgress, MenuItem, Select, TextField } from
 import { contentFormat } from "common/store/atom";
 import ErrorPage from "components/common/ErrorPage";
 import { useGetArea } from "components/hooks/useArea";
+import { motion } from "framer-motion";
 import React from "react";
 import { useRecoilValue } from "recoil";
 
-const Container = styled.div`
+const Container = styled(motion.div)`
     
 `
 interface Props {
@@ -23,7 +24,7 @@ export default function Area({ openEditWindow, changeData }: Props) {
     }, [content])
 
     return (
-        <Container>
+        <Container initial={{y:'-100%', opacity:0}} animate={{y:'0', opacity:1}} transition={{damping:60}}>
             <Autocomplete
                 options={options}
                 autoHighlight

@@ -1,11 +1,9 @@
 import styled from '@emotion/styled'
 import { Autocomplete, Box, Button, TextField } from '@mui/material'
-import { postFixPoint } from 'common/service/pointService'
 import { postSite } from 'common/service/siteService'
 import { contentFormat, contentViewFormat } from 'common/store/atom'
 import ScreenTitle from 'components/common/ScreenTitle'
 import NavCloseButton from 'components/navbar/NavCloseButton'
-import { FixPointDTO } from 'dto/fixPointDTO'
 import { SiteDTO } from 'dto/siteDTO'
 import L from 'leaflet'
 import { LatLngLiteral } from 'leaflet'
@@ -88,10 +86,9 @@ function SiteAdd() {
         const error = { lat: validateCoordinates(coord.lat.toString()), lng: validateCoordinates(coord.lng.toString()) }
 
         if (coord.lat && coord.lng && error.lat && error.lng) {
-            dotLayer.current = L.circleMarker([convertToWGS(coord.lat), convertToWGS(coord.lng)], { radius: 5, color: 'red', pane: 'setting' }).addTo(map);
+            dotLayer.current = L.circleMarker([convertToWGS(coord.lat), convertToWGS(coord.lng)], { radius: 15, color: 'red', }).addTo(map);
         }
-
-        setCoordError(error)
+        setCoordError({lat:!error.lat, lng:!error.lng})
 
         return () => {
             if (dotLayer.current) {
@@ -126,8 +123,8 @@ function SiteAdd() {
                         fullWidth />
                 </Content>
                 <Content>
-                    <TextField sx={{ flex: 1 }} label='위도' type={'number'} size="small" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'lat') }}></TextField>
-                    <TextField sx={{ flex: 1 }} label='경도' type={'number'} size="small" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'lng') }} ></TextField>
+                    <TextField sx={{ flex: 1 }} label='위도' type={'number'}  error={coordError.lat} size="small" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'lat') }}></TextField>
+                    <TextField sx={{ flex: 1 }} label='경도' type={'number'}  error={coordError.lng} size="small" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'lng') }} ></TextField>
                 </Content>
                 <Content>
                     <Button color='error' onClick={closeScreen}>취소</Button>

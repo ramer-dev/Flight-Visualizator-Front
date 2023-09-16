@@ -14,29 +14,28 @@ import { authState } from 'common/store/auth'
 import ErrorPage from 'components/common/ErrorPage'
 import AddIcon from '@mui/icons-material/Add'
 import { contentViewFormat, contentFormat, setting } from 'common/store/atom'
-
+import SettingItem from './SettingItem'
+import SiteIcon from '@mui/icons-material/SettingsInputAntenna';
+import RouteIcon from '@mui/icons-material/Timeline';
+import SectorIcon from '@mui/icons-material/Place';
+import FixPointIcon from '@mui/icons-material/RadioButtonChecked';
+import FrequencyIcon from '@mui/icons-material/WifiTethering';
+import AreaIcon from '@mui/icons-material/Map';
 const GridContainer = styled.div`
   display:grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap:20px;
 `
-const Item = styled.div`
-  background-color:#ddd;
-  width:100px;
-  height:100px;
-  border-radius:50%;
-  line-height:100px;
-  text-align:center;
-  cursor:pointer;
-  &:hover {
-    background-color: #5096ff;
-    color:white;
-  }
-`
+
 const StyledFab = styled(Fab)`
     position:absolute;
     bottom:20px;
     right:10px;
+`
+
+const Wrapper = styled.div`
+  background:#fff;
+  z-index:2210;
 `
 
 function Setting() {
@@ -103,14 +102,14 @@ function Setting() {
       {auth.role > 1 ?
         <>
           <GridContainer>
-            <Item onClick={() => { changeState("site") }}>표지소</Item>
-            <Item onClick={() => { changeState("route") }}>항로</Item>
-            <Item onClick={() => { changeState("fixPoint") }}>픽스점</Item>
-            <Item onClick={() => { changeState("frequency") }}>주파수</Item>
-            <Item onClick={() => { changeState("sector") }}>섹터</Item>
-            <Item onClick={() => { changeState("area") }}>구역</Item>
+            <SettingItem onclick={() => { changeState("site") }} text={'표지소'} Icon={SiteIcon} />
+            <SettingItem onclick={() => { changeState("route") }} text={'항로'} Icon={RouteIcon} />
+            <SettingItem onclick={() => { changeState("fixPoint") }} text={'픽스점'} Icon={FixPointIcon} />
+            <SettingItem onclick={() => { changeState("frequency") }} text={'주파수'} Icon={FrequencyIcon} />
+            <SettingItem onclick={() => { changeState("sector") }} text={'섹터'}  Icon={SectorIcon}/>
+            <SettingItem onclick={() => { changeState("area") }} text={'구역'}  Icon={AreaIcon}/>
           </GridContainer>
-          <Divider sx={{ margin: '10px 0' }} />
+          <Divider sx={{ margin: '30px 0' }} />
           <div>
             {selector()}
           </div>

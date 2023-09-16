@@ -9,6 +9,6 @@ export interface FlightListPost {
     userId: string,
     updatedAt?: Date,
     deletedAt?: Date
-    data: FlightResult[]
+    data?: FlightResult[]
     count?:number
   }

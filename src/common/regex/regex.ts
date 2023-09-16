@@ -1,4 +1,4 @@
-export const frequencyRegex = /^[1-3]\d{2}(\.\d{1,3})?$/;
+export const frequencyRegex = /^[1-3]\d{2}(\.\d{0,3})?$/;
 
 export const siteRegex = /^[가-힣]{2,3}$/;
 
