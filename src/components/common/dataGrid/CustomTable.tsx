@@ -48,7 +48,7 @@ declare module '@mui/x-data-grid' {
         search?: boolean;
         submitted?: boolean;
         rows: any[];
-        setLoading: (b : boolean) => void;
+        setLoading: (b: boolean) => void;
         setRows: (rows: any[]) => void;
         setSubmitted: (b: boolean) => void;
         setTitleData: (e: FlightList) => void;
@@ -62,7 +62,7 @@ declare module '@mui/x-data-grid' {
 const Wrapper = styled(Box)(({ theme }) => ({
     minWidth: 10,
     width: '100%',
-    height: 'calc(100vh - 230px)',
+    height: 'calc(100vh - 80px)',
     '& .MuiDataGrid-cell--editable': {
         backgroundColor: 'rgba(80,150,255,0.1)',
     },
@@ -234,9 +234,9 @@ function CustomTable({ edit, search, add }: Props) {
                 return formatInput(value);
             }
         },
-        { field: 'angle', editable: !!edit, flex: .5, type: 'number', headerName: '각도',align:'left', headerAlign:'left' },
-        { field: 'distance', editable: !!edit, flex: .5, type: 'number', headerName: '거리(NM)',align:'left', headerAlign:'left' },
-        { field: 'height', editable: !!edit, flex: 1, type: 'number', headerName: '고도(ft)', align:'left', headerAlign:'left' },
+        { field: 'angle', editable: !!edit, flex: .5, type: 'number', headerName: '각도', align: 'left', headerAlign: 'left' },
+        { field: 'distance', editable: !!edit, flex: .5, type: 'number', headerName: '거리(NM)', align: 'left', headerAlign: 'left' },
+        { field: 'height', editable: !!edit, flex: 1, type: 'number', headerName: '고도(ft)', align: 'left', headerAlign: 'left' },
         { field: 'status', editable: false, flex: 1 },
         { field: 'updatedAt', flex: 1 },
         { field: 'deletedAt', flex: 1 },
@@ -441,9 +441,20 @@ function CustomTable({ edit, search, add }: Props) {
 
         }
         if (titleData) {
-            const fetchData: FlightListPost = { ...titleData, data: editArray }
+            const fetchResultData: FlightResult[] = editArray.map(t => {
+                const angle = t.angle;
+                const distance = t.distance;
+                const siteCoords = siteData.data.filter(a => a.siteName === t.siteName)[0]?.siteCoordinate as LatLngLiteral;
+                const target = Destination(siteCoords, angle, distance)
+                const data = t;
+                delete data.deletedAt;
+                delete data.updatedAt;
+                return { ...data, point: target }
+            })
+            const fetchData: FlightListPost = { ...titleData, data: fetchResultData }
             delete fetchData.deletedAt;
             delete fetchData.updatedAt;
+
             if (add) {
                 delete fetchData.id;
                 postFlightList(fetchData);

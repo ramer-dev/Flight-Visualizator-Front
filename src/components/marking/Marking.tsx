@@ -8,7 +8,7 @@ import MarkingDragDrop from "./MarkingDragDrop";
 import { useGetSite } from "components/hooks/useSite";
 import { useEffect, useRef, useState } from "react";
 import { Destination } from "module/Destination";
-import { LatLngExpression } from "leaflet";
+import { LatLngExpression, LatLngLiteral } from "leaflet";
 import { useMap } from "react-leaflet";
 import React from "react";
 import { useRecoilState } from "recoil";
@@ -21,6 +21,7 @@ import useModal from "components/hooks/useModal";
 import Portal from "module/Portal";
 import CustomModal from "components/common/CustomModal";
 import MarkingPopup from "./MarkingPopup";
+import { convertToWGS } from "module/DMS";
 
 
 const InputWrapper = styled.div`
@@ -62,9 +63,22 @@ export default function Marking() {
     const addBtnRef = useRef<HTMLButtonElement>(null);
     const layerGroup = useRef(L.layerGroup([], { pane: 'marking' }))
     const { isModalOpen, openModal, closeModal } = useModal()
+    const hoverPolyline = useRef<L.Polyline>();
+
+    const siteData = useGetSite();
+
     useEffect(() => {
         const layer = list.map((t: MarkingCardProps, index: number) => L.marker(t.coord!, { icon: divicon(t.level, index), pane: 'marking' })
-            .bindTooltip(MarkingTooltip(t)).bindPopup(MarkingPopup(t), {closeOnClick:false, autoClose:false}))
+            .on('mouseover', () => {
+                const {lat, lng} = t.coord!;
+                const siteCoords = siteData.data.filter(a => a.siteName === t.site)[0]?.siteCoordinate as LatLngLiteral;
+                hoverPolyline.current = L.polyline([[lat, lng], [convertToWGS(siteCoords.lat), convertToWGS(siteCoords.lng)]], { pane: 'marking', color: 'red' }).addTo(map);
+            }).on('mouseout', () => {
+                if (hoverPolyline.current) {
+                    hoverPolyline.current.remove();
+                }
+            })
+            .bindTooltip(MarkingTooltip(t)).bindPopup(MarkingPopup(t), { closeOnClick: false, autoClose: false }))
         const instance = layerGroup.current
 
         instance.clearLayers()
@@ -132,7 +146,6 @@ export default function Marking() {
         checked: color === item,
         onChange: handleChange,
         value: item,
-        name: 'color-radio-button-demo',
         inputProps: { 'aria-label': item },
     });
 
@@ -236,7 +249,7 @@ export default function Marking() {
 
             </DragDropContext>
             <Portal>
-                <CustomModal isOpen={isModalOpen} title="마킹" message="내용을 입력해주세요." close={closeModal}/>
+                <CustomModal isOpen={isModalOpen} title="마킹" message="내용을 입력해주세요." close={closeModal} />
             </Portal>
         </div >
     )

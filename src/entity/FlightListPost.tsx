@@ -1,4 +1,5 @@
 import { FlightResult } from "common/type/FlightType"
+import { LatLngLiteral } from "leaflet"
 
 export interface FlightListPost {
     id?: number,
@@ -11,4 +12,5 @@ export interface FlightListPost {
     deletedAt?: Date
     data?: FlightResult[]
     count?:number
+    point?:LatLngLiteral;
   }

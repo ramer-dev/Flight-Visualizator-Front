@@ -52,8 +52,8 @@ export default function EditControlFC({geojson, setGeojson} : Props) {
           circle: true,
           polyline: true,
           polygon: true,
-          marker: true,
-          circlemarker: false,
+          marker: false,
+          circlemarker: true,
         }}
       />
     </FeatureGroup>
