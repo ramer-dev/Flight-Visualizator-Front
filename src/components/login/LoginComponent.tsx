@@ -3,7 +3,6 @@ import React, { useEffect } from 'react'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 import { authState } from 'common/store/auth'
 import { AuthType } from 'common/type/AuthType'
-import sha256 from 'crypto-js/sha256'
 import { getLogin, getTestCookie } from 'components/hooks/useLogin'
 import useModal from 'components/hooks/useModal'
 import Portal from 'module/Portal'
@@ -39,18 +38,9 @@ function LoginComponent({ open, closeLogin }: Props) {
         setPayload(newItem)
     }
 
-    const loginCheck = async () => {
-        // const loginValue: AuthType = {
-        //     id: 'test',
-        //     username: 'test',
-        //     role: 1
-        // }
-        // setLogin(loginValue)
-        const password = payload.pw + process.env.REACT_APP_SECRET_KEY;
+    const loginCheck = async () => { 
 
-        const hashedPW = sha256(password).toString();
-        const loginResult = await getLogin(payload.id, hashedPW)
-        // console.log(loginResult)
+        const loginResult = await getLogin(payload.id, payload.pw)
         if (loginResult) {
             openModal()
             const item: AuthType = {
