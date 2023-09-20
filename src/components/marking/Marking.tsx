@@ -68,6 +68,8 @@ export default function Marking() {
     const siteData = useGetSite();
 
     useEffect(() => {
+        if(hoverPolyline.current) hoverPolyline.current.remove();
+
         const layer = list.map((t: MarkingCardProps, index: number) => L.marker(t.coord!, { icon: divicon(t.level, index), pane: 'marking' })
             .on('mouseover', () => {
                 const {lat, lng} = t.coord!;
