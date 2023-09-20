@@ -279,7 +279,7 @@ function CustomTable({ edit, search, add }: Props) {
                 const target = Destination(siteCoords, angle, distance);
                 layer.push(L.marker(target as LatLngLiteral, {
                     pane: 'pin',
-                    icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby), idx + 1)
+                    icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby), idx)
                 }).on('mouseover', () => {
                     hoverPolyline.current = L.polyline([[convertToWGS(siteCoords.lat), convertToWGS(siteCoords.lng)], target!], { pane: 'pin', color: 'red' }).addTo(map);
                 }).on('mouseout', () => {
@@ -287,7 +287,7 @@ function CustomTable({ edit, search, add }: Props) {
                         hoverPolyline.current.remove();
                     }
                 })
-                    .bindTooltip(CustomTableTooltip({ siteName: obj[i].siteName, distance, angle: angle, index: idx + 1 }))
+                    .bindTooltip(CustomTableTooltip({ siteName: obj[i].siteName, distance, angle: angle, index: idx }))
                 )
             }
 
