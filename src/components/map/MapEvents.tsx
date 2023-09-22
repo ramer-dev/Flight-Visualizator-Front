@@ -40,7 +40,6 @@ const MapEvents = ({ isOpen, setOpen, setZoom }: Props) => {
             if (selectedMenu === 'range-bearing') {
                 const angle = L.GeometryUtil.angle(map, position, e.latlng).toFixed(1)
                 const distance = (map.distance(position, e.latlng) * 0.000539957).toFixed(1)
-
                 if (currLine.current) currLine.current.remove();
                 currLine.current = L.polyline([position, e.latlng], { color: 'red', pane: 'range-bearing' }).addTo(map);
 
@@ -51,6 +50,7 @@ const MapEvents = ({ isOpen, setOpen, setZoom }: Props) => {
 
         click(e) {
             if (selectedMenu === 'range-bearing') {
+                console.log('Disable range-bearing')
                 setSelectedMenu(null)
             } else {
             }
@@ -68,7 +68,7 @@ const MapEvents = ({ isOpen, setOpen, setZoom }: Props) => {
         },
 
         popupclose(e: L.PopupEvent) {
-            if (e.popup.options.className === 'test') setTimeout(() => {setSelectedMenu(null)}, 200)
+            if (e.popup.options.className === 'test' && selectedMenu === 'analyze') setTimeout(() => {setSelectedMenu(null)}, 200)
         }
 
     })
