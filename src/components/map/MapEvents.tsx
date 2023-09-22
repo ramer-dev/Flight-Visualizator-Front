@@ -53,6 +53,7 @@ const MapEvents = ({ isOpen, setOpen, setZoom }: Props) => {
                 console.log('Disable range-bearing')
                 setSelectedMenu(null)
             } else {
+                if (currLine.current) currLine.current.remove();
             }
 
             if (marking.selection) {
