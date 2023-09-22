@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
-import { DataGrid, GridCellModes, GridCellModesModel, GridCellParams, GridColDef, GridFilterModel, GridPreProcessEditCellProps, GridRowId, GridSortModel, GridValidRowModel, useGridApiRef } from '@mui/x-data-grid'
-import { FlightList, FlightResult, RowType } from 'common/type/FlightType'
+import { DataGrid, GridCellModes, GridCellModesModel, GridCellParams, GridColDef, GridFilterModel, GridPreProcessEditCellProps, GridRenderCellParams, GridRowId, GridSortModel, GridValidRowModel, useGridApiRef } from '@mui/x-data-grid'
+import { FlightList, FlightResult, RowFlightResultType } from 'common/type/FlightType'
 import styled from '@emotion/styled'
 import { Box } from '@mui/material'
 import CustomToolbar from './CustomToolbar'
@@ -142,6 +142,17 @@ function CustomTable({ edit, search, add }: Props) {
         const validated = scoreRegex.test(String(params.props.value));
         return { ...params.props, error: !validated }
     }
+
+    // const setRowNo = (params : GridRenderCellParams) => {
+    //     setRows((prevRows) => {
+
+    //         prevRows.map(t => t.id)
+    //         const idx = apiRef.current.getRowIndexRelativeToVisibleRows(params.id) || apiRef.current.getAllRowIds().indexOf(params.id);
+    //         const updatedRows = [...prevRows];
+    //         updatedRows[idx].no = idx + 1;
+    //         return updatedRows
+    //     })
+    // }
     const stateRefresh = () => {
         if (search || add) {
             setFlightDataId(undefined)
@@ -162,7 +173,7 @@ function CustomTable({ edit, search, add }: Props) {
 
 
         if (data?.data?.items) {
-            setRows(data.data.items.map((t) => ({ ...t })));
+            setRows(data.data.items.map((t, i) => ({ ...t, no: i + 1 })));
             if (auth.role >= 2) {
                 const layer = data.data.items.filter(t => t.point === null)
                 for (let item of layer) {
@@ -181,7 +192,13 @@ function CustomTable({ edit, search, add }: Props) {
 
     const columns: GridColDef[] = [
         { field: 'id', editable: false, flex: .5 },
-        { field: 'no', disableExport: true, editable: false, flex: .5, type: 'number', sortable: false, valueGetter: (params) => apiRef.current.getRowIndexRelativeToVisibleRows(params.id) + 1 || apiRef.current.getAllRowIds().indexOf(params.id) + 1, headerName: 'No' },
+        {
+            field: 'no', disableExport: true, editable: false, flex: .5, type: 'number', sortable: false,
+            renderCell: (params: GridRenderCellParams) => {
+                const idx = apiRef.current.getRowIndexRelativeToVisibleRows(params.id) || apiRef.current.getAllRowIds().indexOf(params.id);
+                return idx + 1
+            }, headerName: 'No'
+        },
         {
             field: 'siteName', editable: !!edit, flex: 1, headerName: '표지소', type: 'string',
             preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
@@ -234,9 +251,36 @@ function CustomTable({ edit, search, add }: Props) {
                 return formatInput(value);
             }
         },
-        { field: 'angle', editable: !!edit, flex: .5, type: 'number', headerName: '각도', align: 'left', headerAlign: 'left' },
-        { field: 'distance', editable: !!edit, flex: .5, type: 'number', headerName: '거리(NM)', align: 'left', headerAlign: 'left' },
-        { field: 'height', editable: !!edit, flex: 1, type: 'number', headerName: '고도(ft)', align: 'left', headerAlign: 'left' },
+        {
+            field: 'angle', editable: !!edit, flex: .5, type: 'number', headerName: '각도', align: 'left', headerAlign: 'left',
+            preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+                if (params.hasChanged) {
+                    const hasError = Number(params.props.value) >= 360 || Number(params.props.value) < 0
+                    return { ...params.props, error: hasError }
+                }
+                return { ...params.props }
+            }
+        },
+        {
+            field: 'distance', editable: !!edit, flex: .5, type: 'number', headerName: '거리(NM)', align: 'left', headerAlign: 'left',
+            preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+                if (params.hasChanged) {
+                    const hasError = Number(params.props.value) >= 500 || Number(params.props.value) < 0
+                    return { ...params.props, error: hasError }
+                }
+                return { ...params.props }
+            }
+        },
+        {
+            field: 'height', editable: !!edit, flex: 1, type: 'number', headerName: '고도(ft)', align: 'left', headerAlign: 'left',
+            preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+                if (params.hasChanged) {
+                    const hasError = Number(params.props.value) >= 70000 || Number(params.props.value) < 0
+                    return { ...params.props, error: hasError }
+                }
+                return { ...params.props }
+            }
+        },
         { field: 'status', editable: false, flex: 1 },
         { field: 'updatedAt', flex: 1 },
         { field: 'deletedAt', flex: 1 },
@@ -253,6 +297,14 @@ function CustomTable({ edit, search, add }: Props) {
         'point': false,
         // 'action': !!edit
     }
+
+    useEffect(() => {
+        return () => {
+            if (layerGroup.current) layerGroup.current.clearLayers();
+            if (routePolyline.current) routePolyline.current.remove();
+        }
+    }, [])
+
     useEffect(() => {
         stateRefresh()
         if (data) {
@@ -279,7 +331,7 @@ function CustomTable({ edit, search, add }: Props) {
                 const target = Destination(siteCoords, angle, distance);
                 layer.push(L.marker(target as LatLngLiteral, {
                     pane: 'pin',
-                    icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby), idx)
+                    icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby), obj[i].no - 1)
                 }).on('mouseover', () => {
                     hoverPolyline.current = L.polyline([[convertToWGS(siteCoords.lat), convertToWGS(siteCoords.lng)], target!], { pane: 'pin', color: 'red' }).addTo(map);
                 }).on('mouseout', () => {
@@ -287,7 +339,7 @@ function CustomTable({ edit, search, add }: Props) {
                         hoverPolyline.current.remove();
                     }
                 })
-                    .bindTooltip(CustomTableTooltip({ siteName: obj[i].siteName, distance, angle: angle, index: idx }))
+                    .bindTooltip(CustomTableTooltip({ siteName: obj[i].siteName, distance, angle: angle, index: obj[i].no - 1 }))
                 )
             }
 
@@ -304,10 +356,9 @@ function CustomTable({ edit, search, add }: Props) {
         return () => {
             setCellModesModel({});
             instance.clearLayers();
-            if (routePolyline.current) routePolyline.current.remove();
         }
 
-    }, [checkboxSelection, map, siteData.data])
+    }, [checkboxSelection, siteData.data])
 
     const handleCellClick = (params: GridCellParams, event: React.MouseEvent) => {
 
@@ -489,7 +540,7 @@ function CustomTable({ edit, search, add }: Props) {
             const result = await getRouteFromFile(filename)
             const coords = result.route.map(t => t.coords)
 
-            routePolyline.current = L.polyline(coords, { pane: 'pin', color: 'red' }).addTo(map);
+            routePolyline.current = L.polyline(coords, { color: 'red', pane: 'route' }).addTo(map);
         }
     }
 

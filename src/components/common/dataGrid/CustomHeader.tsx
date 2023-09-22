@@ -5,7 +5,7 @@ import { MuiFileInput } from 'mui-file-input'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { FlightList, RowType } from 'common/type/FlightType';
+import { FlightList, RowFlightResultType } from 'common/type/FlightType';
 import dayjs from 'dayjs';
 import { title } from 'process';
 import CustomFileInput from '../CustomFileInput';
@@ -28,8 +28,8 @@ interface Props {
     edit?: boolean;
     submitted: boolean;
     setSubmitted: (b: boolean) => void;
-    rows: RowType[];
-    setRows: (rows: RowType[]) => void;
+    rows: RowFlightResultType[];
+    setRows: (rows: RowFlightResultType[]) => void;
     setLoading: (b: boolean) => void;
 }
 

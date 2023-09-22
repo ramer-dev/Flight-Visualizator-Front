@@ -8,7 +8,7 @@ import PrintIcon from '@mui/icons-material/Print';
 import PrintDisabledIcon from '@mui/icons-material/PrintDisabled';
 import AddchartIcon from '@mui/icons-material/Addchart';
 import CustomHeader from './CustomHeader';
-import { FlightList, RowType } from 'common/type/FlightType';
+import { FlightList, RowFlightResultType } from 'common/type/FlightType';
 
 interface Props {
   titleData: FlightList;
@@ -17,10 +17,10 @@ interface Props {
   edit?: boolean;
   search?: boolean;
   submitted: boolean;
-  rows: RowType[]; 
+  rows: RowFlightResultType[]; 
   loading: boolean;
   setLoading: (b: boolean) => void;
-  setRows: (rows: RowType[]) => void;
+  setRows: (rows: RowFlightResultType[]) => void;
   setSubmitted: (item: boolean) => void;
   setTitleData: (item: FlightList) => void;
   handleAddRow: (e: React.MouseEvent) => void;
