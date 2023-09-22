@@ -94,7 +94,6 @@ export default function Marking() {
         }
     }, [list, map])
 
-    useEffect(() => {console.log(error)}, [error])
     const handleSiteChange = (e: SelectChangeEvent) => {
         const value = e.target.value
         setSite(value)
