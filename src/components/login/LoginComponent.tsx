@@ -8,6 +8,7 @@ import useModal from 'components/hooks/useModal'
 import Portal from 'module/Portal'
 import styled from '@emotion/styled'
 import CustomModal from 'components/common/CustomModal'
+import Register from './Register'
 interface Props {
     open: boolean,
     closeLogin: () => void,
@@ -27,10 +28,15 @@ const Title = styled.div`
     margin:20px;
 `
 
+const Wrapper = styled.div`
+    display:flex;
+    gap: 10px;
+`
+
 function LoginComponent({ open, closeLogin }: Props) {
     const { isModalOpen, openModal, closeModal } = useModal();
     const [loginState, setLoginState] = useRecoilState(authState)
-
+    const [isRegisterOpen, setRegisterOpen] = React.useState(false);
     const [payload, setPayload] = React.useState({ id: '', pw: '' })
 
     const handleInputChange = (e: any, id: "id" | "pw") => {
@@ -62,6 +68,10 @@ function LoginComponent({ open, closeLogin }: Props) {
         }
     }
 
+    const handleRegisterClick = () => {
+        setRegisterOpen(true);
+    }
+
     return (
         <Dialog sx={{ minWidth: 350, overflow: 'hidden' }} maxWidth={'md'} open={open} onClose={closeLogin} onKeyDown={(e: React.KeyboardEvent) => handleKeyPress(e)} >
             {isModalOpen ? loginState.role ? (
@@ -74,6 +84,7 @@ function LoginComponent({ open, closeLogin }: Props) {
                 </Portal>
                 : null
             }
+            <Register isOpen={isRegisterOpen} setIsOpen={setRegisterOpen}/>
             <Box sx={{ width: 900, height: 600 }}>
                 <TextWrapper>
                     <Title>로그인</Title>
@@ -81,6 +92,11 @@ function LoginComponent({ open, closeLogin }: Props) {
                     <TextField label="PW" type="password" onChange={(e) => { handleInputChange(e, 'pw') }} />
 
                     <Button variant='outlined' onClick={() => { loginCheck() }}>로그인</Button>
+                    
+                    <Wrapper>
+                    <Button onClick={() => {   }}>비밀번호 찾기</Button>
+                    <Button onClick={handleRegisterClick}>회원가입</Button>
+                    </Wrapper>
                 </TextWrapper>
 
             </Box>
