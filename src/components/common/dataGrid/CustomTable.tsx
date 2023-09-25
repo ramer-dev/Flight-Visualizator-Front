@@ -143,10 +143,12 @@ function CustomTable({ edit, search, add }: Props) {
         return { ...params.props, error: !validated }
     }
 
-    // const setRowNo = (params : GridRenderCellParams) => {
+    // const setRowNo = () => {
     //     setRows((prevRows) => {
-
-    //         prevRows.map(t => t.id)
+    //         prevRows.map(t => t.id as GridRowId).forEach(t => { 
+    //             const params = apiRef.current.getCellParams(t, 'no');
+                
+    //         })
     //         const idx = apiRef.current.getRowIndexRelativeToVisibleRows(params.id) || apiRef.current.getAllRowIds().indexOf(params.id);
     //         const updatedRows = [...prevRows];
     //         updatedRows[idx].no = idx + 1;
@@ -195,7 +197,7 @@ function CustomTable({ edit, search, add }: Props) {
         {
             field: 'no', disableExport: true, editable: false, flex: .5, type: 'number', sortable: false,
             renderCell: (params: GridRenderCellParams) => {
-                const idx = apiRef.current.getRowIndexRelativeToVisibleRows(params.id) || apiRef.current.getAllRowIds().indexOf(params.id);
+                const idx = apiRef.current.getAllRowIds().indexOf(params.id) || apiRef.current.getRowIndexRelativeToVisibleRows(params.id);
                 return idx + 1
             }, headerName: 'No'
         },
@@ -608,7 +610,7 @@ function CustomTable({ edit, search, add }: Props) {
                 paginationModel={paginationModel}
                 onPaginationModelChange={handlePaginationModelChange}
                 sortModel={sortModel}
-                onSortModelChange={(newSortModel) => setSortModel(newSortModel)}
+                onSortModelChange={(newSortModel) => { setSortModel(newSortModel) }}
                 filterModel={filterModel}
                 onFilterModelChange={(newFilterModel) => setFilterModel(newFilterModel)}
                 checkboxSelection
