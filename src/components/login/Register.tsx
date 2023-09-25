@@ -95,8 +95,8 @@ function Register({ isOpen, setIsOpen }: Props) {
         const digit = accountData.digit !== accountData.digitConfirm
 
         // 디바운스 적용 필요
-        if (accountData.id.length === 5) checkId(accountData.id).then(t => setAccountError((prev) => { return { ...prev, id: !t } }))
-        checkName(accountData.username).then(t => setAccountError((prev) => { return { ...prev, username: !t } }))
+        if (accountData.id.length === 5) checkId(accountData.id).then(t => setAccountError((prev) => { return { ...prev, id: t } }))
+        checkName(accountData.username).then(t => setAccountError((prev) => { return { ...prev, username: t } }))
         setAccountError((prev) => { return { ...prev, digitConfirm: digit } })
         setAccountError((prev) => { return { ...prev, pwConfirm: pw } })
         setEnable(bool)
