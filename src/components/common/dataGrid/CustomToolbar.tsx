@@ -39,7 +39,8 @@ function CustomToolbar({ titleData, count, search, edit, submitted, rows, setRow
 
 
   const csvOptions = React.useRef({
-    fileName: ''
+    fileName: '',
+    utf8WithBom:true
   })
 
   React.useEffect(() => {
