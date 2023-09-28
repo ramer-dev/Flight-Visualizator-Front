@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 import { authState } from 'common/store/auth'
 import { AuthType } from 'common/type/AuthType'
-import { getLogin, getTestCookie } from 'components/hooks/useLogin'
+import { getLogin } from 'common/service/loginService'
 import useModal from 'components/hooks/useModal'
 import Portal from 'module/Portal'
 import styled from '@emotion/styled'
@@ -46,7 +46,7 @@ function LoginComponent({ open, closeLogin }: Props) {
         setPayload(newItem)
     }
 
-    const loginCheck = async () => { 
+    const loginCheck = async () => {
 
         const loginResult = await getLogin(payload.id, payload.pw)
         if (loginResult) {
@@ -62,6 +62,12 @@ function LoginComponent({ open, closeLogin }: Props) {
             setLoginState({ id: '', username: '', role: 0 })
 
         }
+    }
+
+    const numericInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const numberRegex = /[^0-9]/g;
+        const result = e.target.value.replace(numberRegex, "")
+        e.target.value = result
     }
 
     const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -90,19 +96,19 @@ function LoginComponent({ open, closeLogin }: Props) {
                 </Portal>
                 : null
             }
-            <Register isOpen={isRegisterOpen} setIsOpen={setRegisterOpen}/>
-            <PWFinder isOpen={isPWFindOpen} setIsOpen={setPWFindOpen}/>
+            { isRegisterOpen && <Register isOpen={isRegisterOpen} setIsOpen={setRegisterOpen} />}
+            { isPWFindOpen && <PWFinder isOpen={isPWFindOpen} setIsOpen={setPWFindOpen} />}
             <Box sx={{ width: 900, height: 600 }}>
                 <TextWrapper>
                     <Title>로그인</Title>
-                    <TextField label="ID" onChange={(e) => { handleInputChange(e, 'id') }} />
+                    <TextField label="사번" onChange={(e) => { handleInputChange(e, 'id') }} onInput={numericInput} />
                     <TextField label="PW" type="password" onChange={(e) => { handleInputChange(e, 'pw') }} />
 
                     <Button variant='outlined' onClick={() => { loginCheck() }}>로그인</Button>
-                    
+
                     <Wrapper>
-                    <Button onClick={handlePWFindClick}>비밀번호 찾기</Button>
-                    <Button onClick={handleRegisterClick}>회원가입</Button>
+                        <Button onClick={handlePWFindClick}>비밀번호 찾기</Button>
+                        <Button onClick={handleRegisterClick}>회원가입</Button>
                     </Wrapper>
                 </TextWrapper>
 

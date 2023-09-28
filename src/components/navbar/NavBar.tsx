@@ -17,7 +17,7 @@ import NavEtcItem from "./NavEtcItem";
 import L from 'leaflet';
 import LoginComponent from "components/login/LoginComponent";
 import { authState } from "common/store/auth";
-import { postLogout } from "components/hooks/useLogin";
+import { postLogout } from "common/service/loginService";
 import { AuthType } from "common/type/AuthType";
 import { AnimatePresence, motion } from "framer-motion";
 import useConfirm from "components/hooks/useConfirm";
