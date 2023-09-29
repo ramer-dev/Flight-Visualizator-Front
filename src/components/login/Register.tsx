@@ -123,7 +123,7 @@ function Register({ isOpen, setIsOpen }: Props) {
 
                     </Box>
                 </Box>
-            </Box>
+            </Box> 
         </Dialog>
     )
 }

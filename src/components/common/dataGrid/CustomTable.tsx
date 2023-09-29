@@ -197,7 +197,7 @@ function CustomTable({ edit, search, add }: Props) {
         {
             field: 'no', disableExport: true, editable: false, flex: .5, type: 'number', sortable: false,
             renderCell: (params: GridRenderCellParams) => {
-                const idx = apiRef.current.getAllRowIds().indexOf(params.id) || apiRef.current.getRowIndexRelativeToVisibleRows(params.id);
+                const idx = apiRef.current.getAllRowIds().indexOf(params.id) || (paginationModel.pageSize * paginationModel.page) + apiRef.current.getRowIndexRelativeToVisibleRows(params.id);
                 return idx + 1
             }, headerName: 'No'
         },
@@ -305,7 +305,7 @@ function CustomTable({ edit, search, add }: Props) {
             if (layerGroup.current) layerGroup.current.clearLayers();
             if (routePolyline.current) routePolyline.current.remove();
         }
-    }, [])
+    }, [flightDataId])
 
     useEffect(() => {
         stateRefresh()
