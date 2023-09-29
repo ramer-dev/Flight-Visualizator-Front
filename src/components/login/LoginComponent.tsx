@@ -34,13 +34,21 @@ const Wrapper = styled.div`
     gap: 10px;
 `
 
+const Canvas = styled.canvas`
+    background:#ddd;
+    position:absolute;
+    width:100%;
+    height:100%;
+`
+
 function LoginComponent({ open, closeLogin }: Props) {
     const { isModalOpen, openModal, closeModal } = useModal();
     const [loginState, setLoginState] = useRecoilState(authState)
     const [isRegisterOpen, setRegisterOpen] = React.useState(false);
     const [isPWFindOpen, setPWFindOpen] = React.useState(false);
     const [payload, setPayload] = React.useState({ id: '', pw: '' })
-
+    const canvasRef = React.useRef<HTMLCanvasElement>(null);
+    const dialogRef = React.useRef<HTMLDivElement>(null);
     const handleInputChange = (e: any, id: "id" | "pw") => {
         const newItem = { ...payload, [id]: e.target.value }
         setPayload(newItem)
@@ -84,6 +92,51 @@ function LoginComponent({ open, closeLogin }: Props) {
         setPWFindOpen(true);
     }
 
+    const handleCanvasResize = () => {
+        const canvas = canvasRef.current as HTMLCanvasElement;
+        if (dialogRef.current) {
+            canvas.width = dialogRef.current.offsetWidth
+            canvas.height = dialogRef.current.offsetHeight
+        }
+    };
+
+    React.useEffect(() => {
+        if (canvasRef.current) {
+            const canvas = canvasRef.current;
+            const context = canvasRef.current.getContext('2d') as CanvasRenderingContext2D;
+
+            window.addEventListener('resize', handleCanvasResize);
+            handleCanvasResize();
+
+            if (dialogRef.current) {
+                canvas.width = dialogRef.current.offsetWidth
+                canvas.height = dialogRef.current.offsetHeight
+            }
+            let x = canvas.width / 2;
+            let y = canvas.height - 30;
+            
+            const cloud_center = [100, 200]
+            const dx = 2;
+            const dy = -2;
+
+            function draw() {
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.beginPath();
+                context.arc(cloud_center[0], cloud_center[1], 20, 0, Math.PI * 2);
+                context.fillStyle = 'white';
+                context.fill();
+                context.closePath()
+            }
+
+            const interval = setInterval(draw, 10)
+
+            return () => {
+                window.removeEventListener('resize', handleCanvasResize)
+                clearInterval(interval)
+            }
+        }
+    }, [canvasRef])
+
     return (
         <Dialog sx={{ minWidth: 350, overflow: 'hidden' }} maxWidth={'md'} open={open} onClose={closeLogin} onKeyDown={(e: React.KeyboardEvent) => handleKeyPress(e)} >
             {isModalOpen ? loginState.role ? (
@@ -96,9 +149,10 @@ function LoginComponent({ open, closeLogin }: Props) {
                 </Portal>
                 : null
             }
-            { isRegisterOpen && <Register isOpen={isRegisterOpen} setIsOpen={setRegisterOpen} />}
-            { isPWFindOpen && <PWFinder isOpen={isPWFindOpen} setIsOpen={setPWFindOpen} />}
-            <Box sx={{ width: 900, height: 600 }}>
+            {isRegisterOpen && <Register isOpen={isRegisterOpen} setIsOpen={setRegisterOpen} />}
+            {isPWFindOpen && <PWFinder isOpen={isPWFindOpen} setIsOpen={setPWFindOpen} />}
+            <Box ref={dialogRef} sx={{ width: 900, height: 600, position:'relative' }}>
+                <Canvas ref={canvasRef} />
                 <TextWrapper>
                     <Title>로그인</Title>
                     <TextField label="사번" onChange={(e) => { handleInputChange(e, 'id') }} onInput={numericInput} />
@@ -111,7 +165,6 @@ function LoginComponent({ open, closeLogin }: Props) {
                         <Button onClick={handleRegisterClick}>회원가입</Button>
                     </Wrapper>
                 </TextWrapper>
-
             </Box>
 
         </Dialog>
