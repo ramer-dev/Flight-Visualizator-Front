@@ -1,10 +1,10 @@
 import styled from '@emotion/styled'
+import { motion } from 'framer-motion'
 import React from 'react'
+import ReactDom from 'react-dom'
 import ReactMarkdown from 'react-markdown'
 
-const MarkdownStyle = styled.div`
-    font-size: 1rem;
-    line-height: 2.5rem;
+const MarkdownStyle = styled(motion.div)`
 `
 
 const InlineCode = styled.span`
@@ -13,8 +13,8 @@ const InlineCode = styled.span`
     border-radius:3px;
 `
 
-const InlineCodeBlock = ( children : {value: React.ReactNode}) => {
-    return <InlineCode>{children.value}</InlineCode>
+const InlineCodeBlock = (children: { value: React.ReactNode }) => {
+  return <InlineCode>{children.value}</InlineCode>
 }
 
 const test = `
@@ -24,11 +24,22 @@ const test = `
 \`배경색\`
 `
 
+interface Props {
+  context?: string
+}
 
-function MarkdownRenderer() {
+// const rendering = (context: string, ref: React.RefObject<HTMLDivElement>) => {
+//   if (ref.current) {
+//     // eslint-disable-next-line
+//     return <ReactMarkdown>{context}</ReactMarkdown>
+//   }
+// }
+
+function MarkdownRenderer({ context }: Props) {
+
   return (
-    <MarkdownStyle>
-        
+    <MarkdownStyle initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} >
+      <ReactMarkdown>{context || ''}</ReactMarkdown>
     </MarkdownStyle>
   )
 }
