@@ -20,10 +20,8 @@ function FlightAdd() {
         <Container >
             <ScreenTitle text={"비행검사 추가"} />
             {/* {<TableViewer data={data} />} */}
-            <Wrapper>
                 <CustomTable edit add />
 
-            </Wrapper>
         </Container>
         <NavCloseButton contentSize={['MID', 'FULLSCREEN']} />
         </>
