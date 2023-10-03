@@ -1,15 +1,18 @@
 import styled from '@emotion/styled'
-import { Autocomplete, Box, Button, CircularProgress, TextField, Typography } from '@mui/material' 
+import { Autocomplete, Box, Button, CircularProgress, TextField, Typography } from '@mui/material'
 import { deleteSectorData, patchSectorData } from 'common/service/sectorService'
-import { contentFormat, contentViewFormat, setting } from 'common/store/atom' 
+import { contentFormat, contentViewFormat, setting } from 'common/store/atom'
+import CustomModal from 'components/common/CustomModal'
 import ErrorPage from 'components/common/ErrorPage'
 import ScreenTitle from 'components/common/ScreenTitle'
 import { useGetArea } from 'components/hooks/useArea'
+import useModal from 'components/hooks/useModal'
 import NavCloseButton from 'components/navbar/NavCloseButton'
 import { SectorDTO } from 'dto/sectorDTO'
 import L from 'leaflet'
 import { LatLngLiteral } from 'leaflet'
 import { convertToWGS } from 'module/DMS'
+import Portal from 'module/Portal'
 import { validateCoordinates } from 'module/validationCoordinate'
 import React from 'react'
 import { useMap } from 'react-leaflet'
@@ -55,13 +58,22 @@ export default function SectorEdit() {
     const [name, setName] = React.useState('');
     const [area, setArea] = React.useState<AreaLabelType | null>(null)
     const [points, setPoints] = React.useState<LatLngLiteral[] | null>(null)
-    const [coordError, setCoordError] = React.useState<{lat:boolean,lng:boolean}[]>([])
+    const [coordError, setCoordError] = React.useState<{ lat: boolean, lng: boolean }[]>([])
     const nameRef = React.useRef<HTMLInputElement>();
     const map = useMap();
     const polygonLayer = React.useRef<L.Polygon>();
+    const [modalContext, setModalContext] = React.useState<{ title: string, message: string, close?: () => void }>({ title: '에러 발생', message: '알 수 없는 오류' });
+    const { isModalOpen, openModal, closeModal } = useModal()
+
+    function alertModal(open: () => void, title: string, message: string, close?: () => void) {
+        setModalContext({ title, message, close })
+        open()
+    }
+
     const closeScreen = () => {
         setContentView('NONE')
         setContent('NONE')
+        closeModal()
     }
 
     const handleSubmit = async () => {
@@ -72,10 +84,14 @@ export default function SectorEdit() {
                 sectorAreaId: area.id
             }
             try {
+                if(body.sectorName && body.sectorData.every(t => t.lat && t.lng)){
                 await patchSectorData(settingState.data.id, body);
-                closeScreen()
+                alertModal(openModal, '섹터 수정 성공', `[ ${body.sectorName} ]\n섹터 수정에 성공하였습니다.`, closeScreen)
+                } else {
+                    throw new Error('BAD REQUEST')
+                }
             } catch (e: any) {
-                console.error(e)
+                alertModal(openModal, '섹터 수정 실패', `섹터 수정에 실패하였습니다.`, closeModal)
             }
         }
     }
@@ -111,9 +127,9 @@ export default function SectorEdit() {
     const handleDelete = async () => {
         try {
             await deleteSectorData(settingState.data.id);
-            closeScreen()
+            alertModal(openModal, '섹터 삭제 성공', `섹터 삭제에 성공하였습니다.`, closeScreen)
         } catch (e) {
-            console.error(e)
+            alertModal(openModal, '섹터 삭제 실패', `섹터 삭제에 실패하였습니다.`, closeModal)
         }
     }
 
@@ -166,6 +182,9 @@ export default function SectorEdit() {
 
     return (
         <Container>
+            <Portal>
+                <CustomModal isOpen={isModalOpen} title={modalContext.title} message={modalContext.message} close={modalContext.close} />
+            </Portal>
             <ScreenTitle text={'섹터 수정'} />
             <Content>
                 <TextField label="섹터 이름" size="small" inputRef={nameRef} sx={{ flex: 1 }} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleNameChange(e) }} />

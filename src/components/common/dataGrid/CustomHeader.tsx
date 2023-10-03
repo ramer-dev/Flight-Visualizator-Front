@@ -86,10 +86,13 @@ function CustomHeader({ rows, setRows, titleData, setTitleData, edit, submitted,
                         rxstby: item.rxstby,
                     }
                 })
-                setRows([...rows, ...newRows])
+                // setRows([...rows, ...newRows])
+                for (const row of newRows) {
+                    apiRef.current.updateRows([row])
+                }
                 setLoading(false);
             }
-            ).catch(e => {console.error(e); setLoading(false);})
+            ).catch(e => { console.error(e); setLoading(false); })
 
         }
     }, [ocrFile])

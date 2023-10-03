@@ -2,7 +2,10 @@ import styled from '@emotion/styled';
 import { Box, Button, Dialog, Divider, TextField, Typography } from '@mui/material'
 import { passwordRegex } from 'common/regex/regex';
 import { FinderDataType, findPW, setNewPW, SetterDataType } from 'common/service/loginService';
+import CustomModal from 'components/common/CustomModal';
+import useModal from 'components/hooks/useModal';
 import { AnimatePresence, motion } from 'framer-motion';
+import Portal from 'module/Portal';
 import React from 'react'
 interface Props {
     isOpen: boolean,
@@ -29,9 +32,28 @@ function PWFinder({ isOpen, setIsOpen }: Props) {
     const [enabled, setEnabled] = React.useState(false);
     const [pwEnabled, setPwEnabled] = React.useState(false);
     const [pwError, setPwError] = React.useState({ pw: false, confirm: false })
+    const [modalContext, setModalContext] = React.useState<{ title: string, message: string, close?: () => void }>({ title: '에러 발생', message: '알 수 없는 오류' });
+    const { isModalOpen, openModal, closeModal } = useModal()
+
+    const handleKeyPress = (e: React.KeyboardEvent, tp: "first" | "second") => {
+        e.stopPropagation()
+        if (e.key === 'Enter') {
+            if (tp === 'first') {
+                changeContext()
+            } else if (tp === 'second') {
+                chnageNewPW()
+            }
+        }
+    }
+
+    function alertModal(open: () => void, title: string, message: string, close?: () => void) {
+        setModalContext({ title, message, close })
+        open()
+    }
     const close = () => {
         setIsOpen(false);
         setVerified(false);
+        closeModal()
     }
 
     const numericInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,18 +75,17 @@ function PWFinder({ isOpen, setIsOpen }: Props) {
         if (enabled) {
             const res = await findPW(finderData);
             if (res?.data) setVerified(true)
-            else alert('회원정보를 찾을 수 없습니다.')
+            else alertModal(openModal, '비밀번호 찾기 에러', '회원정보를 찾을 수 없습니다.', closeModal)
         }
     }
 
     const chnageNewPW = async () => {
-        if (pwEnabled && verified && !pwError.confirm && !pwError.pw) { 
+        if (pwEnabled && verified && !pwError.confirm && !pwError.pw) {
             const result = await setNewPW(finderData.id, setterData.pw)
-            if(result?.data) {
-                alert('비밀번호 변경에 성공했습니다.')
-                close()
-            } 
-         }
+            if (result?.data) {
+                alertModal(openModal, '비밀번호 찾기', '회원정보 변경에 성공했습니다.', close)
+            }
+        }
     }
 
     React.useEffect(() => {
@@ -79,7 +100,7 @@ function PWFinder({ isOpen, setIsOpen }: Props) {
     }, [finderData])
 
 
-    const isPasswordValid = (password : string) => passwordRegex.test(password);
+    const isPasswordValid = (password: string) => passwordRegex.test(password);
 
     React.useEffect(() => {
         const confirmMatchesPassword = setterData.confirm === setterData.pw;
@@ -88,15 +109,18 @@ function PWFinder({ isOpen, setIsOpen }: Props) {
             ...prev,
             confirm: (!confirmMatchesPassword && !isPasswordValid(setterData.confirm)),
             pw: !isPasswordValid(setterData.pw),
-          }));
+        }));
 
 
     }, [setterData])
     return (
         <Dialog open={isOpen} onClose={close}>
+            <Portal>
+                <CustomModal isOpen={isModalOpen} title={modalContext.title} message={modalContext.message} close={modalContext.close} />
+            </Portal>
             <Title>비밀번호 찾기</Title>
             <AnimatePresence>
-                {!verified ? <FindContainer animate={{ x: 0 }} exit={{ x: '-100%' }} transition={{ ease: "easeOut" }}>
+                {!verified ? <FindContainer animate={{ x: 0 }} exit={{ x: '-100%' }} transition={{ ease: "easeOut" }} onKeyDown={(e: React.KeyboardEvent) => handleKeyPress(e, 'first')}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                         <TextField key={'finder_id'} label="사번" inputProps={{ maxLength: 5 }} onInput={numericInput} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { changeData(e, 'id') }} />
                         <TextField key={'finder_digit'} name='digit' type="password" label="2차 비밀번호 (6자리 숫자)" onInput={numericInput} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { changeData(e, 'digit') }} inputProps={{ maxLength: 6 }} />
@@ -110,7 +134,7 @@ function PWFinder({ isOpen, setIsOpen }: Props) {
                 </FindContainer> :
                     <>
                         <Typography sx={{ margin: '10px 60px 0' }}>비밀번호는 영어, 특수문자, 숫자 포함하여<br /> 8~16자로 작성해주세요. </Typography>
-                        <FindContainer initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }} transition={{ ease: "easeOut" }}>
+                        <FindContainer initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }} transition={{ ease: "easeOut" }} onKeyDown={(e: React.KeyboardEvent) => handleKeyPress(e, 'second')}>
 
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                                 <TextField key={'finder_newPW'} label="신규 비밀번호 입력" type="password" error={pwError.pw} helperText={pwError.pw && '입력 형식이 맞지 않습니다.'} inputProps={{ maxLength: 15 }} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { changeSetterData(e, 'pw') }} />

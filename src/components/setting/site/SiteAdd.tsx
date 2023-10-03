@@ -2,12 +2,15 @@ import styled from '@emotion/styled'
 import { Autocomplete, Box, Button, TextField } from '@mui/material'
 import { postSite } from 'common/service/siteService'
 import { contentFormat, contentViewFormat } from 'common/store/atom'
+import CustomModal from 'components/common/CustomModal'
 import ScreenTitle from 'components/common/ScreenTitle'
+import useModal from 'components/hooks/useModal'
 import NavCloseButton from 'components/navbar/NavCloseButton'
 import { SiteDTO } from 'dto/siteDTO'
 import L from 'leaflet'
 import { LatLngLiteral } from 'leaflet'
 import { convertToWGS } from 'module/DMS'
+import Portal from 'module/Portal'
 import { validateCoordinates } from 'module/validationCoordinate'
 import React from 'react'
 import { useMap } from 'react-leaflet'
@@ -43,10 +46,18 @@ function SiteAdd() {
     const nameRef = React.useRef<HTMLInputElement>();
     const map = useMap();
     const dotLayer = React.useRef<L.CircleMarker>();
+    const [modalContext, setModalContext] = React.useState<{ title: string, message: string, close?: () => void }>({ title: '에러 발생', message: '알 수 없는 오류' });
+    const { isModalOpen, openModal, closeModal } = useModal()
+  
+    function alertModal(open: () => void, title: string, message: string, close?: () => void) {
+      setModalContext({ title, message, close })
+      open()
+    }
     // const siteGroup = 
     const closeScreen = () => {
         setContentView('NONE')
         setContent('NONE')
+        closeModal()
     }
 
     const handleSubmit = () => {
@@ -56,8 +67,16 @@ function SiteAdd() {
                 siteCoordinate: { lat: coord.lat, lng: coord.lng },
                 siteType: siteType.value,
             }
-            postSite(body);
-            closeScreen()
+            try {
+                if(body.siteName && body.siteType && body.siteCoordinate.lat && body.siteCoordinate.lng) {
+                    postSite(body)
+                    alertModal(openModal, '표지소 추가 성공', `[ ${body.siteName} ]\n표지소 추가에 성공하였습니다.`, closeScreen)
+                } else {
+                    throw new Error('BAD REQUEST')
+                }
+            } catch (e) {
+                alertModal(openModal, '표지소 추가 실패', `표지소 추가에 실패하였습니다.`, closeModal)
+            }
         }
     }
 
@@ -99,6 +118,9 @@ function SiteAdd() {
 
     return (
         <Container>
+            <Portal>
+                <CustomModal isOpen={isModalOpen} title={modalContext.title} message={modalContext.message} close={closeModal} />
+            </Portal>
             <ScreenTitle text={'표지소 추가'} />
             <Wrapper>
                 <Content>

@@ -120,7 +120,6 @@ function CustomTable({ edit, search, add }: Props) {
     const [submitted, setSubmitted] = React.useState(false);
     const [sortModel, setSortModel] = React.useState<GridSortModel>([])
     const [filterModel, setFilterModel] = React.useState<GridFilterModel>({ items: [] })
-    const [modalContext, setModalContext] = React.useState<{title:string, message:string}>({title:'에러 발생', message:'알 수 없는 오류'});
     const [paginationModel, setPaginationModel] = React.useState({
         pageSize: 100,
         page: 0,
@@ -137,7 +136,14 @@ function CustomTable({ edit, search, add }: Props) {
     const { data, refetch, isLoading } = useFlightData(paginationModel.pageSize, 0, flightDataId)
 
     const [rows, setRows] = React.useState(data?.data?.items ? data.data.items.map((t, i) => ({ ...t })) : []);
+
+    const [modalContext, setModalContext] = React.useState<{title:string, message:string}>({title:'에러 발생', message:'알 수 없는 오류'});
     const { isModalOpen, openModal, closeModal } = useModal()
+
+    function alertModal(open: () => void, title:string, message:string) {
+        setModalContext({title, message})
+        open()
+    }
 
     const scoreValidate = (params: GridPreProcessEditCellProps) => {
         const validated = scoreRegex.test(String(params.props.value));
@@ -562,11 +568,6 @@ function CustomTable({ edit, search, add }: Props) {
     const handlePaginationModelChange = (e: any) => {
     }
 
-    function alertModal(open: () => void, title:string, message:string) {
-        setModalContext({title, message})
-        open()
-        
-    }
 
     return (
         <Wrapper>

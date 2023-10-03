@@ -2,12 +2,15 @@ import styled from '@emotion/styled'
 import { Autocomplete, Box, Button, TextField } from '@mui/material'
 import { deleteSite, patchSite } from 'common/service/siteService'
 import { contentFormat, contentViewFormat, setting } from 'common/store/atom'
+import CustomModal from 'components/common/CustomModal'
 import ScreenTitle from 'components/common/ScreenTitle'
+import useModal from 'components/hooks/useModal'
 import NavCloseButton from 'components/navbar/NavCloseButton'
 import { SiteDTO } from 'dto/siteDTO'
 import L from 'leaflet'
 import { LatLngLiteral } from 'leaflet'
 import { convertToWGS } from 'module/DMS'
+import Portal from 'module/Portal'
 import { validateCoordinates } from 'module/validationCoordinate'
 import React from 'react'
 import { useMap } from 'react-leaflet'
@@ -49,10 +52,18 @@ function SiteEdit() {
     const nameRef = React.useRef<HTMLInputElement>();
     const map = useMap();
     const dotLayer = React.useRef<L.CircleMarker>();
+    const [modalContext, setModalContext] = React.useState<{ title: string, message: string, close?: () => void }>({ title: '에러 발생', message: '알 수 없는 오류' });
+    const { isModalOpen, openModal, closeModal } = useModal()
+
+    function alertModal(open: () => void, title: string, message: string, close?: () => void) {
+        setModalContext({ title, message, close })
+        open()
+    }
 
     const closeScreen = () => {
         setContentView('NONE')
         setContent('NONE')
+        closeModal()
     }
 
     const handleSubmit = async () => {
@@ -62,14 +73,26 @@ function SiteEdit() {
                 siteCoordinate: { lat: coord.lat, lng: coord.lng },
                 siteType: siteType.value
             }
-            await patchSite(body, settingState.data.id);
-            closeScreen()
+            try {
+                if (body.siteName && body.siteType && body.siteCoordinate.lat && body.siteCoordinate.lng) {
+                    await patchSite(body, settingState.data.id);
+                    alertModal(openModal, '표지소 수정 성공', `[ ${body.siteName} ]\n표지소 수정에 성공하였습니다.`, closeScreen)
+                } else {
+                    throw new Error('BAD REQUEST');
+                }
+            } catch (e) {
+                alertModal(openModal, '표지소 수정 실패', `표지소 수정에 실패하였습니다.`, closeModal)
+            }
         }
     }
 
     const handleDelete = async () => {
-        await deleteSite(settingState.data.id);
-        closeScreen();
+        try {
+            await deleteSite(settingState.data.id);
+            alertModal(openModal, '표지소 삭제 성공', `표지소 삭제에 성공하였습니다.`, closeScreen)
+        } catch (e) {
+            alertModal(openModal, '표지소 삭제 실패', `표지소 삭제에 실패하였습니다.`, closeModal)
+        }
     }
 
     const handleSiteTypeChange = (e: any, a: any) => {
@@ -100,7 +123,7 @@ function SiteEdit() {
         if (coord.lat && coord.lng && error.lat && error.lng) {
             dotLayer.current = L.circleMarker([convertToWGS(coord.lat), convertToWGS(coord.lng)], { radius: 15, color: 'red', }).addTo(map);
         }
-        setCoordError({lat:!error.lat, lng:!error.lng})
+        setCoordError({ lat: !error.lat, lng: !error.lng })
 
         return () => {
             if (dotLayer.current) {
@@ -122,6 +145,9 @@ function SiteEdit() {
 
     return (
         <Container>
+            <Portal>
+                <CustomModal isOpen={isModalOpen} title={modalContext.title} message={modalContext.message} close={modalContext.close} />
+            </Portal>
             <ScreenTitle text={'표지소 수정'} />
             <Wrapper>
                 <Content>

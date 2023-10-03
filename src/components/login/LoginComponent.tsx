@@ -152,7 +152,7 @@ function LoginComponent({ open, closeLogin }: Props) {
             {isRegisterOpen && <Register isOpen={isRegisterOpen} setIsOpen={setRegisterOpen} />}
             {isPWFindOpen && <PWFinder isOpen={isPWFindOpen} setIsOpen={setPWFindOpen} />}
             <Box ref={dialogRef} sx={{ width: 900, height: 600, position:'relative' }}>
-                <Canvas ref={canvasRef} />
+                {/* <Canvas ref={canvasRef} /> */}
                 <TextWrapper>
                     <Title>로그인</Title>
                     <TextField label="사번" onChange={(e) => { handleInputChange(e, 'id') }} onInput={numericInput} />

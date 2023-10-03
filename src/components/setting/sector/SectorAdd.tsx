@@ -2,14 +2,17 @@ import styled from '@emotion/styled'
 import { Autocomplete, Box, Button, CircularProgress, TextField, Typography } from '@mui/material'
 import { postSectorData } from 'common/service/sectorService'
 import { contentFormat, contentViewFormat } from 'common/store/atom'
+import CustomModal from 'components/common/CustomModal'
 import ErrorPage from 'components/common/ErrorPage'
 import ScreenTitle from 'components/common/ScreenTitle'
 import { useGetArea } from 'components/hooks/useArea'
+import useModal from 'components/hooks/useModal'
 import NavCloseButton from 'components/navbar/NavCloseButton'
 import { SectorDTO } from 'dto/sectorDTO'
 import L from 'leaflet'
 import { LatLngLiteral } from 'leaflet'
 import { convertToWGS } from 'module/DMS'
+import Portal from 'module/Portal'
 import React from 'react'
 import { useMap } from 'react-leaflet'
 import { useSetRecoilState } from 'recoil'
@@ -55,10 +58,18 @@ export default function SectorAdd() {
     const nameRef = React.useRef<HTMLInputElement>();
     const map = useMap();
     const polygonLayer = React.useRef<L.Polygon>();
+    const [modalContext, setModalContext] = React.useState<{ title: string, message: string, close?: () => void }>({ title: '에러 발생', message: '알 수 없는 오류' });
+    const { isModalOpen, openModal, closeModal } = useModal()
+
+    function alertModal(open: () => void, title: string, message: string, close?: () => void) {
+        setModalContext({ title, message, close })
+        open()
+    }
 
     const closeScreen = () => {
         setContentView('NONE')
         setContent('NONE')
+        closeModal()
     }
 
     const handleSubmit = async () => {
@@ -69,10 +80,14 @@ export default function SectorAdd() {
                 sectorAreaId: area.id
             }
             try {
+                if(body.sectorName && body.sectorData.every(t => t.lat && t.lng)) {
                 await postSectorData(body);
-                closeScreen()
+                alertModal(openModal, '섹터 추가 성공', `[ ${body.sectorName} ]\n섹터 추가에 성공하였습니다.`, closeScreen)
+                } else {
+                    throw new Error('BAD REQUEST')
+                }
             } catch (e: any) {
-                console.error(e)
+                alertModal(openModal, '섹터 추가 실패', `섹터 추가에 실패하였습니다.`, closeModal)
             }
         }
     }
@@ -121,6 +136,9 @@ export default function SectorAdd() {
     }, [name, points])
     return (
         <Container>
+            <Portal>
+                <CustomModal isOpen={isModalOpen} title={modalContext.title} message={modalContext.message} close={modalContext.close} />
+            </Portal>
             <ScreenTitle text={'섹터 추가'} />
             <Content>
                 <TextField sx={{ flex: 1 }} label="섹터 이름" size="small" inputRef={nameRef} onChange={handleNameChange} />
