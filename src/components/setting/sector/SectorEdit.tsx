@@ -1,18 +1,11 @@
 import styled from '@emotion/styled'
-import { Autocomplete, Box, Button, CircularProgress, TextField, Typography } from '@mui/material'
-import { postRoute } from 'common/service/fileService'
-import { postFixPoint } from 'common/service/pointService'
-import { deleteRouteData, patchRouteData, postRouteData } from 'common/service/routeService'
-import { patchSectorData } from 'common/service/sectorService'
-import { contentFormat, contentViewFormat, setting } from 'common/store/atom'
-import { RoutePointType } from 'common/type/RouteType'
+import { Autocomplete, Box, Button, CircularProgress, TextField, Typography } from '@mui/material' 
+import { deleteSectorData, patchSectorData } from 'common/service/sectorService'
+import { contentFormat, contentViewFormat, setting } from 'common/store/atom' 
 import ErrorPage from 'components/common/ErrorPage'
 import ScreenTitle from 'components/common/ScreenTitle'
 import { useGetArea } from 'components/hooks/useArea'
-import { useGetPoint } from 'components/hooks/useFixPoint'
 import NavCloseButton from 'components/navbar/NavCloseButton'
-import { FixPointAutoCompleteItemType, FixPointDTO } from 'dto/fixPointDTO'
-import { RouteDTO, RoutePointDTO } from 'dto/routeDTO'
 import { SectorDTO } from 'dto/sectorDTO'
 import L from 'leaflet'
 import { LatLngLiteral } from 'leaflet'
@@ -21,7 +14,6 @@ import { validateCoordinates } from 'module/validationCoordinate'
 import React from 'react'
 import { useMap } from 'react-leaflet'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
-import FixPointAutoComplete from '../fixPoint/FixPointAutoComplete'
 import { SettingStateType } from '../SettingStateType'
 
 const Container = styled.div`
@@ -118,7 +110,7 @@ export default function SectorEdit() {
 
     const handleDelete = async () => {
         try {
-            await deleteRouteData(settingState.data.id);
+            await deleteSectorData(settingState.data.id);
             closeScreen()
         } catch (e) {
             console.error(e)
