@@ -17,7 +17,7 @@ interface Props {
   edit?: boolean;
   search?: boolean;
   submitted: boolean;
-  rows: RowFlightResultType[]; 
+  rows: RowFlightResultType[];
   loading: boolean;
   setLoading: (b: boolean) => void;
   setRows: (rows: RowFlightResultType[]) => void;
@@ -40,7 +40,7 @@ function CustomToolbar({ titleData, count, search, edit, submitted, rows, setRow
 
   const csvOptions = React.useRef({
     fileName: '',
-    utf8WithBom:true
+    utf8WithBom: true
   })
 
   React.useEffect(() => {
@@ -62,9 +62,7 @@ function CustomToolbar({ titleData, count, search, edit, submitted, rows, setRow
         <Button variant='outlined' onClick={handleMarkingBtnClick} disabled={!selected.size} startIcon={<GPSIcon />}>마킹</Button>
         <Button variant='outlined' onClick={() => { apiRef.current.exportDataAsCsv(csvOptions.current) }} disabled={disabled} startIcon={<AddchartIcon />}>CSV 저장</Button>
         <Tooltip title={disabled || count > 100 ?
-          <div>전체 행의 갯수가 100개가 넘는 경우에는 인쇄가 제한됩니다.
-            <br /> 필터를 사용해 개수를 줄여 인쇄할 수 있습니다.
-          </div> : null}>
+          <div>전체 행의 갯수가 100개가 넘는 경우에는 인쇄가 제한됩니다.</div> : null}>
           <span>
             <Button variant='outlined' onClick={() => { apiRef.current.exportDataAsPrint(printOptions) }} disabled={disabled || count > 100} startIcon={disabled || count > 100 ? <PrintDisabledIcon /> : <PrintIcon />}>인쇄</Button>
           </span>

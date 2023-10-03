@@ -1,6 +1,6 @@
 function getScoreFromString(data?: string | null): number {
     if (!data) return 5; // 값이 주어지지 않은 경우 기본값 5를 반환
-    const [x, y] = data.split('/');
+    const [x, y] = data.split('|');
     return Math.min((parseInt(x), parseInt(y)));
 }
 

@@ -102,7 +102,7 @@ const formatInput = (input: string) => {
         if (numericInput.length === 1) {
             return `${firstDigit}`
         } else if (numericInput.length >= 2) {
-            return `${firstDigit}/${secondDigit}`; // 형식 변환
+            return `${firstDigit}|${secondDigit}`; // 형식 변환
         } else return '';
     }
     return ''
@@ -197,8 +197,8 @@ function CustomTable({ edit, search, add }: Props) {
         {
             field: 'no', disableExport: true, editable: false, flex: .5, type: 'number', sortable: false,
             renderCell: (params: GridRenderCellParams) => {
-                const idx = apiRef.current.getAllRowIds().indexOf(params.id) || (paginationModel.pageSize * paginationModel.page) + apiRef.current.getRowIndexRelativeToVisibleRows(params.id);
-                return idx + 1
+                const idx = apiRef.current.getAllRowIds().indexOf(params.id) + 1 || (paginationModel.pageSize * paginationModel.page) + apiRef.current.getRowIndexRelativeToVisibleRows(params.id) + 1;
+                return idx
             }, headerName: 'No'
         },
         {
@@ -413,7 +413,7 @@ function CustomTable({ edit, search, add }: Props) {
         if (titleData) {
             const newRow = { id: `add-${id.current}`, siteName: '', frequency: 0, testId: titleData.id!, angle: 0, distance: 0, height: 0 }
             apiRef.current.updateRows([newRow]);
-            setRows((prevRow) => [...prevRow, newRow])
+            // setRows((prevRow) => [...prevRow, newRow])
             id.current++;
         }
     }
@@ -431,17 +431,17 @@ function CustomTable({ edit, search, add }: Props) {
                 return true;
             }
 
-            if (!data[i].angle || data[i].angle >= 360 || data[i].angle < 0) {
+            if (isNaN(data[i].angle) || data[i].angle >= 360 || data[i].angle < -0) {
                 window.alert(`${+i + 1}행의 각도를 정확하게 입력해주세요.`)
                 return true;
             }
 
-            if (!data[i].distance || data[i].distance >= 400 || data[i].angle < 0) {
+            if (isNaN(data[i].distance) || data[i].distance >= 400 || data[i].angle < -0) {
                 window.alert(`${+i + 1}행의 거리를 정확하게 입력해주세요.`)
                 return true;
             }
 
-            if (!data[i].height || data[i].height >= 60000 || data[i].height < 0) {
+            if (isNaN(data[i].height) || data[i].height >= 60000 || data[i].height < 0) {
                 window.alert(`${+i + 1}행의 고도를 정확하게 입력해주세요.`)
                 return true;
             }
@@ -526,7 +526,7 @@ function CustomTable({ edit, search, add }: Props) {
                 idList.push(item[0] as string)
                 apiRef.current.updateRows([{ id: item[0], _action: 'delete' }])
             }
-            setRows(rows.filter(t => !idList.includes(t.id!)))
+            // setRows(rows.filter(t => !idList.includes(t.id!)))
 
         }
     };
