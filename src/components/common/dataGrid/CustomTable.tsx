@@ -332,15 +332,16 @@ function CustomTable({ edit, search, add }: Props) {
             obj[String(key)] = value;
         });
 
-        Object.keys(obj).map((i, idx) => {
+        Object.keys(obj).map((i) => {
             if (!isNaN(obj[i].angle) && !isNaN(obj[i].distance) && obj[i].siteName) {
                 const angle = parseFloat(obj[i].angle) && obj[i].angle;
                 const distance = parseFloat(obj[i].angle) && obj[i].distance;
                 const siteCoords = siteData.data.filter(t => t.siteName === obj[i].siteName)[0]?.siteCoordinate as LatLngLiteral;
                 const target = Destination(siteCoords, angle, distance);
+                const idx = obj[i].no - 1 || apiRef.current.getAllRowIds().indexOf(obj[i].id) || (paginationModel.pageSize * paginationModel.page) + apiRef.current.getRowIndexRelativeToVisibleRows(obj[i].id)
                 layer.push(L.marker(target as LatLngLiteral, {
                     pane: 'pin',
-                    icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby), obj[i].no - 1)
+                    icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby), idx )
                 }).on('mouseover', () => {
                     hoverPolyline.current = L.polyline([[convertToWGS(siteCoords.lat), convertToWGS(siteCoords.lng)], target!], { pane: 'pin', color: 'red' }).addTo(map);
                 }).on('mouseout', () => {
@@ -348,7 +349,7 @@ function CustomTable({ edit, search, add }: Props) {
                         hoverPolyline.current.remove();
                     }
                 })
-                    .bindTooltip(CustomTableTooltip({ siteName: obj[i].siteName, distance, angle: angle, index: obj[i].no - 1 }))
+                    .bindTooltip(CustomTableTooltip({ siteName: obj[i].siteName, distance, angle: angle, index: idx}))
                 )
             }
 
