@@ -106,7 +106,7 @@ function Setting() {
   return (
     <>
       <Title>환경설정</Title>
-      {auth.role > 1 ?
+      {auth.role > 2 ?
         <>
           <GridContainer>
             <SettingItem onclick={() => { changeState("site") }} text={'표지소'} Icon={SiteIcon} />
