@@ -120,6 +120,7 @@ function CustomTable({ edit, search, add }: Props) {
     const [submitted, setSubmitted] = React.useState(false);
     const [sortModel, setSortModel] = React.useState<GridSortModel>([])
     const [filterModel, setFilterModel] = React.useState<GridFilterModel>({ items: [] })
+    const [modalContext, setModalContext] = React.useState<{title:string, message:string}>({title:'에러 발생', message:'알 수 없는 오류'});
     const [paginationModel, setPaginationModel] = React.useState({
         pageSize: 100,
         page: 0,
@@ -147,7 +148,7 @@ function CustomTable({ edit, search, add }: Props) {
     //     setRows((prevRows) => {
     //         prevRows.map(t => t.id as GridRowId).forEach(t => { 
     //             const params = apiRef.current.getCellParams(t, 'no');
-                
+
     //         })
     //         const idx = apiRef.current.getRowIndexRelativeToVisibleRows(params.id) || apiRef.current.getAllRowIds().indexOf(params.id);
     //         const updatedRows = [...prevRows];
@@ -422,32 +423,31 @@ function CustomTable({ edit, search, add }: Props) {
         for (let i in data) {
 
             if (!data[i].siteName) {
-                window.alert(`${+i + 1}행의 표지소를 정확하게 입력해주세요.`)
+                alertModal(openModal, '입력 에러(표지소)', `${+i + 1}행의 표지소를 정확하게 입력해주세요.`)
                 return true;
             }
             if (!data[i].frequency || !data[i].frequency.toString().match(frequencyRegex)) {
-                window.alert(`${+i + 1}행의 주파수를 정확하게 입력해주세요.\n','(콤마)가 입력되어 있을 수 있습니다.`)
-
+                alertModal(openModal, '입력 에러(주파수)', `${+i + 1}행의 주파수를 정확하게 입력해주세요.\n','(콤마)가 입력되어 있을 수 있습니다.`)
                 return true;
             }
 
-            if (isNaN(data[i].angle) || data[i].angle >= 360 || data[i].angle < -0) {
-                window.alert(`${+i + 1}행의 각도를 정확하게 입력해주세요.`)
+            if (typeof data[i].angle !== 'number' || data[i].angle >= 360 || data[i].angle < -0) {
+                alertModal(openModal, '입력 에러(각도)', `${+i + 1}행의 각도를 정확하게 입력해주세요.`)
                 return true;
             }
 
-            if (isNaN(data[i].distance) || data[i].distance >= 400 || data[i].angle < -0) {
-                window.alert(`${+i + 1}행의 거리를 정확하게 입력해주세요.`)
+            if (typeof data[i].distance !== 'number' || data[i].distance >= 400 || data[i].angle < -0) {
+                alertModal(openModal, '입력 에러(거리)', `${+i + 1}행의 거리를 정확하게 입력해주세요.`)
                 return true;
             }
 
-            if (isNaN(data[i].height) || data[i].height >= 60000 || data[i].height < 0) {
-                window.alert(`${+i + 1}행의 고도를 정확하게 입력해주세요.`)
+            if (typeof data[i].height !== 'number' || data[i].height >= 60000 || data[i].height < 0) {
+                alertModal(openModal, '입력 에러(고도)', `${+i + 1}행의 고도를 정확하게 입력해주세요.`)
                 return true;
             }
 
             if ((!data[i].txmain || !data[i].rxmain) && (!data[i].txstby || !data[i].rxstby)) {
-                window.alert(`${+i + 1}행의 검사결과를 정확하게 입력해주세요.`)
+                alertModal(openModal, '입력 에러(RX/TX)', `${+i + 1}행의 검사결과를 정확하게 입력해주세요.`)
                 return true;
             }
 
@@ -460,10 +460,10 @@ function CustomTable({ edit, search, add }: Props) {
 
     const handleSubmit = () => {
         if (!data) return;
-        if (!submitted) {
-            openModal()
-            return
-        };
+        // if (!submitted) {
+        //     openModal()
+        //     return
+        // };
 
         const rowModel = apiRef.current.getRowModels()
         const editArray: FlightResult[] = [];
@@ -493,29 +493,34 @@ function CustomTable({ edit, search, add }: Props) {
             delete item.updatedAt;
 
         }
-        if (titleData) {
-            const fetchResultData: FlightResult[] = editArray.map(t => {
-                const angle = t.angle;
-                const distance = t.distance;
-                const siteCoords = siteData.data.filter(a => a.siteName === t.siteName)[0]?.siteCoordinate as LatLngLiteral;
-                const target = Destination(siteCoords, angle, distance)
-                const data = t;
-                delete data.deletedAt;
-                delete data.updatedAt;
-                return { ...data, point: target }
-            })
-            const fetchData: FlightListPost = { ...titleData, data: fetchResultData }
-            delete fetchData.deletedAt;
-            delete fetchData.updatedAt;
+        try {
+            if (titleData) {
+                const fetchResultData: FlightResult[] = editArray.map(t => {
+                    const angle = t.angle;
+                    const distance = t.distance;
+                    const siteCoords = siteData.data.filter(a => a.siteName === t.siteName)[0]?.siteCoordinate as LatLngLiteral;
+                    const target = Destination(siteCoords, angle, distance)
+                    const data = t;
+                    delete data.deletedAt;
+                    delete data.updatedAt;
+                    return { ...data, point: target }
+                })
+                const fetchData: FlightListPost = { ...titleData, data: fetchResultData }
+                delete fetchData.deletedAt;
+                delete fetchData.updatedAt;
 
-            if (add) {
-                delete fetchData.id;
-                postFlightList(fetchData);
-            } else if (titleData?.id) {
-                patchFlightData(fetchData, titleData.id)
+                if (add) {
+                    delete fetchData.id;
+                    postFlightList(fetchData);
+                } else if (titleData?.id) {
+                    patchFlightData(fetchData, titleData.id)
+                }
             }
+            stateRefresh()
+            alertModal(openModal, '비행검사 입력 성공', `[ ${titleData?.testName} ]\n위 검사의 결과 입력을 성공했습니다.`)
+        } catch (e) {
+            alertModal(openModal, '비행검사 입력 실패',`결과 입력을 실패했습니다.`)
         }
-        stateRefresh()
     }
 
     const handleDeleteRow = (e: React.MouseEvent) => {
@@ -557,10 +562,16 @@ function CustomTable({ edit, search, add }: Props) {
     const handlePaginationModelChange = (e: any) => {
     }
 
+    function alertModal(open: () => void, title:string, message:string) {
+        setModalContext({title, message})
+        open()
+        
+    }
+
     return (
         <Wrapper>
             <Portal>
-                <CustomModal isOpen={isModalOpen} title="비행검사 입력 에러" message='비행검사 기본 정보 입력 후 확인버튼을 눌러주세요.' close={closeModal} />
+                <CustomModal isOpen={isModalOpen} title={modalContext.title} message={modalContext.message} close={closeModal} />
             </Portal>
             <StyledDataGrid apiRef={apiRef} editMode='cell' rows={rows} columns={columns}
                 loading={isLoading || loading}
