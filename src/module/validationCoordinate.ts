@@ -1,14 +1,14 @@
 export function validateCoordinates(input?: string) {
 
-    const regex = /^([0-2]?[0-9]?[0-9](\.\d+)?)$/
+    const regex = /^([0-3]?[0-9]?[0-9](\.\d+)?)$/
     if (input) {
         if (!regex.test(input)) {
             return false
         }
 
         const degree = parseFloat(input);
-        const minutes = Math.round((degree - Math.floor(degree)) * 100);
-        const seconds = Math.round((degree - Math.floor(degree)) * 10000 - minutes * 100);
+        const minutes = Math.floor((degree - Math.floor(degree)) * 100);
+        const seconds = Math.floor((degree - Math.floor(degree)) * 10000 - minutes * 100);
         if (degree < 0 || degree > 359) return false;
 
         if (minutes < 0 || minutes > 59) return false;
