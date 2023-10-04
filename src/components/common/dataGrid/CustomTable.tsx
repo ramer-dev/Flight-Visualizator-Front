@@ -145,6 +145,48 @@ function CustomTable({ edit, search, add }: Props) {
         open()
     }
 
+    const addMarker = () => {
+        const obj: { [key: string]: GridValidRowModel } = {};
+        const layer: L.Marker[] = []
+        const instance = layerGroup.current;
+
+        checkboxSelection?.forEach((value, key) => {
+            obj[String(key)] = value;
+        });
+
+        Object.keys(obj).map((i, index) => {
+            if (!isNaN(obj[i].angle) && !isNaN(obj[i].distance) && obj[i].siteName) {
+                const angle = parseFloat(obj[i].angle) && obj[i].angle;
+                const distance = parseFloat(obj[i].angle) && obj[i].distance;
+                const siteCoords = siteData.data.filter(t => t.siteName === obj[i].siteName)[0]?.siteCoordinate as LatLngLiteral;
+                const target = Destination(siteCoords, angle, distance);
+
+                const idx = (paginationModel.pageSize * paginationModel.page) + apiRef.current.getRowIndexRelativeToVisibleRows(obj[i].id) + 1 || obj[i].no || apiRef.current.getAllRowIds().indexOf(obj[i].id)
+                layer.push(L.marker(target as LatLngLiteral, {
+                    pane: 'pin',
+                    icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby), idx)
+                }).on('mouseover', () => {
+                    hoverPolyline.current = L.polyline([[convertToWGS(siteCoords.lat), convertToWGS(siteCoords.lng)], target!], { pane: 'pin', color: 'red' }).addTo(map);
+                }).on('mouseout', () => {
+                    if (hoverPolyline.current) {
+                        hoverPolyline.current.remove();
+                    }
+                })
+                    .bindTooltip(CustomTableTooltip({ siteName: obj[i].siteName, distance, angle: angle, index: idx }))
+                )
+            }
+
+        })
+
+        instance.clearLayers()
+
+        for (let i of layer) {
+            instance.addLayer(i)
+        }
+
+        instance.addTo(map);
+    }
+
     const scoreValidate = (params: GridPreProcessEditCellProps) => {
         const validated = scoreRegex.test(String(params.props.value));
         return { ...params.props, error: !validated }
@@ -204,8 +246,9 @@ function CustomTable({ edit, search, add }: Props) {
         {
             field: 'no', disableExport: true, editable: false, flex: .5, type: 'number', sortable: false,
             renderCell: (params: GridRenderCellParams) => {
-                const idx = (paginationModel.pageSize * paginationModel.page) + apiRef.current.getRowIndexRelativeToVisibleRows(params.id) + 1 || apiRef.current.getAllRowIds().indexOf(params.id) + 1 
-                return idx },
+                const idx = (paginationModel.pageSize * paginationModel.page) + apiRef.current.getRowIndexRelativeToVisibleRows(params.id) + 1 || apiRef.current.getAllRowIds().indexOf(params.id) + 1
+                return idx
+            },
 
             headerName: 'No'
         },
@@ -323,48 +366,19 @@ function CustomTable({ edit, search, add }: Props) {
         }
     }, [data, flightDataId])
 
+    // useEffect(() => {
+    //     const instance = layerGroup.current;
+    //     instance.clearLayers()
+
+    //     addMarker();
+
+    //     return () => { instance.clearLayers() }
+    // }, [])
 
     useEffect(() => {
-        const obj: { [key: string]: GridValidRowModel } = {};
-        const layer: L.Marker[] = []
         const instance = layerGroup.current;
-
-        checkboxSelection?.forEach((value, key) => {
-            obj[String(key)] = value;
-        });
-
-        Object.keys(obj).map((i, index) => {
-            if (!isNaN(obj[i].angle) && !isNaN(obj[i].distance) && obj[i].siteName) {
-                const angle = parseFloat(obj[i].angle) && obj[i].angle;
-                const distance = parseFloat(obj[i].angle) && obj[i].distance;
-                const siteCoords = siteData.data.filter(t => t.siteName === obj[i].siteName)[0]?.siteCoordinate as LatLngLiteral;
-                const target = Destination(siteCoords, angle, distance);
-
-                const idx =  (paginationModel.pageSize * paginationModel.page) + apiRef.current.getRowIndexRelativeToVisibleRows(obj[i].id) + 1 || obj[i].no || apiRef.current.getAllRowIds().indexOf(obj[i].id) 
-                layer.push(L.marker(target as LatLngLiteral, {
-                    pane: 'pin',
-                    icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby), idx)
-                }).on('mouseover', () => {
-                    hoverPolyline.current = L.polyline([[convertToWGS(siteCoords.lat), convertToWGS(siteCoords.lng)], target!], { pane: 'pin', color: 'red' }).addTo(map);
-                }).on('mouseout', () => {
-                    if (hoverPolyline.current) {
-                        hoverPolyline.current.remove();
-                    }
-                })
-                    .bindTooltip(CustomTableTooltip({ siteName: obj[i].siteName, distance, angle: angle, index: idx }))
-                )
-            }
-
-        })
-
-        instance.clearLayers()
-
-        for (let i of layer) {
-            instance.addLayer(i)
-        }
-
-        instance.addTo(map);
-
+        instance.clearLayers();
+        addMarker();
         return () => {
             setCellModesModel({});
             instance.clearLayers();
@@ -372,9 +386,26 @@ function CustomTable({ edit, search, add }: Props) {
 
     }, [checkboxSelection, siteData.data])
 
-    React.useEffect(() => {
+    useEffect(() => {
+        // 지도 레이어 초기화
+        const instance = layerGroup.current;
+        instance.clearLayers();
+
+        // 전체 체크박스의 체크 해제
+        const obj: { [key: string]: GridValidRowModel } = {};
+        checkboxSelection?.forEach((value, key) => {
+            obj[String(key)] = value;
+        });
+        apiRef.current.selectRow(Object.keys(obj)[0], false, true)
+
+        return () => {
+            setCellModesModel({});
+            instance.clearLayers();
+        }
 
     }, [filterModel, sortModel])
+
+
 
     const handleCellClick = (params: GridCellParams, event: React.MouseEvent) => {
 
@@ -581,7 +612,11 @@ function CustomTable({ edit, search, add }: Props) {
             <Portal>
                 <CustomModal isOpen={isModalOpen} title={modalContext.title} message={modalContext.message} close={closeModal} />
             </Portal>
-            <StyledDataGrid apiRef={apiRef} editMode='cell' rows={rows} columns={columns}
+            <StyledDataGrid apiRef={apiRef} editMode='cell' rows={rows} columns={columns} sx={{
+                '@media print': {
+                    '.MuiDataGrid-main': { color: 'rgba(0, 0, 0, 0.87)' },
+                },
+            }}
                 loading={isLoading || loading}
                 columnVisibilityModel={columnVisibilityModel}
                 slots={{ toolbar: CustomToolbar, pagination: CustomPagination, noRowsOverlay: CustomNoRowsOverlay, loadingOverlay: LoadingPage, columnMenu: CustomColumnMenu }}
@@ -631,7 +666,7 @@ function CustomTable({ edit, search, add }: Props) {
                 sortModel={sortModel}
                 onSortModelChange={(newSortModel) => { setSortModel(newSortModel) }}
                 filterModel={filterModel}
-                onFilterModelChange={(newFilterModel) => { console.log(newFilterModel); setFilterModel(newFilterModel) }}
+                onFilterModelChange={(newFilterModel) => { setFilterModel(newFilterModel) }}
                 checkboxSelection
                 onRowSelectionModelChange={handleMarking}
                 disableRowSelectionOnClick

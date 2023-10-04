@@ -1,5 +1,5 @@
 import { Button, Tooltip } from '@mui/material';
-import { GridToolbarContainer, useGridApiContext } from '@mui/x-data-grid'
+import { GridPrintExportOptions, GridToolbarContainer, useGridApiContext } from '@mui/x-data-grid'
 import PlusIcon from '@mui/icons-material/Add'
 import MinusIcon from '@mui/icons-material/Delete'
 import GPSIcon from '@mui/icons-material/Room'
@@ -30,7 +30,10 @@ interface Props {
 }
 
 
-const printOptions = { hideToolbar: true, hideFooter: true }
+const printOptions : GridPrintExportOptions = {
+  hideToolbar: true, hideFooter: true,
+  
+}
 
 function CustomToolbar({ titleData, count, search, edit, submitted, rows, setRows, setTitleData, handleAddRow, handleDeleteRow, setSubmitted, handleMarkingBtnClick, setLoading }: Props) {
   const apiRef = useGridApiContext()
@@ -61,12 +64,12 @@ function CustomToolbar({ titleData, count, search, edit, submitted, rows, setRow
         }
         <Button variant='outlined' onClick={handleMarkingBtnClick} disabled={!selected.size} startIcon={<GPSIcon />}>마킹</Button>
         <Button variant='outlined' onClick={() => { apiRef.current.exportDataAsCsv(csvOptions.current) }} disabled={disabled} startIcon={<AddchartIcon />}>CSV 저장</Button>
-        <Tooltip title={disabled || count > 100 ?
+        {/* <Tooltip title={disabled || count > 100 ?
           <div>전체 행의 갯수가 100개가 넘는 경우에는 인쇄가 제한됩니다.</div> : null}>
           <span>
             <Button variant='outlined' onClick={() => { apiRef.current.exportDataAsPrint(printOptions) }} disabled={disabled || count > 100} startIcon={disabled || count > 100 ? <PrintDisabledIcon /> : <PrintIcon />}>인쇄</Button>
           </span>
-        </Tooltip>
+        </Tooltip> */}
       </GridToolbarContainer>
     </>
   )
