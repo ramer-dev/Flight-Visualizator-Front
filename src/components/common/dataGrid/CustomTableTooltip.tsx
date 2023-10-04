@@ -82,7 +82,7 @@ export default function CustomTableTooltip({ siteName, distance, angle, index }:
             fontWeight: 300,
             fontSize: '15px'
           }}>
-            {index + 1}
+            {index}
           </Index> : null
         }
         <Site style={{

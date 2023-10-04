@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { DataGrid, GridCellModes, GridCellModesModel, GridCellParams, GridColDef, GridFilterModel, GridPreProcessEditCellProps, GridRenderCellParams, GridRowId, GridSortModel, GridValidRowModel, useGridApiRef } from '@mui/x-data-grid'
+import { DataGrid, GridCellModes, GridCellModesModel, GridCellParams, GridColDef, GridFilterModel, GridPreProcessEditCellProps, GridRenderCellParams, GridRowId, GridSortModel, GridValidRowModel, GridValueSetterParams, useGridApiRef } from '@mui/x-data-grid'
 import { FlightList, FlightResult, RowFlightResultType } from 'common/type/FlightType'
 import styled from '@emotion/styled'
 import { Box } from '@mui/material'
@@ -137,11 +137,11 @@ function CustomTable({ edit, search, add }: Props) {
 
     const [rows, setRows] = React.useState(data?.data?.items ? data.data.items.map((t, i) => ({ ...t })) : []);
 
-    const [modalContext, setModalContext] = React.useState<{title:string, message:string}>({title:'에러 발생', message:'알 수 없는 오류'});
+    const [modalContext, setModalContext] = React.useState<{ title: string, message: string }>({ title: '에러 발생', message: '알 수 없는 오류' });
     const { isModalOpen, openModal, closeModal } = useModal()
 
-    function alertModal(open: () => void, title:string, message:string) {
-        setModalContext({title, message})
+    function alertModal(open: () => void, title: string, message: string) {
+        setModalContext({ title, message })
         open()
     }
 
@@ -204,9 +204,10 @@ function CustomTable({ edit, search, add }: Props) {
         {
             field: 'no', disableExport: true, editable: false, flex: .5, type: 'number', sortable: false,
             renderCell: (params: GridRenderCellParams) => {
-                const idx = apiRef.current.getAllRowIds().indexOf(params.id) + 1 || (paginationModel.pageSize * paginationModel.page) + apiRef.current.getRowIndexRelativeToVisibleRows(params.id) + 1;
-                return idx
-            }, headerName: 'No'
+                const idx = (paginationModel.pageSize * paginationModel.page) + apiRef.current.getRowIndexRelativeToVisibleRows(params.id) + 1 || apiRef.current.getAllRowIds().indexOf(params.id) + 1 
+                return idx },
+
+            headerName: 'No'
         },
         {
             field: 'siteName', editable: !!edit, flex: 1, headerName: '표지소', type: 'string',
@@ -332,16 +333,17 @@ function CustomTable({ edit, search, add }: Props) {
             obj[String(key)] = value;
         });
 
-        Object.keys(obj).map((i) => {
+        Object.keys(obj).map((i, index) => {
             if (!isNaN(obj[i].angle) && !isNaN(obj[i].distance) && obj[i].siteName) {
                 const angle = parseFloat(obj[i].angle) && obj[i].angle;
                 const distance = parseFloat(obj[i].angle) && obj[i].distance;
                 const siteCoords = siteData.data.filter(t => t.siteName === obj[i].siteName)[0]?.siteCoordinate as LatLngLiteral;
                 const target = Destination(siteCoords, angle, distance);
-                const idx = obj[i].no - 1 || apiRef.current.getAllRowIds().indexOf(obj[i].id) || (paginationModel.pageSize * paginationModel.page) + apiRef.current.getRowIndexRelativeToVisibleRows(obj[i].id)
+
+                const idx =  (paginationModel.pageSize * paginationModel.page) + apiRef.current.getRowIndexRelativeToVisibleRows(obj[i].id) + 1 || obj[i].no || apiRef.current.getAllRowIds().indexOf(obj[i].id) 
                 layer.push(L.marker(target as LatLngLiteral, {
                     pane: 'pin',
-                    icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby), idx )
+                    icon: divicon(FindMinimumScore(obj[i].txmain, obj[i].rxmain, obj[i].txstby, obj[i].rxstby), idx)
                 }).on('mouseover', () => {
                     hoverPolyline.current = L.polyline([[convertToWGS(siteCoords.lat), convertToWGS(siteCoords.lng)], target!], { pane: 'pin', color: 'red' }).addTo(map);
                 }).on('mouseout', () => {
@@ -349,7 +351,7 @@ function CustomTable({ edit, search, add }: Props) {
                         hoverPolyline.current.remove();
                     }
                 })
-                    .bindTooltip(CustomTableTooltip({ siteName: obj[i].siteName, distance, angle: angle, index: idx}))
+                    .bindTooltip(CustomTableTooltip({ siteName: obj[i].siteName, distance, angle: angle, index: idx }))
                 )
             }
 
@@ -369,6 +371,10 @@ function CustomTable({ edit, search, add }: Props) {
         }
 
     }, [checkboxSelection, siteData.data])
+
+    React.useEffect(() => {
+
+    }, [filterModel, sortModel])
 
     const handleCellClick = (params: GridCellParams, event: React.MouseEvent) => {
 
@@ -526,7 +532,7 @@ function CustomTable({ edit, search, add }: Props) {
             stateRefresh()
             alertModal(openModal, '비행검사 입력 성공', `[ ${titleData?.testName} ]\n위 검사의 결과 입력을 성공했습니다.`)
         } catch (e) {
-            alertModal(openModal, '비행검사 입력 실패',`결과 입력을 실패했습니다.`)
+            alertModal(openModal, '비행검사 입력 실패', `결과 입력을 실패했습니다.`)
         }
     }
 
@@ -625,7 +631,7 @@ function CustomTable({ edit, search, add }: Props) {
                 sortModel={sortModel}
                 onSortModelChange={(newSortModel) => { setSortModel(newSortModel) }}
                 filterModel={filterModel}
-                onFilterModelChange={(newFilterModel) => setFilterModel(newFilterModel)}
+                onFilterModelChange={(newFilterModel) => { console.log(newFilterModel); setFilterModel(newFilterModel) }}
                 checkboxSelection
                 onRowSelectionModelChange={handleMarking}
                 disableRowSelectionOnClick

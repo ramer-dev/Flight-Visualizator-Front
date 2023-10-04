@@ -71,7 +71,7 @@ export default function Marking() {
     useEffect(() => {
         if (hoverPolyline.current) hoverPolyline.current.remove();
 
-        const layer = list.map((t: MarkingCardProps, index: number) => L.marker(t.coord!, { icon: divicon(t.level, index), pane: 'marking' })
+        const layer = list.map((t: MarkingCardProps, index: number) => L.marker(t.coord!, { icon: divicon(t.level, index + 1), pane: 'marking' })
             .on('mouseover', () => {
                 const { lat, lng } = t.coord!;
                 const siteCoords = siteData.data.filter(a => a.siteName === t.site)[0]?.siteCoordinate as LatLngLiteral;
@@ -81,7 +81,7 @@ export default function Marking() {
                     hoverPolyline.current.remove();
                 }
             })
-            .bindTooltip(MarkingTooltip({ ...t, index })).bindPopup(MarkingPopup(t), { closeOnClick: false, autoClose: false }))
+            .bindTooltip(MarkingTooltip({ ...t, index : index + 1})).bindPopup(MarkingPopup(t), { closeOnClick: false, autoClose: false }))
         const instance = layerGroup.current
 
         instance.clearLayers()
