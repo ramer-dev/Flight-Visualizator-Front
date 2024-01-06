@@ -10,6 +10,7 @@ import styled from '@emotion/styled'
 import CustomModal from 'components/common/CustomModal'
 import Register from './Register'
 import PWFinder from './PWFinder'
+import Canvas from './Canvas/Canvas'
 interface Props {
     open: boolean,
     closeLogin: () => void,
@@ -32,13 +33,6 @@ const Title = styled.div`
 const Wrapper = styled.div`
     display:flex;
     gap: 10px;
-`
-
-const Canvas = styled.canvas`
-    background:#ddd;
-    position:absolute;
-    width:100%;
-    height:100%;
 `
 
 function LoginComponent({ open, closeLogin }: Props) {
@@ -152,7 +146,7 @@ function LoginComponent({ open, closeLogin }: Props) {
             {isRegisterOpen && <Register isOpen={isRegisterOpen} setIsOpen={setRegisterOpen} />}
             {isPWFindOpen && <PWFinder isOpen={isPWFindOpen} setIsOpen={setPWFindOpen} />}
             <Box ref={dialogRef} sx={{ width: 900, height: 600, position:'relative' }}>
-                {/* <Canvas ref={canvasRef} /> */}
+                <Canvas/>
                 <TextWrapper>
                     <Title>로그인</Title>
                     <TextField label="사번" onChange={(e) => { handleInputChange(e, 'id') }} onInput={numericInput} />
