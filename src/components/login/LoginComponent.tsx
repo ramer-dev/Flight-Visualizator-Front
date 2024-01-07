@@ -94,42 +94,42 @@ function LoginComponent({ open, closeLogin }: Props) {
         }
     };
 
-    React.useEffect(() => {
-        if (canvasRef.current) {
-            const canvas = canvasRef.current;
-            const context = canvasRef.current.getContext('2d') as CanvasRenderingContext2D;
+    // React.useEffect(() => {
+    //     if (canvasRef.current) {
+    //         const canvas = canvasRef.current;
+    //         const context = canvasRef.current.getContext('2d') as CanvasRenderingContext2D;
 
-            window.addEventListener('resize', handleCanvasResize);
-            handleCanvasResize();
+    //         window.addEventListener('resize', handleCanvasResize);
+    //         handleCanvasResize();
 
-            if (dialogRef.current) {
-                canvas.width = dialogRef.current.offsetWidth
-                canvas.height = dialogRef.current.offsetHeight
-            }
-            let x = canvas.width / 2;
-            let y = canvas.height - 30;
+    //         if (dialogRef.current) {
+    //             canvas.width = dialogRef.current.offsetWidth
+    //             canvas.height = dialogRef.current.offsetHeight
+    //         }
+    //         let x = canvas.width / 2;
+    //         let y = canvas.height - 30;
             
-            const cloud_center = [100, 200]
-            const dx = 2;
-            const dy = -2;
+    //         const cloud_center = [100, 200]
+    //         const dx = 2;
+    //         const dy = -2;
 
-            function draw() {
-                context.clearRect(0, 0, canvas.width, canvas.height);
-                context.beginPath();
-                context.arc(cloud_center[0], cloud_center[1], 20, 0, Math.PI * 2);
-                context.fillStyle = 'white';
-                context.fill();
-                context.closePath()
-            }
+    //         function draw() {
+    //             context.clearRect(0, 0, canvas.width, canvas.height);
+    //             context.beginPath();
+    //             context.arc(cloud_center[0], cloud_center[1], 20, 0, Math.PI * 2);
+    //             context.fillStyle = 'white';
+    //             context.fill();
+    //             context.closePath()
+    //         }
 
-            const interval = setInterval(draw, 10)
+    //         const interval = setInterval(draw, 10)
 
-            return () => {
-                window.removeEventListener('resize', handleCanvasResize)
-                clearInterval(interval)
-            }
-        }
-    }, [canvasRef])
+    //         return () => {
+    //             window.removeEventListener('resize', handleCanvasResize)
+    //             clearInterval(interval)
+    //         }
+    //     }
+    // }, [canvasRef])
 
     return (
         <Dialog sx={{ minWidth: 350, overflow: 'hidden' }} maxWidth={'md'} open={open} onClose={closeLogin} onKeyDown={(e: React.KeyboardEvent) => handleKeyPress(e)} >

@@ -109,7 +109,6 @@ const NavBar = () => {
     }, [])
 
 
-
     const openLogin = () => {
         setDialogOpen(true);
     }
