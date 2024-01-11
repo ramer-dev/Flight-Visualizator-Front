@@ -2,7 +2,7 @@ import styled from '@emotion/styled'
 import Title from 'components/common/Title'
 import React from 'react'
 import { SettingState, SettingStateType } from './SettingStateType'
-import { Divider, Fab } from '@mui/material'
+import { Divider, Fab, Typography } from '@mui/material'
 import Frequency from './frequency/Frequency'
 import Route from './route/Route'
 import FixPoint from './fixPoint/FixPoint'
@@ -21,6 +21,7 @@ import SectorIcon from '@mui/icons-material/Place';
 import FixPointIcon from '@mui/icons-material/RadioButtonChecked';
 import FrequencyIcon from '@mui/icons-material/WifiTethering';
 import AreaIcon from '@mui/icons-material/Map';
+import { AnimatePresence, motion } from 'framer-motion'
 const GridContainer = styled.div`
   display:grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -36,6 +37,12 @@ const StyledFab = styled(Fab)`
 const Wrapper = styled.div`
   background:#fff;
   z-index:2210;
+`
+const Typo = styled(motion(Typography))`
+  margin: 30px 0;
+  text-align:center;
+  font-weight: 300;
+  color:#999;
 `
 
 function Setting() {
@@ -65,11 +72,11 @@ function Setting() {
   }
 
   const changeState = (str: SettingState) => {
-    setSettingState({...settingState, current:str});
+    setSettingState({ ...settingState, current: str });
   }
-  
+
   const changeData = (data: any) => {
-    setSettingState({...settingState, data:data})
+    setSettingState({ ...settingState, data: data })
   }
 
   React.useEffect(() => {
@@ -80,17 +87,17 @@ function Setting() {
   const selector = React.useCallback(() => {
     switch (settingState.current) {
       case "frequency":
-        return <Frequency openEditWindow={openEditWindow} changeData={changeData}/>
+        return <Frequency openEditWindow={openEditWindow} changeData={changeData} />
       case "route":
-        return <Route openEditWindow={openEditWindow} changeData={changeData}/>
+        return <Route openEditWindow={openEditWindow} changeData={changeData} />
       case "fixPoint":
-        return <FixPoint openEditWindow={openEditWindow} changeData={changeData}/>
+        return <FixPoint openEditWindow={openEditWindow} changeData={changeData} />
       case "area":
-        return <Area openEditWindow={openEditWindow} changeData={changeData}/>
+        return <Area openEditWindow={openEditWindow} changeData={changeData} />
       case "site":
-        return <Site openEditWindow={openEditWindow} changeData={changeData}/>
+        return <Site openEditWindow={openEditWindow} changeData={changeData} />
       case "sector":
-        return <Sector openEditWindow={openEditWindow} changeData={changeData}/>
+        return <Sector openEditWindow={openEditWindow} changeData={changeData} />
       default:
         break;
     }
@@ -99,20 +106,25 @@ function Setting() {
   return (
     <>
       <Title>환경설정</Title>
-      {auth.role > 1 ?
+      {auth.role > 2 ?
         <>
           <GridContainer>
             <SettingItem onclick={() => { changeState("site") }} text={'표지소'} Icon={SiteIcon} />
             <SettingItem onclick={() => { changeState("route") }} text={'항로'} Icon={RouteIcon} />
             <SettingItem onclick={() => { changeState("fixPoint") }} text={'픽스점'} Icon={FixPointIcon} />
             <SettingItem onclick={() => { changeState("frequency") }} text={'주파수'} Icon={FrequencyIcon} />
-            <SettingItem onclick={() => { changeState("sector") }} text={'섹터'}  Icon={SectorIcon}/>
-            <SettingItem onclick={() => { changeState("area") }} text={'구역'}  Icon={AreaIcon}/>
+            <SettingItem onclick={() => { changeState("sector") }} text={'섹터'} Icon={SectorIcon} />
+            <SettingItem onclick={() => { changeState("area") }} text={'구역'} Icon={AreaIcon} />
           </GridContainer>
           <Divider sx={{ margin: '30px 0' }} />
+          <AnimatePresence>
           <div>
             {selector()}
           </div>
+          
+            {(settingState.current && !['route','area','frequency'].includes(settingState.current)) &&
+              <Typo initial={{ opacity: 0, y:-50 }} animate={{ opacity: 1, y:0 }} exit={{ opacity: 0, y:-50 }} transition={{damping:60}}>좌표는 도분초(DD.MMSS)형식으로 입력해주세요.</Typo>}
+          </AnimatePresence>
           <StyledFab color="info" aria-label="add" onClick={handlerAddButtnClick}>
             <AddIcon color="primary" />
           </StyledFab>

@@ -1,14 +1,14 @@
 import { StyledInputBox } from "components/common/InputText";
 import Title from "components/common/Title";
 import styled from "@emotion/styled";
-import { Divider, FormControl, ListSubheader, MenuItem, Radio, Select } from "@mui/material";
+import { Divider, FormControl, ListSubheader, MenuItem, Radio, Select, SelectChangeEvent } from "@mui/material";
 import { Button } from "@mui/material";
 import { MarkingCardProps } from "./MarkingCard";
 import MarkingDragDrop from "./MarkingDragDrop";
 import { useGetSite } from "components/hooks/useSite";
 import { useEffect, useRef, useState } from "react";
 import { Destination } from "module/Destination";
-import { LatLngExpression } from "leaflet";
+import { LatLngExpression, LatLngLiteral } from "leaflet";
 import { useMap } from "react-leaflet";
 import React from "react";
 import { useRecoilState } from "recoil";
@@ -21,6 +21,7 @@ import useModal from "components/hooks/useModal";
 import Portal from "module/Portal";
 import CustomModal from "components/common/CustomModal";
 import MarkingPopup from "./MarkingPopup";
+import { convertToWGS } from "module/DMS";
 
 
 const InputWrapper = styled.div`
@@ -56,15 +57,31 @@ export default function Marking() {
     const [siteMenuOpen, setSiteMenuOpen] = useState(false);
     const [list, setList] = useRecoilState<MarkingCardProps[]>(markingCards);
     const [color, setColor] = useState<string>('5');
+    const [error, setError] = useState<boolean[]>([false, false, true])
     const origin = useRef<LatLngExpression>({ lat: 0, lng: 0 });
     const angle = useRef<HTMLInputElement>(null);
     const distance = useRef<HTMLInputElement>(null);
     const addBtnRef = useRef<HTMLButtonElement>(null);
     const layerGroup = useRef(L.layerGroup([], { pane: 'marking' }))
     const { isModalOpen, openModal, closeModal } = useModal()
+    const hoverPolyline = useRef<L.Polyline>();
+
+    const siteData = useGetSite();
+
     useEffect(() => {
-        const layer = list.map((t: MarkingCardProps, index: number) => L.marker(t.coord!, { icon: divicon(t.level, index), pane: 'marking' })
-            .bindTooltip(MarkingTooltip(t)).bindPopup(MarkingPopup(t), {closeOnClick:false, autoClose:false}))
+        if (hoverPolyline.current) hoverPolyline.current.remove();
+
+        const layer = list.map((t: MarkingCardProps, index: number) => L.marker(t.coord!, { icon: divicon(t.level, index + 1), pane: 'marking' })
+            .on('mouseover', () => {
+                const { lat, lng } = t.coord!;
+                const siteCoords = siteData.data.filter(a => a.siteName === t.site)[0]?.siteCoordinate as LatLngLiteral;
+                hoverPolyline.current = L.polyline([[lat, lng], [convertToWGS(siteCoords.lat), convertToWGS(siteCoords.lng)]], { pane: 'marking', color: 'red' }).addTo(map);
+            }).on('mouseout', () => {
+                if (hoverPolyline.current) {
+                    hoverPolyline.current.remove();
+                }
+            })
+            .bindTooltip(MarkingTooltip({ ...t, index : index + 1})).bindPopup(MarkingPopup(t), { closeOnClick: false, autoClose: false }))
         const instance = layerGroup.current
 
         instance.clearLayers()
@@ -76,11 +93,12 @@ export default function Marking() {
             instance.clearLayers()
         }
     }, [list, map])
-    const handleSiteChange = (e: any) => {
-        const it = e.target.value as string
-        setSite(it)
-        changeOrigin(it)
-        // handleSiteClickClose();
+
+    const handleSiteChange = (e: SelectChangeEvent) => {
+        const value = e.target.value
+        setSite(value)
+        changeOrigin(value)
+        setError([error[0], error[1], !value])
     }
 
     const handleSiteClickOpen = (e: any) => {
@@ -99,7 +117,7 @@ export default function Marking() {
     }
 
     const AddElement = (origin_: LatLngExpression, site_: string) => {
-        if (angle.current?.value && distance.current?.value && site) {
+        if (angle.current?.value && distance.current?.value && site && error.every((t) => !t )) {
 
             // if (Validation()) return;
 
@@ -128,11 +146,32 @@ export default function Marking() {
         setColor(event.target.value);
     };
 
+    const handleAngleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        if (Number(value) < 0 || Number(value) >= 360) {
+            const updatedErrorState = [true, error[1], error[2]]
+            setError(updatedErrorState)
+        } else {
+            const updatedErrorState = [false, error[1], error[2]]
+            setError(updatedErrorState)
+        }
+    }
+
+    const handleDistanceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        if (Number(value) < 0 || Number(value) > 500) {
+            const updatedErrorState = [error[0], true, error[2]]
+            setError(updatedErrorState)
+        } else {
+            const updatedErrorState = [error[0], false, error[2]]
+            setError(updatedErrorState)
+        }
+    }
+
     const controlProps = (item: string) => ({
         checked: color === item,
         onChange: handleChange,
         value: item,
-        name: 'color-radio-button-demo',
         inputProps: { 'aria-label': item },
     });
 
@@ -175,8 +214,8 @@ export default function Marking() {
                     </InputWrapper>
                     <InputWrapper>
                         <FlexBox>
-                            <StyledInputBox inputRef={angle} type={'number'} sx={{ borderRadius: '15px' }} label='방위' size='small' />
-                            <StyledInputBox inputRef={distance} type={'number'} label='거리' size='small' />
+                            <StyledInputBox inputRef={angle} onChange={handleAngleChange} error={error[0]} type={'number'} sx={{ borderRadius: '15px' }} label='방위' size='small' />
+                            <StyledInputBox inputRef={distance} onChange={handleDistanceChange} error={error[1]} type={'number'} label='거리' size='small' />
                         </FlexBox>
                     </InputWrapper>
                     <InputWrapper>
@@ -222,7 +261,7 @@ export default function Marking() {
                             }} />
                         </FlexBox>
                     </InputWrapper>
-                    <AddButton variant='outlined' sx={{ borderRadius: '16px', width: 100 }} ref={addBtnRef}
+                    <AddButton variant='outlined' sx={{ borderRadius: '16px', width: 100 }} ref={addBtnRef} disabled={error.some((t) => t === true)}
                         onClick={() => {
                             AddElement(origin.current, site)
                         }}
@@ -236,7 +275,7 @@ export default function Marking() {
 
             </DragDropContext>
             <Portal>
-                <CustomModal isOpen={isModalOpen} title="마킹" message="내용을 입력해주세요." close={closeModal}/>
+                <CustomModal isOpen={isModalOpen} title="마킹" message="내용을 입력해주세요." close={closeModal} />
             </Portal>
         </div >
     )

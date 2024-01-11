@@ -11,6 +11,10 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { contentFormat, contentViewFormat } from 'common/store/atom';
 import ErrorPage from 'components/common/ErrorPage';
 import LoadingPage from 'components/common/LoadingPage';
+import { authState } from 'common/store/auth';
+import Portal from 'module/Portal';
+import useModal from 'components/hooks/useModal';
+import CustomModal from 'components/common/CustomModal';
 
 const Container = styled.div`
   overflow-y : scroll;
@@ -48,8 +52,10 @@ function Notice() {
   const [value, setValue] = useState("전체");
   const id = useRef<number>(-1);
   const { data, isLoading, isError, refetch } = useGetNotice();
+  const auth = useRecoilValue(authState);
   const contentView = useRecoilValue(contentViewFormat);
   const [open, setOpen] = useState(true);
+  const { isModalOpen, openModal, closeModal } = useModal()
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
@@ -84,8 +90,11 @@ function Notice() {
   const setContentFormat = useSetRecoilState(contentFormat)
 
   const hanlderAddOnClick = () => {
-    setContentFormat('ADD');
-
+    if (auth.role >= 2) {
+      setContentFormat('ADD');
+    } else {
+      openModal()
+    }
   }
 
   const ContextItem = {
@@ -100,7 +109,10 @@ function Notice() {
   return (
     <NoticeContext.Provider value={ContextItem}>
       <>
-        {/* <CustomModal open={open} onClose={modalHandleClose} title={'우ㅡ아'} content={'수액수으'}/> */}
+        <Portal>
+          <CustomModal isOpen={isModalOpen} title={'권한 에러'} message={'권한이 없습니다.'} close={closeModal} />
+        </Portal>
+
         <Title>공지사항</Title>
         <CustomFAB color="info" onClick={hanlderAddOnClick}>
           <AddIcon color='primary' />

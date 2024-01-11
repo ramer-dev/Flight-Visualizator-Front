@@ -29,8 +29,8 @@ function NoticeContent({ id, context, isOpen, type, title, date  }: Props) {
         
         <motion.div>
             <Divider sx={{ margin: '10px 15px' }} />
-            <Content initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>{context}</Content>
-            <MarkdownRenderer/>
+            {/* <Content initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>{context}</Content> */}
+            <MarkdownRenderer context={context}/>
             {authLevel.role >= 1 ? <NoticeManager id={id} title={title} context={context} type={type} date={date}/> : null}
         </motion.div>
     )

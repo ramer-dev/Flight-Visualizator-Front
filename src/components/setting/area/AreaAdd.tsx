@@ -2,9 +2,12 @@ import styled from '@emotion/styled'
 import { Button, TextField } from '@mui/material'
 import { postArea } from 'common/service/areaService'
 import { contentFormat, contentViewFormat } from 'common/store/atom'
+import CustomModal from 'components/common/CustomModal'
 import ScreenTitle from 'components/common/ScreenTitle'
+import useModal from 'components/hooks/useModal'
 import NavCloseButton from 'components/navbar/NavCloseButton'
 import { AreaDTO } from 'dto/areaDTO'
+import Portal from 'module/Portal'
 import React from 'react'
 import { useSetRecoilState } from 'recoil'
 import ColorPicker from './ColorPicker'
@@ -33,6 +36,13 @@ function AreaAdd() {
   const nameRef = React.useRef<HTMLInputElement>();
   const open = () => setIsColorPickerOpen(true);
   const close = () => setIsColorPickerOpen(false);
+  const [modalContext, setModalContext] = React.useState<{ title:string, message:string, close?:()=>void }>({ title: '에러 발생', message: '알 수 없는 오류' });
+  const { isModalOpen, openModal, closeModal } = useModal()
+
+  function alertModal(open: () => void, title:string, message:string, close?:()=>void) {
+    setModalContext({ title, message, close })
+    open()
+  }
 
   React.useEffect(() => {
     if (colorRef.current) {
@@ -43,20 +53,28 @@ function AreaAdd() {
   const closeScreen = () => {
     setContentView('NONE')
     setContent('NONE')
+    closeModal();
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (nameRef.current) {
       const body: AreaDTO = {
         areaColor: color,
         areaName: nameRef.current.value
       }
-      postArea(body);
-      closeScreen()
+      try {
+        await postArea(body);
+        alertModal(openModal, '구역 추가 성공', `[ ${body.areaName} ]\n구역 추가에 성공하였습니다.`, closeScreen)
+      } catch (e) {
+        alertModal(openModal, '구역 추가 성공', `구역 추가에 실패했습니다.`, closeModal)
+      } 
     }
   }
   return (
     <Container>
+      <Portal>
+        <CustomModal isOpen={isModalOpen} title={modalContext.title} message={modalContext.message} close={modalContext.close} />
+      </Portal>
       <ScreenTitle text={'구역 추가'} />
       <Content>
         <TextField label="구역명" size="small" inputRef={nameRef} fullWidth></TextField>

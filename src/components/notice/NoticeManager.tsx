@@ -29,8 +29,20 @@ function NoticeManager({ id, title, date, type, context }: Props) {
     const setContentFormat = useSetRecoilState(contentFormat);
     const storeNoticeContent = useSetRecoilState(editingNoticeContent);
 
-    const { isModalOpen, closeModal, openModal } = useModal()
     const [modalState, setModalState] = React.useState<ModalStateType>({ isError: false })
+    const [modalContext, setModalContext] = React.useState<{ title: string, message: string, close?: () => void }>({ title: '에러 발생', message: '알 수 없는 오류' });
+    const { isModalOpen, openModal, closeModal } = useModal()
+
+    function alertModal(open: () => void, title: string, message: string, close?: () => void) {
+        setModalContext({ title, message, close })
+        open()
+    }
+
+    const closeScreen = async () => {
+        closeModal()
+        await setContentFormat('NONE');
+        // await setContentFormat('EDIT');
+    }
 
     const hanlderModifyOnClick = async () => {
         const value: NoticeContentType = {
@@ -41,9 +53,7 @@ function NoticeManager({ id, title, date, type, context }: Props) {
             context
         }
         storeNoticeContent(value);
-        await setContentFormat('NONE');
         await setContentFormat('EDIT');
-
     }
 
     const handleClickDelete = async (func: NoticeContextType) => {
@@ -51,17 +61,15 @@ function NoticeManager({ id, title, date, type, context }: Props) {
             if (id) {
                 await func.delete(id);
                 await func.refresh();
-                setModalState({ isError: false, isSuccess: true, code: 200, message: '삭제를 완료했습니다.' })
+
             }
         } catch (e: any) {
             const code = e.response.status;
             if (+code === 403) {
-                setModalState({ isError: true, code, message: '삭제 권한이 없습니다.' })
+                alertModal(openModal, '공지사항 삭제 실패', `삭제 권한이 없습니다.`, closeModal)
             } else {
-                setModalState({ isError: true, code, message: '네트워크 에러가 발생했습니다.' })
+                alertModal(openModal, '공지사항 삭제 실패', `공지사항 삭제에 실패했습니다.`, closeModal)
             }
-        } finally {
-            openModal()
         }
     }
 
@@ -79,10 +87,9 @@ function NoticeManager({ id, title, date, type, context }: Props) {
                             <CustomConfirm isOpen={isConfirmOpen} title="공지사항 삭제" message={`공지사항을 삭제합니다.\n제목: ${title}\n내용: ${context}`}
                                 confirm={() => { handleClickDelete(func) }} close={closeConfirm} />
                         }
-                        {
-                            isModalOpen &&
-                            <CustomModal isOpen={isModalOpen} title={modalState.isSuccess ? "삭제 완료" : "에러"} message={modalState.message} close={closeModal} />
-                        }
+                        <Portal>
+                            <CustomModal isOpen={isModalOpen} title={modalContext.title} message={modalContext.message} close={modalContext.close} />
+                        </Portal>
                     </Portal>
 
                     <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>

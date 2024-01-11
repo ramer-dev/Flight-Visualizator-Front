@@ -34,13 +34,23 @@ function NoticeEdit() {
   const [noticeContent, setNoticeContent] = useRecoilState(editingNoticeContent)
   const { isConfirmOpen, closeConfirm, openConfirm } = useConfirm();
 
-  const { isModalOpen, closeModal, openModal } = useModal()
   const [modalState, setModalState] = React.useState<ModalStateType>({ isError: false })
+  const [modalContext, setModalContext] = React.useState<{ title: string, message: string, close?: () => void }>({ title: '에러 발생', message: '알 수 없는 오류' });
+  const { isModalOpen, openModal, closeModal } = useModal()
 
+  function alertModal(open: () => void, title: string, message: string, close?: () => void) {
+    setModalContext({ title, message, close })
+    open()
+  }
 
   const title = useRef<HTMLInputElement>(null)
   const tag = useRef<HTMLInputElement>(null)
   const content = useRef<HTMLInputElement>(null)
+
+  const closeScreen = () => {
+    closeModal()
+    setContentType('NONE')
+  }
 
   const handlerEditOnClick = async () => {
     const body: NoticeContentType = {
@@ -56,18 +66,17 @@ function NoticeEdit() {
     try {
       if (body.id) {
         await patchNotice(body, body.id)
-        setContentType('NONE');
-        setModalState({ isError: false, isSuccess: true, code: 200, message: '공지사항 수정을 완료했습니다.' })
+        alertModal(openModal, '공지사항 수정 성공', `[ ${body.title} ]\n공지사항 수정에 성공했습니다.`, handlerCancelOnClick)
+
+        // setModalState({ isError: false, isSuccess: true, code: 200, message: '공지사항 수정을 완료했습니다.' })
       }
     } catch (e: any) {
       const code = e.response.status;
       if (+code === 403) {
-        setModalState({ isError: true, code, message: '수정 권한이 없습니다.' })
+        alertModal(openModal, '공지사항 수정 실패', `권한이 없습니다.`, closeModal)
       } else {
-        setModalState({ isError: true, code, message: '네트워크 에러가 발생했습니다.' })
+        alertModal(openModal, '공지사항 수정 실패', `네트워크 에러가 발생했습니다.`, closeModal)
       }
-    } finally {
-      openModal();
     }
   }
 
@@ -82,7 +91,7 @@ function NoticeEdit() {
       user: ''
     }
     setNoticeContent(body)
-    setContentType('NONE');
+    closeScreen();
   }
 
   const handleModalOpen = () => {
@@ -99,11 +108,9 @@ function NoticeEdit() {
             confirm={handlerEditOnClick} close={closeConfirm} />
         </Portal>
       }
-      {
-        isModalOpen && <Portal>
-          <CustomModal isOpen={isModalOpen} title={modalState.isSuccess ? "공지사항 수정 완료" : "에러"} message={modalState.message} close={closeModal} />
-        </Portal>
-      }
+      <Portal>
+        <CustomModal isOpen={isModalOpen} title={modalContext.title} message={modalContext.message} close={modalContext.close} />
+      </Portal>
       <Wrapper>
         <TextField placeholder='공지사항 제목' size='small' label="제목" inputRef={title} defaultValue={noticeContent.title}></TextField>
         <TextField placeholder='태그 선택' size='small' label="태그" inputRef={tag} defaultValue={noticeContent.type}></TextField>

@@ -12,11 +12,11 @@ const Wrapper = styled.div`
 function marker(name:string) {
     
     return renderToString(
-        <div style={{color:'#0077ff', background:undefined, }}>{name}</div>
+        <div style={{color:'#0077ff', width:50, textAlign:'center' }}>{name}</div>
     )
 }
 
-const icon = (name:string) => L.divIcon({ html: marker(name), className:'subtitle', bgPos: [0, 0], iconAnchor:[20,-5]})
+const icon = (name:string) => L.divIcon({ html: marker(name), className:'subtitle', bgPos: [0, 0], iconAnchor:[25,-5]})
 
 type Props = {
     name: string,

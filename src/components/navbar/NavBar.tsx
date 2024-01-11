@@ -17,7 +17,7 @@ import NavEtcItem from "./NavEtcItem";
 import L from 'leaflet';
 import LoginComponent from "components/login/LoginComponent";
 import { authState } from "common/store/auth";
-import { postLogout } from "components/hooks/useLogin";
+import { postLogout } from "common/service/loginService";
 import { AuthType } from "common/type/AuthType";
 import { AnimatePresence, motion } from "framer-motion";
 import useConfirm from "components/hooks/useConfirm";
@@ -109,7 +109,6 @@ const NavBar = () => {
     }, [])
 
 
-
     const openLogin = () => {
         setDialogOpen(true);
     }
@@ -165,7 +164,7 @@ const NavBar = () => {
                         <NavItem icon={SearchIcon} title={"SEARCH"} content={"검색"} onclick={() => { onButtonClick("SEARCH") }} />
                         <NavItem icon={MarkingIcon} title={"MARKING"} content={"마킹"} onclick={() => { onButtonClick("MARKING") }} />
                         <NavItem icon={NoticeIcon} title={"NOTICE"} content={"공지사항"} onclick={() => { onButtonClick("NOTICE") }} />
-                        <NavItem icon={SettingIcon} title={"SETTING"} content={"설정"} onclick={() => { onButtonClick("SETTING") }} />
+                        {process.env.REACT_APP_ONLY_SETTING === '1' && <NavItem icon={SettingIcon} title={"SETTING"} content={"설정"} onclick={() => { onButtonClick("SETTING") }} />}
                     </MainNavBar>
                     <SubNavBar>
                         <NavEtcItem icon={QuestionIcon} title={"도움말"} onClick={() => { }} isClicked={false} />
@@ -175,7 +174,7 @@ const NavBar = () => {
                 </Wrapper>
                 <AnimatePresence mode='wait'>
                     {selectedPage &&
-                        <ContentView initial={{x:'-100%'}} animate={{x:0}} exit={{x:'-100%'}} transition={{type:"tween"}}>
+                        <ContentView initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }} transition={{ type: "tween" }}>
                             <NavSideBar selectedPage={selectedPage} />
                         </ContentView>}
                 </AnimatePresence>

@@ -2,12 +2,15 @@ import styled from '@emotion/styled'
 import { Button, TextField } from '@mui/material'
 import { postFixPoint } from 'common/service/pointService'
 import { contentFormat, contentViewFormat } from 'common/store/atom'
+import CustomModal from 'components/common/CustomModal'
 import ScreenTitle from 'components/common/ScreenTitle'
+import useModal from 'components/hooks/useModal'
 import NavCloseButton from 'components/navbar/NavCloseButton'
 import { FixPointDTO } from 'dto/fixPointDTO'
 import L from 'leaflet'
 import { LatLngLiteral } from 'leaflet'
 import { convertToWGS } from 'module/DMS'
+import Portal from 'module/Portal'
 import { validateCoordinates } from 'module/validationCoordinate'
 import React from 'react'
 import { useMap } from 'react-leaflet'
@@ -37,10 +40,17 @@ function FixPointAdd() {
     const nameRef = React.useRef<HTMLInputElement>();
     const map = useMap();
     const dotLayer = React.useRef<L.CircleMarker>();
+    const [modalContext, setModalContext] = React.useState<{ title: string, message: string, close?: () => void }>({ title: '에러 발생', message: '알 수 없는 오류' });
+    const { isModalOpen, openModal, closeModal } = useModal()
 
+    function alertModal(open: () => void, title: string, message: string, close?: () => void) {
+        setModalContext({ title, message, close })
+        open()
+    }
     const closeScreen = () => {
         setContentView('NONE')
         setContent('NONE')
+        closeModal()
     }
 
     const handleSubmit = () => {
@@ -49,8 +59,17 @@ function FixPointAdd() {
                 pointName: nameRef.current.value,
                 pointCoordinate: { lat: coord.lat, lng: coord.lng }
             }
-            postFixPoint(body);
-            closeScreen()
+
+            try {
+                if(body.pointName && body.pointCoordinate.lat && body.pointCoordinate.lng){
+                    postFixPoint(body);
+                    alertModal(openModal, '픽스점 추가 성공', `[ ${body.pointName} ]\n픽스점 추가에 성공하였습니다.`, closeScreen)    
+                } else {
+                    throw new Error('BAD REQUEST')
+                }
+            } catch (e) {
+                alertModal(openModal, '픽스점 추가 실패', `픽스점 추가에 실패하였습니다.`, closeModal)
+            }
         }
     }
 
@@ -78,8 +97,8 @@ function FixPointAdd() {
         if (coord.lat && coord.lng && error.lat && error.lng) {
             dotLayer.current = L.circleMarker([convertToWGS(coord.lat), convertToWGS(coord.lng)], { radius: 8, color: 'red', }).addTo(map);
         }
-        setCoordError({lat:!error.lat, lng:!error.lng})
-        
+        setCoordError({ lat: !error.lat, lng: !error.lng })
+
         return () => {
             if (dotLayer.current) {
                 dotLayer.current.remove();
@@ -88,6 +107,9 @@ function FixPointAdd() {
     }, [name, coord])
     return (
         <Container>
+            <Portal>
+                <CustomModal isOpen={isModalOpen} title={modalContext.title} message={modalContext.message} close={modalContext.close} />
+            </Portal>
             <ScreenTitle text={'픽스점 추가'} />
             <Content>
                 <TextField label="픽스점 이름" size="small" fullWidth inputRef={nameRef} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleCoordChange(e, 'name') }}></TextField>

@@ -43,7 +43,7 @@ export const divicon = (level: number, index?: number) => {
         iconSize: [41, 41],
         iconAnchor: [20, 38],
         popupAnchor: [1, -34],
-        tooltipAnchor: [16, -18], className: `custom-marker-${level}`, html: renderToString(<NumberIcon level={level} index={typeof index === 'number' ? index + 1 : undefined} />)
+        tooltipAnchor: [16, -18], className: `custom-marker-${level}`, html: renderToString(<NumberIcon level={level} index={typeof index === 'number' ? index : undefined} />)
     })
 }
 

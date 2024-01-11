@@ -31,6 +31,7 @@ export interface FlightResult {
   point?: LatLngLiteral,
   updatedAt?: Date,
   deletedAt?: Date,
+  no?:number,
 }
 
 export interface TableFlightResult extends FlightResult {
@@ -50,7 +51,7 @@ export interface FlightList {
   count?:number
 }
 
-export interface RowType {
+export interface RowFlightResultType {
   id: string;
   siteName: string,
   frequency: number,

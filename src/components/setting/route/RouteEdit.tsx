@@ -5,14 +5,17 @@ import { postFixPoint } from 'common/service/pointService'
 import { deleteRouteData, patchRouteData, postRouteData } from 'common/service/routeService'
 import { contentFormat, contentViewFormat, setting } from 'common/store/atom'
 import { RoutePointType } from 'common/type/RouteType'
+import CustomModal from 'components/common/CustomModal'
 import ScreenTitle from 'components/common/ScreenTitle'
 import { useGetPoint } from 'components/hooks/useFixPoint'
+import useModal from 'components/hooks/useModal'
 import NavCloseButton from 'components/navbar/NavCloseButton'
 import { FixPointAutoCompleteItemType, FixPointDTO } from 'dto/fixPointDTO'
 import { RouteDTO, RoutePointDTO } from 'dto/routeDTO'
 import L from 'leaflet'
 import { LatLngLiteral } from 'leaflet'
 import { convertToWGS } from 'module/DMS'
+import Portal from 'module/Portal'
 import { validateCoordinates } from 'module/validationCoordinate'
 import React from 'react'
 import { useMap } from 'react-leaflet'
@@ -43,8 +46,6 @@ const InputWrapper = styled.div`
   padding: 5px 0;
 `
 
-
-
 function RouteEdit() {
     const settingState = useRecoilValue<SettingStateType>(setting)
     const setContentView = useSetRecoilState(contentViewFormat)
@@ -56,9 +57,18 @@ function RouteEdit() {
     const nameRef = React.useRef<HTMLInputElement>();
     const map = useMap();
     const polyLineLayer = React.useRef<L.Polyline>();
+    const [modalContext, setModalContext] = React.useState<{ title: string, message: string, close?: () => void }>({ title: '에러 발생', message: '알 수 없는 오류' });
+    const { isModalOpen, openModal, closeModal } = useModal()
+
+    function alertModal(open: () => void, title: string, message: string, close?: () => void) {
+        setModalContext({ title, message, close })
+        open()
+    }
+
     const closeScreen = () => {
         setContentView('NONE')
         setContent('NONE')
+        closeModal()
     }
 
     const handleSubmit = async () => {
@@ -68,10 +78,14 @@ function RouteEdit() {
                 routeData: points.map(t => { return { routeName: t.label } })
             }
             try {
-                await patchRouteData(settingState.data.id, body);
-                closeScreen()
+                if (body.routeName && body.routeData.every(t => !!t)) {
+                    await patchRouteData(settingState.data.id, body);
+                    alertModal(openModal, '항로 수정 성공', `[ ${body.routeName} ]\n항로 수정에 성공하였습니다.`, closeScreen)
+                } else {
+                    throw new Error('BAD REQUEST')
+                }
             } catch (e: any) {
-                console.error(e)
+                alertModal(openModal, '항로 수정 실패', `항로 수정에 실패하였습니다.`, closeModal)
             }
         }
     }
@@ -99,9 +113,9 @@ function RouteEdit() {
     const handleDelete = async () => {
         try {
             await deleteRouteData(settingState.data.id);
-            closeScreen()
+            alertModal(openModal, '항로 삭제 성공', `항로 삭제에 성공하였습니다.`, closeScreen)
         } catch (e) {
-            console.error(e)
+            alertModal(openModal, '항로 삭제 실패', `항로 삭제에 실패하였습니다.`, closeScreen)
         }
     }
 
@@ -150,6 +164,9 @@ function RouteEdit() {
 
     return (
         <Container>
+            <Portal>
+                <CustomModal isOpen={isModalOpen} title={modalContext.title} message={modalContext.message} close={modalContext.close} />
+            </Portal>
             <ScreenTitle text={'항로 수정'} />
             <Content>
                 <TextField label="항로 이름" size="small" fullWidth inputRef={nameRef} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleNameChange(e) }} />
