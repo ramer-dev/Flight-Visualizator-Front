@@ -135,7 +135,7 @@ function CustomTable({ edit, search, add }: Props) {
     const siteData = useGetSite();
     const { data, refetch, isLoading } = useFlightData(paginationModel.pageSize, 0, flightDataId)
 
-    const [rows, setRows] = React.useState(data?.data?.items ? data.data.items.map((t, i) => ({ ...t })) : []);
+    const [rows, setRows] = React.useState(data?.data?.items ? data.data.items.map((t:FlightResult, i:number) => ({ ...t })) : []);
 
     const [modalContext, setModalContext] = React.useState<{ title: string, message: string }>({ title: '에러 발생', message: '알 수 없는 오류' });
     const { isModalOpen, openModal, closeModal } = useModal()
@@ -224,9 +224,9 @@ function CustomTable({ edit, search, add }: Props) {
 
 
         if (data?.data?.items) {
-            setRows(data.data.items.map((t, i) => ({ ...t, no: i + 1 })));
+            setRows(data.data.items.map((t:FlightResult, i:number) => ({ ...t, no: i + 1 })));
             if (auth.role >= 2) {
-                const layer = data.data.items.filter(t => t.point === null)
+                const layer = data.data.items.filter((t:FlightResult) => t.point === null)
                 for (let item of layer) {
                     const it = { ...item };
                     const siteCoord = siteData.data.filter(t => t.siteName === it.siteName).map(t => t.siteCoordinate);
@@ -361,7 +361,7 @@ function CustomTable({ edit, search, add }: Props) {
     useEffect(() => {
         stateRefresh()
         if (data) {
-            const excludesPoint = data.data?.items.filter(t => !t.point)
+            const excludesPoint = data.data?.items.filter((t:FlightResult) => !t.point)
             setTitleData({ ...data, data: undefined })
         }
     }, [data, flightDataId])
